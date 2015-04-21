@@ -20,9 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/usernameEditText"
-        android:layout_marginTop="114dp"
         android:hint="Username"
-        android:layout_below="@+id/header"
+        android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true" />
 
     <EditText
@@ -32,7 +31,7 @@
         android:ems="10"
         android:id="@+id/passwordEditText"
         android:hint="Password"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/usernameEditText"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -40,12 +39,11 @@
         android:layout_height="wrap_content"
         android:text="Sign Up"
         android:id="@+id/signUpButton"
-        android:layout_below="@+id/passwordEditText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
-        android:clickable="false"
+        android:clickable="true"
         android:enabled="true"
-        android:onClick="signUp" />
+        android:onClick="signUp"
+        android:layout_below="@+id/photoButton"
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -53,8 +51,7 @@
         android:id="@+id/imageView"
         android:background="@mipmap/ic_launcher"
         android:layout_below="@+id/header"
-        android:layout_alignLeft="@+id/signUpButton"
-        android:layout_alignStart="@+id/signUpButton" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -63,5 +60,23 @@
         android:id="@+id/logText"
         android:layout_below="@+id/signUpButton"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/photo"
+        android:layout_toEndOf="@+id/logText"
+        android:layout_below="@+id/passwordEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@+id/logText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Take Photo"
+        android:id="@+id/photoButton"
+        android:layout_below="@+id/photo"
+        android:layout_centerHorizontal="true"
+        android:onClick="takePhoto" />
 
 </RelativeLayout>

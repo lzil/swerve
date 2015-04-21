@@ -1,8 +1,8 @@
 package edu.mit.ibex;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,19 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class StatusActivity extends ActionBarActivity {
@@ -35,10 +31,16 @@ public class StatusActivity extends ActionBarActivity {
     EditText editStatus;
     Firebase myFirebase;
     Switch available;
+    String username;
+    Map<String, Object> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        username = intent.getExtras().getString("username");
+
         setContentView(R.layout.activity_status);
         Firebase.setAndroidContext(this);
         mapsButton = (Button) findViewById(R.id.mapsButton);
@@ -46,12 +48,29 @@ public class StatusActivity extends ActionBarActivity {
         editStatus = (EditText) findViewById(R.id.editStatus);
         available = (Switch) findViewById(R.id.available);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
+        //Need to actually pull data
+//        JSONArray info = new JSONArray();
+//        showFriendInfo(info);
+
+//        String data = "";
+        myFirebase.child("liang").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+//                System.out.println(snapshot.getValue());
+                data = (Map<String, Object>)snapshot.getValue();
+                Log.d("Data : ",data.toString());
+                System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
+                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
+            }
+            @Override public void onCancelled(FirebaseError error) { }
+        });
+//        Log.d("Data : ",data.toString());
+//        showFriendInfo(data);
     }
 
-    private void showFoodEntries4(JSONArray foodEntries) {
+    private void showFriendInfo(String user, String status, String friends ) {
 
-        TextView tv = (TextView) findViewById(R.id.textView);
-        tv.setVisibility(View.INVISIBLE);
+
         final ListView theListView = (ListView) findViewById(R.id.listView);
 
         List<String> friendsInfo = new ArrayList<String>();
@@ -59,33 +78,17 @@ public class StatusActivity extends ActionBarActivity {
         ArrayAdapter<String> resultsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
 
-        String item_name;
-        String brand_name;
+        friendsInfo.add(user + " : " + status + " : " + friends);
 
-        if (foodEntries != null) {
-            for (int i = 0; i < foodEntries.length(); i++) {
-                try {
-                    JSONObject foodInfo = (JSONObject) foodEntries.get(i);
-                    JSONObject tempJsonParse = foodInfo.getJSONObject("fields");
-                    item_name = tempJsonParse.getString("item_name");
-                    brand_name = tempJsonParse.getString("brand_name");
-                    friendsInfo.add(item_name + " : " + brand_name);
-
-                } catch (JSONException e) {
-                    Log.e(LOG_MESSAGE, e.getMessage());
-                    e.printStackTrace();
-                }
-            }  // end the for loop
-            theListView.setAdapter(resultsAdapter);
-            theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
-                    String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
-                    //do whatever here
-                    String newString = selectedFromList.replaceAll(" ", "&");
-//                    getWebResultString(newString);
-                }
-            });
-        }
+        theListView.setAdapter(resultsAdapter);
+        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
+                String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
+//                do whatever here
+                String newString = selectedFromList.replaceAll(" ", "&");
+//                getWebResultString(newString);
+            }
+        });
     }
 
     @Override
@@ -112,6 +115,8 @@ public class StatusActivity extends ActionBarActivity {
 
     public void mapsClick(View v) {
         Intent i = new Intent(this, MapsActivity.class);
+        if(username!=null){
+        i.putExtra("username",username);}
         startActivity(i);
     }
 
