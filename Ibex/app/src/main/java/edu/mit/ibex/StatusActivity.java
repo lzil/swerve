@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.firebase.client.Firebase;
+
 
 public class StatusActivity extends ActionBarActivity {
 
@@ -12,6 +14,9 @@ public class StatusActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
+        Firebase.setAndroidContext(this);
+        //Firebase myFirebaseRef = new Firebase("https://hangmonkey.firebaseio.com/");
+        //myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
     }
 
 
