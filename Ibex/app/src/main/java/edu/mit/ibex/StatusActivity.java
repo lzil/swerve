@@ -3,20 +3,34 @@ package edu.mit.ibex;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class StatusActivity extends ActionBarActivity {
+    private String LOG_MESSAGE = "HangMonkey";
+
     Button mapsButton, friendsButton;
     EditText editStatus;
     Firebase myFirebase;
@@ -39,6 +53,45 @@ public class StatusActivity extends ActionBarActivity {
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
     }
 
+    private void showFoodEntries4(JSONArray foodEntries) {
+
+        TextView tv = (TextView) findViewById(R.id.textView);
+        tv.setVisibility(View.INVISIBLE);
+        final ListView theListView = (ListView) findViewById(R.id.listView);
+
+        List<String> friendsInfo = new ArrayList<String>();
+
+        ArrayAdapter<String> resultsAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
+
+        String item_name;
+        String brand_name;
+
+        if (foodEntries != null) {
+            for (int i = 0; i < foodEntries.length(); i++) {
+                try {
+                    JSONObject foodInfo = (JSONObject) foodEntries.get(i);
+                    JSONObject tempJsonParse = foodInfo.getJSONObject("fields");
+                    item_name = tempJsonParse.getString("item_name");
+                    brand_name = tempJsonParse.getString("brand_name");
+                    friendsInfo.add(item_name + " : " + brand_name);
+
+                } catch (JSONException e) {
+                    Log.e(LOG_MESSAGE, e.getMessage());
+                    e.printStackTrace();
+                }
+            }  // end the for loop
+            theListView.setAdapter(resultsAdapter);
+            theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
+                    String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
+                    //do whatever here
+                    String newString = selectedFromList.replaceAll(" ", "&");
+//                    getWebResultString(newString);
+                }
+            });
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
