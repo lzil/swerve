@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import com.firebase.client.Firebase;
 
@@ -16,6 +17,7 @@ public class StatusActivity extends ActionBarActivity {
     Button mapsButton, friendsButton;
     EditText editStatus;
     Firebase myFirebase;
+    Switch available;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,7 @@ public class StatusActivity extends ActionBarActivity {
         mapsButton = (Button) findViewById(R.id.mapsButton);
         friendsButton = (Button) findViewById(R.id.friendsButton);
         editStatus = (EditText) findViewById(R.id.editStatus);
+        available = (Switch) findViewById(R.id.available);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
     }
 
@@ -62,6 +65,8 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void postStatus(View v) {
+        boolean on = available.isChecked();
         myFirebase.child("liang/status").setValue(editStatus.getText().toString());
+        myFirebase.child("liang/available").setValue(on);
     }
 }
