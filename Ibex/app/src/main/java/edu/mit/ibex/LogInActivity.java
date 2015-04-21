@@ -48,6 +48,7 @@ public class LogInActivity extends ActionBarActivity {
     public void logIn(View view){
         TextView logText = (TextView) findViewById(R.id.logText);
         logText.setTypeface(null, Typeface.ITALIC);
+        logText.setTextColor(Color.GRAY);
         logText.setText("Confirming user login...");
 
         EditText username =  (EditText) findViewById(R.id.usernameEditText);
@@ -69,6 +70,7 @@ public class LogInActivity extends ActionBarActivity {
     public void reg(View view){
         TextView logText = (TextView) findViewById(R.id.logText);
         logText.setTypeface(null, Typeface.ITALIC);
+        logText.setTextColor(Color.GRAY);
         logText.setText("Register...");
 
         Intent intent = new Intent(this, RegisterActivity.class);

@@ -46,6 +46,7 @@ public class RegisterActivity extends ActionBarActivity {
     public void signUp(View view){
         TextView logText = (TextView) findViewById(R.id.logText);
         logText.setTypeface(null, Typeface.ITALIC);
+        logText.setTextColor(Color.GRAY);
         logText.setText("Signing up...");
 
         EditText username =  (EditText) findViewById(R.id.usernameEditText);
