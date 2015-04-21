@@ -19,12 +19,12 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class StatusActivity extends ActionBarActivity {
@@ -35,6 +35,7 @@ public class StatusActivity extends ActionBarActivity {
     Firebase myFirebase;
     Switch available;
     String username;
+    Map<String, Object> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +55,23 @@ public class StatusActivity extends ActionBarActivity {
 //        JSONArray info = new JSONArray();
 //        showFriendInfo(info);
 
+//        String data = "";
         myFirebase.child("liang").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
+//                System.out.println(snapshot.getValue());
+                data = (Map<String, Object>)snapshot.getValue();
+                System.out.println(data);
+                System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
+
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
+        System.out.println(data);
+//        showFriendInfo(data);
     }
 
-    private void showFriendInfo(JSONArray info) {
+    private void showFriendInfo(Map<String, Object> info) {
 
 
         final ListView theListView = (ListView) findViewById(R.id.listView);
@@ -77,7 +85,7 @@ public class StatusActivity extends ActionBarActivity {
         String status;
 
         if (info != null) {
-            for (int i = 0; i < info.length(); i++) {
+            for (int i = 0; i < info.keySet().size(); i++) {
                 try {
                     JSONObject foodInfo = (JSONObject) info.get(i);
                     JSONObject tempJsonParse = foodInfo.getJSONObject("fields");
