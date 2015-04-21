@@ -16,6 +16,7 @@ public class StatusActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
         Intent i  = new Intent(this,MapsActivity.class);
+        startActivity(i);
         Firebase.setAndroidContext(this);
         //Firebase myFirebaseRef = new Firebase("https://hangmonkey.firebaseio.com/");
         //myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
