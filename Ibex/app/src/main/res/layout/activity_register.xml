@@ -39,13 +39,10 @@
         android:layout_height="wrap_content"
         android:text="Sign Up"
         android:id="@+id/signUpButton"
-        android:layout_marginTop="76dp"
         android:clickable="true"
         android:enabled="true"
         android:onClick="signUp"
-        android:layout_below="@+id/passwordEditText"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView"
+        android:layout_below="@+id/photoButton"
         android:layout_centerHorizontal="true" />
 
     <ImageView
@@ -63,5 +60,23 @@
         android:id="@+id/logText"
         android:layout_below="@+id/signUpButton"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/photo"
+        android:layout_toEndOf="@+id/logText"
+        android:layout_below="@+id/passwordEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@+id/logText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Take Photo"
+        android:id="@+id/photoButton"
+        android:layout_below="@+id/photo"
+        android:layout_centerHorizontal="true"
+        android:onClick="takePhoto" />
 
 </RelativeLayout>
