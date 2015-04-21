@@ -63,5 +63,6 @@ public class StatusActivity extends ActionBarActivity {
 
     public void postStatus(View v) {
         myFirebase.child("liang/status").setValue(editStatus.getText().toString());
+
     }
 }
