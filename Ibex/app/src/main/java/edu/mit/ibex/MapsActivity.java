@@ -1,5 +1,9 @@
 package edu.mit.ibex;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -7,11 +11,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private Location myLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +69,18 @@ public class MapsActivity extends FragmentActivity {
     private void setUpMap() {
         final LatLng myPos = new LatLng(42.3598,-71.0921);
         mMap.addMarker(new MarkerOptions().position(myPos).title("Marker").snippet("Hello there"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPos, 15));
+       mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPos, 15));
+        GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+                Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc));
+                if(mMap != null){
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+                }
+            }
+        };
 
+        mMap.setOnMyLocationChangeListener(myLocationChangeListener);
     }
 }
