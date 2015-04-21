@@ -3,7 +3,6 @@ package edu.mit.ibex;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,9 +17,6 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +59,7 @@ public class StatusActivity extends ActionBarActivity {
                 data = (Map<String, Object>)snapshot.getValue();
                 System.out.println(data);
                 System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
-
+                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
@@ -71,7 +67,7 @@ public class StatusActivity extends ActionBarActivity {
 //        showFriendInfo(data);
     }
 
-    private void showFriendInfo(Map<String, Object> info) {
+    private void showFriendInfo(String user, String status, String friends ) {
 
 
         final ListView theListView = (ListView) findViewById(R.id.listView);
@@ -81,33 +77,17 @@ public class StatusActivity extends ActionBarActivity {
         ArrayAdapter<String> resultsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
 
-        String friend;
-        String status;
+        friendsInfo.add(user + " : " + status + " : " + friends);
 
-        if (info != null) {
-            for (int i = 0; i < info.keySet().size(); i++) {
-                try {
-                    JSONObject foodInfo = (JSONObject) info.get(i);
-                    JSONObject tempJsonParse = foodInfo.getJSONObject("fields");
-                    friend = tempJsonParse.getString("friend");
-                    status = tempJsonParse.getString("status");
-                    friendsInfo.add(friend + " : " + status);
-
-                } catch (JSONException e) {
-                    Log.e(LOG_MESSAGE, e.getMessage());
-                    e.printStackTrace();
-                }
-            }  // end the for loop
-            theListView.setAdapter(resultsAdapter);
-            theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
-                    String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
-                    //do whatever here
-                    String newString = selectedFromList.replaceAll(" ", "&");
-//                    getWebResultString(newString);
-                }
-            });
-        }
+        theListView.setAdapter(resultsAdapter);
+        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
+                String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
+//                do whatever here
+                String newString = selectedFromList.replaceAll(" ", "&");
+//                getWebResultString(newString);
+            }
+        });
     }
 
     @Override
