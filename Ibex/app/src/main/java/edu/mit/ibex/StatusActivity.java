@@ -1,8 +1,8 @@
 package edu.mit.ibex;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -46,12 +45,22 @@ public class StatusActivity extends ActionBarActivity {
         editStatus = (EditText) findViewById(R.id.editStatus);
         available = (Switch) findViewById(R.id.available);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
+        //Need to actually pull data
+//        JSONArray info = new JSONArray();
+//        showFriendInfo(info);
+
+        myFirebase.child("liang").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+            }
+            @Override public void onCancelled(FirebaseError error) { }
+        });
     }
 
-    private void showFoodEntries4(JSONArray foodEntries) {
+    private void showFriendInfo(JSONArray info) {
 
-        TextView tv = (TextView) findViewById(R.id.textView);
-        tv.setVisibility(View.INVISIBLE);
+
         final ListView theListView = (ListView) findViewById(R.id.listView);
 
         List<String> friendsInfo = new ArrayList<String>();
@@ -59,17 +68,17 @@ public class StatusActivity extends ActionBarActivity {
         ArrayAdapter<String> resultsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
 
-        String item_name;
-        String brand_name;
+        String friend;
+        String status;
 
-        if (foodEntries != null) {
-            for (int i = 0; i < foodEntries.length(); i++) {
+        if (info != null) {
+            for (int i = 0; i < info.length(); i++) {
                 try {
-                    JSONObject foodInfo = (JSONObject) foodEntries.get(i);
+                    JSONObject foodInfo = (JSONObject) info.get(i);
                     JSONObject tempJsonParse = foodInfo.getJSONObject("fields");
-                    item_name = tempJsonParse.getString("item_name");
-                    brand_name = tempJsonParse.getString("brand_name");
-                    friendsInfo.add(item_name + " : " + brand_name);
+                    friend = tempJsonParse.getString("friend");
+                    status = tempJsonParse.getString("status");
+                    friendsInfo.add(friend + " : " + status);
 
                 } catch (JSONException e) {
                     Log.e(LOG_MESSAGE, e.getMessage());
