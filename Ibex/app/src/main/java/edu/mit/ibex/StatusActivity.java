@@ -21,10 +21,15 @@ public class StatusActivity extends ActionBarActivity {
     EditText editStatus;
     Firebase myFirebase;
     Switch available;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        username = intent.getExtras().getString("username");
+
         setContentView(R.layout.activity_status);
         Firebase.setAndroidContext(this);
         mapsButton = (Button) findViewById(R.id.mapsButton);
