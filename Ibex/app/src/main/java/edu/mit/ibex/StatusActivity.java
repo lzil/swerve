@@ -10,7 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 
 public class StatusActivity extends ActionBarActivity {
@@ -65,8 +68,11 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void postStatus(View v) {
+        System.out.println("wow");
         boolean on = available.isChecked();
         myFirebase.child("liang/status").setValue(editStatus.getText().toString());
         myFirebase.child("liang/available").setValue(on);
     }
+
+
 }
