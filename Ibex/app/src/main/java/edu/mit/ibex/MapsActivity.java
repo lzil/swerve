@@ -3,6 +3,7 @@ package edu.mit.ibex;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -62,5 +63,7 @@ public class MapsActivity extends FragmentActivity {
     private void setUpMap() {
         final LatLng myPos = new LatLng(42.3598,-71.0921);
         mMap.addMarker(new MarkerOptions().position(myPos).title("Marker").snippet("Hello there"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPos, 15));
+
     }
 }
