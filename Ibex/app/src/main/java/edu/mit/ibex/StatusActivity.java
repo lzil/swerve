@@ -15,7 +15,10 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -118,8 +121,11 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void postStatus(View v) {
+        System.out.println("wow");
         boolean on = available.isChecked();
         myFirebase.child("liang/status").setValue(editStatus.getText().toString());
         myFirebase.child("liang/available").setValue(on);
     }
+
+
 }
