@@ -5,21 +5,26 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.firebase.client.Firebase;
 
 
 public class StatusActivity extends ActionBarActivity {
+    Button mapsButton, friendsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
-        Intent i  = new Intent(this,MapsActivity.class);
-        startActivity(i);
         Firebase.setAndroidContext(this);
         Firebase myFirebaseRef = new Firebase("https://hangmonkey.firebaseio.com/");
         myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
+        mapsButton = (Button) findViewById(R.id.mapsButton);
+        friendsButton = (Button) findViewById(R.id.friendsButton);
+        //Intent i  = new Intent(this,MapsActivity.class);
+        //startActivity(i);
     }
 
 
@@ -43,5 +48,15 @@ public class StatusActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void mapsClick(View v) {
+        Intent i = new Intent(this, MapsActivity.class);
+        startActivity(i);
+    }
+
+    public void friendsClick(View v) {
+        Intent i = new Intent(this, FriendsActivity.class);
+        //startActivity(i);
     }
 }
