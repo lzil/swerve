@@ -7,21 +7,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.firebase.client.Firebase;
 
 
 public class StatusActivity extends ActionBarActivity {
     Button mapsButton, friendsButton;
+    EditText editStatus;
+    Firebase myFirebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
         Firebase.setAndroidContext(this);
-        Firebase myFirebaseRef = new Firebase("https://hangmonkey.firebaseio.com/");
         mapsButton = (Button) findViewById(R.id.mapsButton);
         friendsButton = (Button) findViewById(R.id.friendsButton);
+        editStatus = (EditText) findViewById(R.id.editStatus);
+        myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
     }
 
 
@@ -53,7 +57,11 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void friendsClick(View v) {
-        Intent i = new Intent(this, FriendsActivity.class);
+        Intent i = new Intent(this, StatusActivity.class);
         //startActivity(i);
+    }
+
+    public void postStatus(View v) {
+        myFirebase.child("liang/status").setValue(editStatus.getText().toString());
     }
 }
