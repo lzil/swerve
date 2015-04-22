@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,13 +59,13 @@ public class StatusActivity extends ActionBarActivity {
             public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
                 data = (Map<String, Object>)snapshot.getValue();
-                System.out.println(data);
+                Log.d("Data : ",data.toString());
                 System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
                 showFriendInfo(snapshot.getKey(), data.get("status").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
-        System.out.println(data);
+//        Log.d("Data : ",data.toString());
 //        showFriendInfo(data);
     }
 
@@ -134,6 +135,8 @@ public class StatusActivity extends ActionBarActivity {
 
     public void mapsClick(View v) {
         Intent i = new Intent(this, MapsActivity.class);
+        if(username!=null){
+        i.putExtra("username",username);}
         startActivity(i);
     }
 
