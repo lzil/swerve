@@ -14,7 +14,8 @@
         android:id="@+id/header"
         android:layout_marginTop="55dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textSize="36dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -22,9 +23,10 @@
         android:id="@+id/usernameEditText"
         android:hint="Username"
         android:layout_below="@+id/imageView"
-        android:layout_alignLeft="@+id/signUpButton"
-        android:layout_alignStart="@+id/signUpButton"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/passwordEditText"
+        android:layout_alignStart="@+id/passwordEditText"
+        android:layout_alignRight="@+id/passwordEditText"
+        android:layout_alignEnd="@+id/passwordEditText" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -41,12 +43,12 @@
         android:layout_height="wrap_content"
         android:text="Log In"
         android:id="@+id/signUpButton"
-        android:layout_below="@+id/passwordEditText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
         android:clickable="true"
         android:enabled="true"
-        android:onClick="logIn" />
+        android:onClick="logIn"
+        android:layout_below="@+id/passwordEditText"
+        android:layout_alignRight="@+id/logText"
+        android:layout_alignEnd="@+id/logText" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -61,12 +63,12 @@
         android:layout_height="wrap_content"
         android:text="Register"
         android:id="@+id/registerButton"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="31dp"
         android:onClick="reg"
         android:clickable="true"
-        android:enabled="true" />
+        android:enabled="true"
+        android:layout_alignTop="@+id/signUpButton"
+        android:layout_toRightOf="@+id/signUpButton"
+        android:layout_toEndOf="@+id/signUpButton" />
 
     <TextView
         android:layout_width="wrap_content"
