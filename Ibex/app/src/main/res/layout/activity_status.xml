@@ -14,21 +14,26 @@
         android:layout_marginTop="0dp"
         android:id="@+id/linearLayout">
 
-        <Button
-            android:layout_width="190dp"
+        <ImageButton
+            android:layout_width="0dp"
             android:layout_height="70dp"
             android:id="@+id/friendsButton"
+            android:src="@drawable/friends"
             android:onClick="friendsClick"
-            android:background="@drawable/friends"
-            android:text="Friends" />
+            android:cropToPadding="true"
+            android:scaleType="centerInside"
+            android:layout_weight="1" />
 
-        <Button
-            android:layout_width="190dp"
+        <ImageButton
+            android:layout_width="0dp"
             android:layout_height="70dp"
-            android:text="Maps"
             android:id="@+id/mapsButton"
+            android:src="@drawable/maps"
             android:onClick="mapsClick"
-            android:background="@drawable/maps" />
+            android:cropToPadding="true"
+            android:scaleType="centerInside"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <EditText
@@ -36,6 +41,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/editStatus"
         android:hint="What are you doing now?"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
         android:layout_below="@+id/available"
         android:layout_toLeftOf="@+id/postButton"
         android:layout_toStartOf="@+id/postButton" />
@@ -43,9 +50,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Post Status"
+        android:text="Post"
         android:id="@+id/postButton"
         android:onClick="postStatus"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
         android:layout_below="@+id/available"
         android:layout_alignParentRight="true"
@@ -66,6 +75,8 @@
         android:id="@+id/textView"
         android:focusableInTouchMode="false"
         android:textSize="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
         android:layout_below="@+id/linearLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -75,6 +86,8 @@
         android:layout_height="fill_parent"
         android:layout_below="@+id/postButton"
         android:layout_above="@+id/friendInput"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/frameLayout">
 
         <ListView
@@ -90,9 +103,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/available"
-        android:layout_alignTop="@+id/textView"
         android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_alignEnd="@+id/textView"
+        android:layout_alignTop="@+id/textView" />
 
     <EditText
         android:layout_width="150dp"
