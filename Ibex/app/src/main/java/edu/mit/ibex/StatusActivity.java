@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -29,7 +30,7 @@ import java.util.Map;
 public class StatusActivity extends ActionBarActivity {
     private String LOG_MESSAGE = "HangMonkey";
 
-    Button mapsButton, friendsButton;
+    ImageButton mapsButton, friendsButton;
     EditText editStatus, friendInput;
     Firebase myFirebase;
     Switch available;
@@ -48,8 +49,8 @@ public class StatusActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_status);
         Firebase.setAndroidContext(this);
-        mapsButton = (Button) findViewById(R.id.mapsButton);
-        friendsButton = (Button) findViewById(R.id.friendsButton);
+        mapsButton = (ImageButton) findViewById(R.id.mapsButton);
+        friendsButton = (ImageButton) findViewById(R.id.friendsButton);
         editStatus = (EditText) findViewById(R.id.editStatus);
         friendInput = (EditText) findViewById(R.id.friendInput);
         available = (Switch) findViewById(R.id.available);
