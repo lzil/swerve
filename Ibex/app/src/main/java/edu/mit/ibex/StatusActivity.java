@@ -96,7 +96,7 @@ public class StatusActivity extends ActionBarActivity {
                     data = (Map<String, Object>)snapshot.getValue();
                     Log.d("Friend Data : ", data.toString());
                     tempStatus = data.get("status").toString();
-                    System.out.println("inside"+tempStatus);
+                    System.out.println("inside "+tempStatus);
                 }
                 @Override public void onCancelled(FirebaseError error) { }
 

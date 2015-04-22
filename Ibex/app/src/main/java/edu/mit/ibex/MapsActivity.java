@@ -1,12 +1,9 @@
 package edu.mit.ibex;
 
-import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -15,7 +12,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Map;
@@ -27,11 +23,20 @@ public class MapsActivity extends FragmentActivity {
     Firebase myFirebase;
     Map<String, Object> data;
     Map<String, Object> newData;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) {
+            return;
+        }
+
+        username = extras.getString("username");
+
         setUpMapIfNeeded();
     }
     @Override
@@ -76,7 +81,7 @@ public class MapsActivity extends FragmentActivity {
         LatLng MIT = new LatLng(42.3598,-71.0921);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MIT, 15));
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
-        myFirebase.child("liang").addValueEventListener(new ValueEventListener() {
+        myFirebase.child(username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 data = (Map<String, Object>)snapshot.getValue();
@@ -84,9 +89,10 @@ public class MapsActivity extends FragmentActivity {
                 Long lat = (Long) data.get("lat");
                 Long Lon = (Long) data.get("long");
                 String status = (String) data.get("status");
-                String name = "liang";
                 myLocation = new LatLng(lat, Lon);
-                mMap.addMarker(new MarkerOptions().position(myLocation).title(name).snippet(status));
+                mMap.addMarker(new MarkerOptions().position(myLocation).title(username).snippet(status));
+                System.out.println("here " + username + " " + status);
+                System.out.println(lat+" "+Lon);
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
