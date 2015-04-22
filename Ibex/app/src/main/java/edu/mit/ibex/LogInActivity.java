@@ -63,8 +63,8 @@ public class LogInActivity extends ActionBarActivity {
         intent.putExtra("username", usr);
         startActivity(intent);
         //if fail: Failure message. Same screen. Retry.
-        logText.setTextColor(Color.RED);
-        logText.setText("Wrong username and password. Please try again.");
+        //logText.setTextColor(Color.RED);
+        //logText.setText("Wrong username and password. Please try again.");
     }
 
     public void reg(View view){

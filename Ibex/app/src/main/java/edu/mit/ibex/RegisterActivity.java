@@ -63,9 +63,9 @@ public class RegisterActivity extends ActionBarActivity {
 
     public void signUp(View view){
         TextView logText = (TextView) findViewById(R.id.logText);
-        logText.setTypeface(null, Typeface.ITALIC);
-        logText.setTextColor(Color.GRAY);
-        logText.setText("Signing up...");
+        //logText.setTypeface(null, Typeface.ITALIC);
+        //logText.setTextColor(Color.GRAY);
+        //logText.setText("Signing up...");
 
         EditText username =  (EditText) findViewById(R.id.usernameEditText);
         EditText password =  (EditText) findViewById(R.id.passwordEditText);
@@ -83,8 +83,8 @@ public class RegisterActivity extends ActionBarActivity {
         intent.putExtra("username", usr);
         startActivity(intent);
         //if fail: Failure message. Same screen. Retry.
-        logText.setTextColor(Color.RED);
-        logText.setText("This username is taken. Please try again.");
+        //logText.setTextColor(Color.RED);
+        //logText.setText("This username is taken. Please try again.");
     }
 
     public void takePhoto(View view) {

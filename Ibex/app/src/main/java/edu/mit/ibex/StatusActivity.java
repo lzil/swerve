@@ -30,7 +30,7 @@ public class StatusActivity extends ActionBarActivity {
     private String LOG_MESSAGE = "HangMonkey";
 
     Button mapsButton, friendsButton;
-    EditText editStatus;
+    EditText editStatus, friendInput;
     Firebase myFirebase;
     Switch available;
     String username;
@@ -39,7 +39,6 @@ public class StatusActivity extends ActionBarActivity {
     String friendStatus;
     String location;
     String tempStatus;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +51,7 @@ public class StatusActivity extends ActionBarActivity {
         mapsButton = (Button) findViewById(R.id.mapsButton);
         friendsButton = (Button) findViewById(R.id.friendsButton);
         editStatus = (EditText) findViewById(R.id.editStatus);
+        friendInput = (EditText) findViewById(R.id.friendInput);
         available = (Switch) findViewById(R.id.available);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
         //Need to actually pull data
@@ -186,4 +186,7 @@ public class StatusActivity extends ActionBarActivity {
     }
 
 
+    public void addFriend(View v) {
+        myFirebase.child(username + "/friends");
+    }
 }

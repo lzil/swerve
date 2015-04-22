@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -7,7 +7,12 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
+        android:id="@+id/linearLayout">
 
         <Button
             android:layout_width="190dp"
@@ -26,60 +31,87 @@
             android:background="@drawable/maps" />
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="Available"
-            android:id="@+id/textView"
-            android:focusableInTouchMode="false"
-            android:textSize="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp" />
-
-        <Switch
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/available"
-            android:layout_marginTop="20dp" />
-    </LinearLayout>
-
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editStatus"
         android:hint="What are you doing now?"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+        android:layout_below="@+id/available"
+        android:layout_toLeftOf="@+id/postButton"
+        android:layout_toStartOf="@+id/postButton" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Post Status"
         android:id="@+id/postButton"
+        android:onClick="postStatus"
         android:layout_gravity="center_horizontal"
-        android:onClick="postStatus"/>
+        android:layout_below="@+id/available"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:id="@+id/MyStatus"
+        android:layout_below="@+id/postButton"
+        android:layout_alignRight="@+id/postButton"
+        android:layout_alignEnd="@+id/postButton" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/MyStatus" />
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Available"
+        android:id="@+id/textView"
+        android:focusableInTouchMode="false"
+        android:textSize="20dp"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/postButton"
+        android:layout_above="@+id/friendInput"
+        android:id="@+id/frameLayout">
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/listView" />
-    </LinearLayout>
+            android:id="@+id/listView"
+            android:layout_below="@+id/postButton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </FrameLayout>
 
-</LinearLayout>
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/available"
+        android:layout_alignTop="@+id/textView"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView" />
+
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/friendInput"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/friendButton"
+        android:layout_toStartOf="@+id/friendButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Friend"
+        android:id="@+id/friendButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/postButton"
+        android:layout_alignEnd="@+id/postButton"
+        android:layout_marginRight="53dp"
+        android:layout_marginEnd="53dp"
+        android:onClick="addFriend"/>
+
+</RelativeLayout>
