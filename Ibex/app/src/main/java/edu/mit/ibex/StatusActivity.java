@@ -65,7 +65,7 @@ public class StatusActivity extends ActionBarActivity {
 //                System.out.println(snapshot.getValue());
                 data = (Map<String, Object>)snapshot.getValue();
                 Log.d("Data : ", data.toString());
-                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
+             //   showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
@@ -95,8 +95,10 @@ public class StatusActivity extends ActionBarActivity {
 //                System.out.println(snapshot.getValue());
                     data = (Map<String, Object>)snapshot.getValue();
                     Log.d("Friend Data : ", data.toString());
-                    tempStatus = data.get("status").toString();
-                    System.out.println("inside "+tempStatus);
+                    if(!(data.get("status").equals(null))){
+                        tempStatus = data.get("status").toString();
+                        System.out.println("inside"+tempStatus);
+                    }
                 }
                 @Override public void onCancelled(FirebaseError error) { }
 
