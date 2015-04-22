@@ -76,6 +76,7 @@ public class RegisterActivity extends ActionBarActivity {
         //Passes usr and psw to some server
         //if pass:
         myFirebase.child(usr + "/status").setValue("");
+        myFirebase.child(usr + "/password").setValue(psw);
         Intent intent = new Intent(this, StatusActivity.class);
         intent.putExtra("username", usr);
         startActivity(intent);
