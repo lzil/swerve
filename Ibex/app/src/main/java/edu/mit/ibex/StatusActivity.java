@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -64,7 +65,7 @@ public class StatusActivity extends ActionBarActivity {
                 data = (Map<String, Object>)snapshot.getValue();
                 Log.d("Data : ", data.toString());
                 System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
-                showFriendInfo(snapshot.getKey(), data.get("status").toString());
+                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
@@ -72,7 +73,7 @@ public class StatusActivity extends ActionBarActivity {
 //        showFriendInfo(data);
     }
 
-    private void showFriendInfo(String user, String status) {
+    private void showFriendInfo(String user, String status, String friends) {
 
 
         final ListView theListView = (ListView) findViewById(R.id.listView);
@@ -82,7 +83,27 @@ public class StatusActivity extends ActionBarActivity {
         ArrayAdapter<String> resultsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
 
-        friendsInfo.add(user + ": " + status);
+        final TextView myStatus = (TextView) findViewById(R.id.MyStatus);
+        myStatus.setText(user + ": " + status);
+
+        String[] myFriends = friends.split("\\s+");
+
+        for (String friend : myFriends){
+            myFirebase.child(friend).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+//                System.out.println(snapshot.getValue());
+                    data = (Map<String, Object>)snapshot.getValue();
+                    Log.d("Data : ", data.toString());
+                    System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
+                    showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
+                }
+                @Override public void onCancelled(FirebaseError error) { }
+
+            });
+            friendsInfo.add(friend + ": ");
+        }
+
 
         theListView.setAdapter(resultsAdapter);
 
