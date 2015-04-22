@@ -176,7 +176,7 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void friendsClick(View v) {
-        Intent i = new Intent(this, StatusActivity.class);
+        //Intent i = new Intent(this, StatusActivity.class);
         //startActivity(i);
     }
 

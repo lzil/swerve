@@ -22,7 +22,9 @@
             android:onClick="friendsClick"
             android:cropToPadding="true"
             android:scaleType="centerInside"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:clickable="false"
+            android:background="#ff909090" />
 
         <ImageButton
             android:layout_width="0dp"
@@ -32,7 +34,8 @@
             android:onClick="mapsClick"
             android:cropToPadding="true"
             android:scaleType="centerInside"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="#ffc3c3c3" />
 
     </LinearLayout>
 
@@ -76,7 +79,7 @@
         android:focusableInTouchMode="false"
         android:textSize="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_below="@+id/linearLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

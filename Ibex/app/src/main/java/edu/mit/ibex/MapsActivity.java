@@ -1,8 +1,10 @@
 package edu.mit.ibex;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -96,7 +98,21 @@ public class MapsActivity extends FragmentActivity {
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
-    }}
+    }
+
+    public void mapsClick(View v) {
+        /*Intent i = new Intent(this, MapsActivity.class);
+        if(username!=null){
+            i.putExtra("username",username);}
+        startActivity(i);*/
+    }
+
+    public void friendsClick(View v) {
+        Intent i = new Intent(this, StatusActivity.class);
+        startActivity(i);
+    }
+
+}
 
 
       /*  GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
