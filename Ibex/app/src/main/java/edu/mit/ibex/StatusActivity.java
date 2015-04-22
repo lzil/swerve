@@ -38,6 +38,7 @@ public class StatusActivity extends ActionBarActivity {
 
     String friendStatus;
     String location;
+    String tempStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,6 @@ public class StatusActivity extends ActionBarActivity {
 //                System.out.println(snapshot.getValue());
                 data = (Map<String, Object>)snapshot.getValue();
                 Log.d("Data : ", data.toString());
-                System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
                 showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
@@ -89,19 +89,21 @@ public class StatusActivity extends ActionBarActivity {
         String[] myFriends = friends.split("\\s+");
 
         for (String friend : myFriends){
-            myFirebase.child(friend).addValueEventListener(new ValueEventListener() {
+            myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
                     data = (Map<String, Object>)snapshot.getValue();
-                    Log.d("Data : ", data.toString());
-                    System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
-                    showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
+                    Log.d("Friend Data : ", data.toString());
+                    tempStatus = data.get("status").toString();
+                    System.out.println("inside"+tempStatus);
                 }
                 @Override public void onCancelled(FirebaseError error) { }
 
             });
-            friendsInfo.add(friend + ": ");
+            System.out.println(tempStatus);
+//            friendsInfo.add(friend + ": " + tempStatus);
+            friendsInfo.add(friend);
         }
 
 
