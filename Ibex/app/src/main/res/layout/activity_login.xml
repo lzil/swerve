@@ -47,8 +47,7 @@
         android:enabled="true"
         android:onClick="logIn"
         android:layout_below="@+id/passwordEditText"
-        android:layout_alignRight="@+id/logText"
-        android:layout_alignEnd="@+id/logText" />
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -58,18 +57,6 @@
         android:layout_below="@+id/header"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:id="@+id/registerButton"
-        android:onClick="reg"
-        android:clickable="true"
-        android:enabled="true"
-        android:layout_alignTop="@+id/signUpButton"
-        android:layout_toRightOf="@+id/signUpButton"
-        android:layout_toEndOf="@+id/signUpButton" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -77,5 +64,14 @@
         android:id="@+id/logText"
         android:layout_below="@+id/signUpButton"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/registerLink"
+        android:id="@+id/registerText"
+        android:layout_below="@+id/signUpButton"
+        android:layout_centerHorizontal="true"
+        android:onClick="reg"/>
 
 </RelativeLayout>

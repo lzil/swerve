@@ -6,5 +6,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="register">Register</string>
     <string name="login">Log In</string>
+    <string name="registerLink">Don\'t have an account? Sign up here.</string>
 
 </resources>
