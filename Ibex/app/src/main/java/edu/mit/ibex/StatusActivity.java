@@ -1,5 +1,6 @@
 package edu.mit.ibex;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -59,7 +60,7 @@ public class StatusActivity extends ActionBarActivity {
                 data = (Map<String, Object>)snapshot.getValue();
                 System.out.println(data);
                 System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
-                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
+                showFriendInfo(snapshot.getKey(), data.get("status").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
@@ -67,7 +68,7 @@ public class StatusActivity extends ActionBarActivity {
 //        showFriendInfo(data);
     }
 
-    private void showFriendInfo(String user, String status, String friends ) {
+    private void showFriendInfo(String user, String status) {
 
 
         final ListView theListView = (ListView) findViewById(R.id.listView);
@@ -77,15 +78,34 @@ public class StatusActivity extends ActionBarActivity {
         ArrayAdapter<String> resultsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
 
-        friendsInfo.add(user + " : " + status + " : " + friends);
+        friendsInfo.add(user + ": " + status);
 
         theListView.setAdapter(resultsAdapter);
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
                 String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
 //                do whatever here
-                String newString = selectedFromList.replaceAll(" ", "&");
-//                getWebResultString(newString);
+                String selectedFriend = selectedFromList.split(":")[0];
+                myFirebase.child(selectedFriend).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+//                System.out.println(snapshot.getValue());
+                        data = (Map<String, Object>)snapshot.getValue();
+                        System.out.println(data);
+
+                        String status = data.get("status").toString();
+
+
+
+                        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+                        dlgAlert.setMessage(status + "\n"+"calories:"+calories);
+                        dlgAlert.setTitle(username);
+                        dlgAlert.setPositiveButton("OK", null);
+                        dlgAlert.setCancelable(true);
+                        dlgAlert.create().show();
+                    }
+                    @Override public void onCancelled(FirebaseError error) { }
+                });
             }
         });
     }
