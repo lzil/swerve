@@ -11,17 +11,19 @@
 
         <Button
             android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:text="Friends Image"
+            android:layout_height="70dp"
             android:id="@+id/friendsButton"
-            android:onClick="friendsClick"/>
+            android:onClick="friendsClick"
+            android:background="@drawable/friends"
+            android:text="Friends" />
 
         <Button
             android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:text="Maps Image"
+            android:layout_height="70dp"
+            android:text="Maps"
             android:id="@+id/mapsButton"
-            android:onClick="mapsClick"/>
+            android:onClick="mapsClick"
+            android:background="@drawable/maps" />
     </LinearLayout>
 
     <LinearLayout
@@ -35,35 +37,42 @@
             android:text="Available"
             android:id="@+id/textView"
             android:focusableInTouchMode="false"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp" />
 
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/available" />
+            android:id="@+id/available"
+            android:layout_marginTop="20dp" />
     </LinearLayout>
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editStatus"
-        android:hint="What are you doing now?" />
+        android:hint="What are you doing now?"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Post Status"
         android:id="@+id/postButton"
-        android:layout_gravity="right"
+        android:layout_gravity="center_horizontal"
         android:onClick="postStatus"/>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/MyStatus" />
 

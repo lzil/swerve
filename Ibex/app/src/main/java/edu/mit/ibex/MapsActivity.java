@@ -26,6 +26,7 @@ public class MapsActivity extends FragmentActivity {
     private LatLng myLocation;
     Firebase myFirebase;
     Map<String, Object> data;
+    Map<String, Object> newData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +73,13 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        String status;
-
+        LatLng MIT = new LatLng(42.3598,-71.0921);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MIT, 15));
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
-        ValueEventListener valueEventListener = myFirebase.child("liang").addValueEventListener(new ValueEventListener() {
+        myFirebase.child("liang").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(snapshot.getValue());
-                data = (Map<String, Object>) snapshot.getValue();
+                data = (Map<String, Object>)snapshot.getValue();
                 Log.d("Data : ", data.toString());
                 Long lat = (Long) data.get("lat");
                 Long Lon = (Long) data.get("long");
@@ -87,13 +87,11 @@ public class MapsActivity extends FragmentActivity {
                 String name = "liang";
                 myLocation = new LatLng(lat, Lon);
                 mMap.addMarker(new MarkerOptions().position(myLocation).title(name).snippet(status));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
             }
-
-            @Override
-            public void onCancelled(FirebaseError error) {
-            }
+            @Override public void onCancelled(FirebaseError error) { }
         });
+    }}
+
 
       /*  GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
             @Override
@@ -106,5 +104,3 @@ public class MapsActivity extends FragmentActivity {
             }
         };
         mMap.setOnMyLocationChangeListener(myLocationChangeListener);*/
-    }
-}

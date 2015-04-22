@@ -59,7 +59,7 @@ public class StatusActivity extends ActionBarActivity {
 //        showFriendInfo(info);
 
 //        String data = "";
-        myFirebase.child("liang").addValueEventListener(new ValueEventListener() {
+      /*  myFirebase.child("liang").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
@@ -68,7 +68,7 @@ public class StatusActivity extends ActionBarActivity {
                 showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
-        });
+        });*/
 //        Log.d("Data : ",data.toString());
 //        showFriendInfo(data);
     }
@@ -181,8 +181,8 @@ public class StatusActivity extends ActionBarActivity {
     public void postStatus(View v) {
         System.out.println("wow");
         boolean on = available.isChecked();
-        myFirebase.child("liang/status").setValue(editStatus.getText().toString());
-        myFirebase.child("liang/available").setValue(on);
+        myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
+        myFirebase.child(username + "/available").setValue(on);
     }
 
 

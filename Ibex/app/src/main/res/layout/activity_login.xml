@@ -14,7 +14,8 @@
         android:id="@+id/header"
         android:layout_marginTop="55dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textSize="36dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -22,9 +23,10 @@
         android:id="@+id/usernameEditText"
         android:hint="Username"
         android:layout_below="@+id/imageView"
-        android:layout_alignLeft="@+id/signUpButton"
-        android:layout_alignStart="@+id/signUpButton"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/passwordEditText"
+        android:layout_alignStart="@+id/passwordEditText"
+        android:layout_alignRight="@+id/passwordEditText"
+        android:layout_alignEnd="@+id/passwordEditText" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -41,32 +43,19 @@
         android:layout_height="wrap_content"
         android:text="Log In"
         android:id="@+id/signUpButton"
-        android:layout_below="@+id/passwordEditText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
         android:clickable="true"
         android:enabled="true"
-        android:onClick="logIn" />
+        android:onClick="logIn"
+        android:layout_below="@+id/passwordEditText"
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:background="@mipmap/ic_launcher"
+        android:background="@drawable/hangin"
         android:layout_below="@+id/header"
         android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:id="@+id/registerButton"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="31dp"
-        android:onClick="reg"
-        android:clickable="true"
-        android:enabled="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -75,5 +64,14 @@
         android:id="@+id/logText"
         android:layout_below="@+id/signUpButton"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/registerLink"
+        android:id="@+id/registerText"
+        android:layout_below="@+id/signUpButton"
+        android:layout_centerHorizontal="true"
+        android:onClick="reg"/>
 
 </RelativeLayout>

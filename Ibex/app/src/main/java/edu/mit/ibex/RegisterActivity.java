@@ -77,6 +77,8 @@ public class RegisterActivity extends ActionBarActivity {
         //if pass:
         myFirebase.child(usr + "/status").setValue("");
         myFirebase.child(usr + "/password").setValue(psw);
+        myFirebase.child(usr + "/friends").setValue("");
+        myFirebase.child(usr + "/available").setValue("false");
         Intent intent = new Intent(this, StatusActivity.class);
         intent.putExtra("username", usr);
         startActivity(intent);
