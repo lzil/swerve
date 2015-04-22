@@ -59,7 +59,7 @@ public class StatusActivity extends ActionBarActivity {
 //        showFriendInfo(info);
 
 //        String data = "";
-      /*  myFirebase.child("liang").addValueEventListener(new ValueEventListener() {
+        myFirebase.child(username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
@@ -68,7 +68,7 @@ public class StatusActivity extends ActionBarActivity {
                 showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
-        });*/
+        });
 //        Log.d("Data : ",data.toString());
 //        showFriendInfo(data);
     }
@@ -89,21 +89,22 @@ public class StatusActivity extends ActionBarActivity {
         String[] myFriends = friends.split("\\s+");
 
         for (String friend : myFriends){
-            myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(snapshot.getValue());
-                    data = (Map<String, Object>)snapshot.getValue();
-                    Log.d("Friend Data : ", data.toString());
-                    tempStatus = data.get("status").toString();
-                    System.out.println("inside"+tempStatus);
-                }
-                @Override public void onCancelled(FirebaseError error) { }
+            if (friend :)
+                myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+    //                System.out.println(snapshot.getValue());
+                        data = (Map<String, Object>)snapshot.getValue();
+                        Log.d("Friend Data : ", data.toString());
+                        tempStatus = data.get("status").toString();
+                        System.out.println("inside"+tempStatus);
+                    }
+                    @Override public void onCancelled(FirebaseError error) { }
 
-            });
-            System.out.println(tempStatus);
-//            friendsInfo.add(friend + ": " + tempStatus);
-            friendsInfo.add(friend);
+                });
+                System.out.println(tempStatus);
+    //            friendsInfo.add(friend + ": " + tempStatus);
+                friendsInfo.add(friend);
         }
 
 
