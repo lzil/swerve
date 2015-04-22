@@ -179,8 +179,8 @@ public class StatusActivity extends ActionBarActivity {
     public void postStatus(View v) {
         System.out.println("wow");
         boolean on = available.isChecked();
-        myFirebase.child("liang/status").setValue(editStatus.getText().toString());
-        myFirebase.child("liang/available").setValue(on);
+        myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
+        myFirebase.child(username + "/available").setValue(on);
     }
 
 
