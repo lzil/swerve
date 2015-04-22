@@ -35,6 +35,9 @@ public class StatusActivity extends ActionBarActivity {
     String username;
     Map<String, Object> data;
 
+    String friendStatus;
+    String location;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +62,7 @@ public class StatusActivity extends ActionBarActivity {
             public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
                 data = (Map<String, Object>)snapshot.getValue();
-                Log.d("Data : ",data.toString());
+                Log.d("Data : ", data.toString());
                 System.out.println(snapshot.getKey() + " : " + data.get("status") + " : " + data.get("friends"));
                 showFriendInfo(snapshot.getKey(), data.get("status").toString());
             }
@@ -82,33 +85,40 @@ public class StatusActivity extends ActionBarActivity {
         friendsInfo.add(user + ": " + status);
 
         theListView.setAdapter(resultsAdapter);
+
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
                 String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
 //                do whatever here
-                String selectedFriend = selectedFromList.split(":")[0];
+                final String selectedFriend = selectedFromList.split(":")[0];
                 myFirebase.child(selectedFriend).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
-                        data = (Map<String, Object>)snapshot.getValue();
+                        data = (Map<String, Object>) snapshot.getValue();
                         System.out.println(data);
 
-                        String status = data.get("status").toString();
+                        friendStatus = data.get("status").toString();
+                        location = data.get("lat").toString() + "," + data.get("long").toString();
 
-
-
-                        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-                        dlgAlert.setMessage(status + "\n"+"calories:"+calories);
-                        dlgAlert.setTitle(username);
-                        dlgAlert.setPositiveButton("OK", null);
-                        dlgAlert.setCancelable(true);
-                        dlgAlert.create().show();
+                        popup(selectedFriend, friendStatus, location);
                     }
-                    @Override public void onCancelled(FirebaseError error) { }
+
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+                    }
                 });
             }
         });
+    }
+
+    private void popup(String user, String status, String location) {
+        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+        dlgAlert.setMessage(status + "\n"+location);
+        dlgAlert.setTitle(user);
+        dlgAlert.setPositiveButton("OK", null);
+        dlgAlert.setCancelable(true);
+        dlgAlert.create().show();
     }
 
     @Override
