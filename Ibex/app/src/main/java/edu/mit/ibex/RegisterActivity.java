@@ -18,19 +18,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
+
 import java.io.File;
 
 
 public class RegisterActivity extends ActionBarActivity {
     ImageView photo;
     Bitmap bitMap;
+    Firebase myFirebase;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Firebase.setAndroidContext(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
         photo = (ImageView) findViewById(R.id.photo);
     }
 
@@ -71,6 +75,7 @@ public class RegisterActivity extends ActionBarActivity {
 
         //Passes usr and psw to some server
         //if pass:
+        myFirebase.child(usr + "/status").setValue("");
         Intent intent = new Intent(this, StatusActivity.class);
         intent.putExtra("username", usr);
         startActivity(intent);
