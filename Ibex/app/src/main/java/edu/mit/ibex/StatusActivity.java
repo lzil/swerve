@@ -89,22 +89,21 @@ public class StatusActivity extends ActionBarActivity {
         String[] myFriends = friends.split("\\s+");
 
         for (String friend : myFriends){
-            if (friend :)
-                myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-    //                System.out.println(snapshot.getValue());
-                        data = (Map<String, Object>)snapshot.getValue();
-                        Log.d("Friend Data : ", data.toString());
-                        tempStatus = data.get("status").toString();
-                        System.out.println("inside"+tempStatus);
-                    }
-                    @Override public void onCancelled(FirebaseError error) { }
+            myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+//                System.out.println(snapshot.getValue());
+                    data = (Map<String, Object>)snapshot.getValue();
+                    Log.d("Friend Data : ", data.toString());
+                    tempStatus = data.get("status").toString();
+                    System.out.println("inside"+tempStatus);
+                }
+                @Override public void onCancelled(FirebaseError error) { }
 
-                });
-                System.out.println(tempStatus);
-    //            friendsInfo.add(friend + ": " + tempStatus);
-                friendsInfo.add(friend);
+            });
+            System.out.println(tempStatus);
+//            friendsInfo.add(friend + ": " + tempStatus);
+            friendsInfo.add(friend);
         }
 
 
