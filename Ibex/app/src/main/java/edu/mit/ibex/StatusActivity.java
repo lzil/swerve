@@ -1,10 +1,13 @@
 package edu.mit.ibex;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -127,7 +130,7 @@ public class StatusActivity extends ActionBarActivity {
                         friendStatus = data.get("status").toString();
                         location = data.get("lat").toString() + "," + data.get("long").toString();
 
-                        popup(selectedFriend, friendStatus, location);
+                        statusPop(selectedFriend, friendStatus, location);
                     }
 
                     @Override
@@ -138,13 +141,41 @@ public class StatusActivity extends ActionBarActivity {
         });
     }
 
-    private void popup(String user, String status, String location) {
+    private void statusPop(String user, String status, String location) {
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
         dlgAlert.setMessage(status + "\n"+location);
         dlgAlert.setTitle(user);
         dlgAlert.setPositiveButton("OK", null);
         dlgAlert.setCancelable(true);
         dlgAlert.create().show();
+    }
+
+    public void addFriend(View view) {
+        friendPop(username);
+    }
+    private void friendPop(String user) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        final EditText edittext= new EditText(StatusActivity.this);
+        alert.setMessage("Add a Friend");
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Add Friend", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                final Firebase frands = new Firebase("https://hangmonkey.firebaseio.com/" + username + "/friends");
+                final String friendName = edittext.getText().toString();
+                frands.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        frands.setValue(snapshot.getValue() + " " + friendName);
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+            }
+        });
+        alert.show();
     }
 
     @Override
@@ -186,10 +217,5 @@ public class StatusActivity extends ActionBarActivity {
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
         myFirebase.child(username + "/available").setValue(on);
-    }
-
-
-    public void addFriend(View v) {
-        myFirebase.child(username + "/friends");
     }
 }
