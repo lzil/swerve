@@ -1,5 +1,37 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:id="@+id/map"
-    tools:context="edu.mit.ibex.MapsActivity"
-    android:name="com.google.android.gms.maps.SupportMapFragment" />
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/map"
+        tools:context="edu.mit.ibex.MapsActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+    <ImageButton
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:id="@+id/friendsButton"
+        android:src="@drawable/friends"
+        android:onClick="friendsClick"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        android:layout_weight="1"
+        android:background="#ffc3c3c3" />
+
+    <ImageButton
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:id="@+id/mapsButton"
+        android:src="@drawable/maps"
+        android:onClick="mapsClick"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        android:layout_weight="1"
+        android:clickable="false"
+        android:background="#ff909090" />
+</FrameLayout>

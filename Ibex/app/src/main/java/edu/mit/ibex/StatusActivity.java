@@ -1,6 +1,7 @@
 package edu.mit.ibex;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -10,8 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -29,7 +30,7 @@ import java.util.Map;
 public class StatusActivity extends ActionBarActivity {
     private String LOG_MESSAGE = "HangMonkey";
 
-    Button mapsButton, friendsButton;
+    ImageButton mapsButton, friendsButton;
     EditText editStatus, friendInput;
     Firebase myFirebase;
     Switch available;
@@ -39,6 +40,9 @@ public class StatusActivity extends ActionBarActivity {
     String friendStatus;
     String location;
     String tempStatus;
+    List<String> friendsInfo;
+    ListView theListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,24 +52,30 @@ public class StatusActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_status);
         Firebase.setAndroidContext(this);
-        mapsButton = (Button) findViewById(R.id.mapsButton);
-        friendsButton = (Button) findViewById(R.id.friendsButton);
+        mapsButton = (ImageButton) findViewById(R.id.mapsButton);
+        friendsButton = (ImageButton) findViewById(R.id.friendsButton);
         editStatus = (EditText) findViewById(R.id.editStatus);
         friendInput = (EditText) findViewById(R.id.friendInput);
         available = (Switch) findViewById(R.id.available);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
-        //Need to actually pull data
-//        JSONArray info = new JSONArray();
-//        showFriendInfo(info);
 
-//        String data = "";
+        friendsInfo = new ArrayList<String>();
+        theListView = (ListView) findViewById(R.id.listView);
+        ArrayAdapter<String> resultsAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
+        theListView.setAdapter(resultsAdapter);
+
         myFirebase.child(username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
                 data = (Map<String, Object>)snapshot.getValue();
-//                Log.d("Data : ", data.toString());
-                showFriendInfo(snapshot.getKey(),    data.get("status").toString(), data.get("friends").toString());
+
+                Log.d("Data : ", data.toString());
+                System.out.println(snapshot.getKey());
+                System.out.println(data.get("status").toString());
+                System.out.println(data.get("friends").toString());
+                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
@@ -74,14 +84,6 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     private void showFriendInfo(String user, String status, String friends) {
-
-
-        final ListView theListView = (ListView) findViewById(R.id.listView);
-
-        List<String> friendsInfo = new ArrayList<String>();
-
-        ArrayAdapter<String> resultsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
 
         final TextView myStatus = (TextView) findViewById(R.id.MyStatus);
         myStatus.setText(user + ": " + status);
@@ -95,19 +97,23 @@ public class StatusActivity extends ActionBarActivity {
 //                System.out.println(snapshot.getValue());
                     data = (Map<String, Object>)snapshot.getValue();
                     Log.d("Friend Data : ", data.toString());
-                    tempStatus = data.get("status").toString();
-                    System.out.println("inside "+tempStatus);
+                    if(!(data.get("status").equals(null))){
+                        tempStatus = data.get("status").toString();
+                        System.out.println("inside"+tempStatus);
+                        friendsInfo.add(snapshot.getKey() + ": " + data.get("status"));
+
+                        System.out.println("FriendsInfo "+friendsInfo);
+                        addFriendList(friendsInfo);
+                    }
                 }
                 @Override public void onCancelled(FirebaseError error) { }
 
             });
-            System.out.println(tempStatus);
+//            System.out.println(tempStatus);
 //            friendsInfo.add(friend + ": " + tempStatus);
-            friendsInfo.add(friend);
         }
-
-
-        theListView.setAdapter(resultsAdapter);
+//        System.out.println("FriendsInfo "+friendsInfo);
+//        addFriendList(friendsInfo);
 
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
@@ -124,7 +130,7 @@ public class StatusActivity extends ActionBarActivity {
                         friendStatus = data.get("status").toString();
                         location = data.get("lat").toString() + "," + data.get("long").toString();
 
-                        popup(selectedFriend, friendStatus, location);
+                        statusPop(selectedFriend, friendStatus, location);
                     }
 
                     @Override
@@ -135,13 +141,47 @@ public class StatusActivity extends ActionBarActivity {
         });
     }
 
-    private void popup(String user, String status, String location) {
+    private void addFriendList(List<String> friendsInfo) {
+        ArrayAdapter<String> resultsAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
+        theListView.setAdapter(resultsAdapter);
+    }
+    private void statusPop(String user, String status, String location) {
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
         dlgAlert.setMessage(status + "\n"+location);
         dlgAlert.setTitle(user);
         dlgAlert.setPositiveButton("OK", null);
         dlgAlert.setCancelable(true);
         dlgAlert.create().show();
+    }
+
+    public void addFriend(View view) {
+        friendPop(username);
+    }
+    private void friendPop(String user) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        final EditText edittext= new EditText(StatusActivity.this);
+        alert.setMessage("Add a Friend");
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Add Friend", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                final Firebase frands = new Firebase("https://hangmonkey.firebaseio.com/" + username + "/friends");
+                final String friendName = edittext.getText().toString();
+                frands.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        frands.setValue(snapshot.getValue() + " " + friendName);
+                        friendsInfo = new ArrayList<String>();
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+            }
+        });
+        alert.show();
     }
 
     @Override
@@ -174,7 +214,7 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void friendsClick(View v) {
-        Intent i = new Intent(this, StatusActivity.class);
+        //Intent i = new Intent(this, StatusActivity.class);
         //startActivity(i);
     }
 
@@ -183,10 +223,5 @@ public class StatusActivity extends ActionBarActivity {
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
         myFirebase.child(username + "/available").setValue(on);
-    }
-
-
-    public void addFriend(View v) {
-        myFirebase.child(username + "/friends");
     }
 }

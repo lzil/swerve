@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,9 +60,13 @@ public class LogInActivity extends ActionBarActivity {
 
         //Passes usr and psw to some server
         //if pass:
+        Log.d("login", "preintent");
         Intent intent = new Intent(this, StatusActivity.class);
+        Log.d("login", "postintent");
         intent.putExtra("username", usr);
+        Log.d("login", "post intent putextra");
         startActivity(intent);
+        Log.d("login", "post start status activity");
         //if fail: Failure message. Same screen. Retry.
         //logText.setTextColor(Color.RED);
         //logText.setText("Wrong username and password. Please try again.");
