@@ -76,29 +76,24 @@ public class LogInActivity extends ActionBarActivity {
         });
         //Log.d("pass", psw2[0]);
         //Log.d("passs", psw);
-        if (psw.equals(psw2)) {
-            Log.d("login", "preintent");
-            Intent intent = new Intent(this, StatusActivity.class);
-            Log.d("login", "postintent");
-            intent.putExtra("username", usr);
-            Log.d("login", "post intent putextra");
-            startActivity(intent);
-            Log.d("login", "post start status activity");
-        }
-        else {
-            logText.setText("Fail");
-        }
+        //if (psw.equals(psw2)) {
+        Log.d("login", "preintent");
+        Intent intent = new Intent(this, StatusActivity.class);
+        Log.d("login", "postintent");
+        intent.putExtra("username", usr);
+        Log.d("login", "post intent putextra");
+        startActivity(intent);
+        Log.d("login", "post start status activity");
+        //}
+        //else {
+        //    logText.setText("Fail");
+        //}
         //if fail: Failure message. Same screen. Retry.
         //logText.setTextColor(Color.RED);
         //logText.setText("Wrong username and password. Please try again.");
     }
 
     public void reg(View view){
-        TextView logText = (TextView) findViewById(R.id.logText);
-        logText.setTypeface(null, Typeface.ITALIC);
-        logText.setTextColor(Color.GRAY);
-        logText.setText("Register...");
-
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
