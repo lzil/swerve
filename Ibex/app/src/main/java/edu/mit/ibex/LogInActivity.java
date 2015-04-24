@@ -12,13 +12,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 
 public class LogInActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Firebase.setAndroidContext(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
     }
@@ -47,9 +51,8 @@ public class LogInActivity extends ActionBarActivity {
     }
 
     public void logIn(View view){
-        TextView logText = (TextView) findViewById(R.id.logText);
+        TextView logText = (TextView) findViewById(R.id.invalidText);
         logText.setTypeface(null, Typeface.ITALIC);
-        logText.setTextColor(Color.GRAY);
         logText.setText("Confirming user login...");
 
         EditText username =  (EditText) findViewById(R.id.usernameEditText);
@@ -57,9 +60,23 @@ public class LogInActivity extends ActionBarActivity {
 
         String usr = username.getText().toString();
         String psw = password.getText().toString();
-
+        String psw2 = new String();
         //Passes usr and psw to some server
         //if pass:
+        Firebase ref = new Firebase("https://hangmonkey.firebaseio.com/" + usr + "/pass");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                //psw2 = snapshot.getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+        //Log.d("pass", psw2[0]);
+        //Log.d("passs", psw);
+        //if (psw.equals(psw2)) {
         Log.d("login", "preintent");
         Intent intent = new Intent(this, StatusActivity.class);
         Log.d("login", "postintent");
@@ -67,17 +84,16 @@ public class LogInActivity extends ActionBarActivity {
         Log.d("login", "post intent putextra");
         startActivity(intent);
         Log.d("login", "post start status activity");
+        //}
+        //else {
+        //    logText.setText("Fail");
+        //}
         //if fail: Failure message. Same screen. Retry.
         //logText.setTextColor(Color.RED);
         //logText.setText("Wrong username and password. Please try again.");
     }
 
     public void reg(View view){
-        TextView logText = (TextView) findViewById(R.id.logText);
-        logText.setTypeface(null, Typeface.ITALIC);
-        logText.setTextColor(Color.GRAY);
-        logText.setText("Register...");
-
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
