@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/usernameEditText"
         android:hint="Username"
+        android:singleLine="true"
         android:layout_below="@+id/imageView"
         android:layout_alignLeft="@+id/passwordEditText"
         android:layout_alignStart="@+id/passwordEditText"
@@ -61,9 +62,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/logText"
-        android:layout_below="@+id/signUpButton"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/invalidText"
+        android:text="Invalid username/password combination."
+        android:textSize="12dp"
+        android:textColor="#FF0000"
+        android:layout_below="@+id/registerText"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="wrap_content"

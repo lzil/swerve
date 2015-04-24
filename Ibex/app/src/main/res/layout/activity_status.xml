@@ -88,7 +88,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/postButton"
-        android:layout_above="@+id/friendInput"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:id="@+id/frameLayout">
@@ -100,6 +99,19 @@
             android:layout_below="@+id/postButton"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Friend"
+            android:id="@+id/friendButton"
+            android:layout_alignParentBottom="true"
+            android:layout_alignRight="@+id/postButton"
+            android:layout_alignEnd="@+id/postButton"
+            android:layout_marginRight="53dp"
+            android:layout_marginEnd="53dp"
+            android:onClick="addFriend"
+            android:layout_gravity="right|bottom" />
     </FrameLayout>
 
     <Switch
@@ -111,25 +123,5 @@
         android:layout_alignTop="@+id/textView"
         android:layout_toRightOf="@+id/textView"
         android:layout_toEndOf="@+id/textView" />
-
-    <EditText
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/friendInput"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/friendButton"
-        android:layout_toStartOf="@+id/friendButton" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Friend"
-        android:id="@+id/friendButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/postButton"
-        android:layout_alignEnd="@+id/postButton"
-        android:layout_marginRight="53dp"
-        android:layout_marginEnd="53dp"
-        android:onClick="addFriend"/>
 
 </RelativeLayout>

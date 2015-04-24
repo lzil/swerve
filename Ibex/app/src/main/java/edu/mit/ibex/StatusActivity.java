@@ -31,11 +31,12 @@ public class StatusActivity extends ActionBarActivity {
     private String LOG_MESSAGE = "HangMonkey";
 
     ImageButton mapsButton, friendsButton;
-    EditText editStatus, friendInput;
+    EditText editStatus;
     Firebase myFirebase;
     Switch available;
     String username;
     Map<String, Object> data;
+    TextView myStatus;
 
     String friendStatus;
     String location;
@@ -52,10 +53,10 @@ public class StatusActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_status);
         Firebase.setAndroidContext(this);
+        myStatus = (TextView) findViewById(R.id.MyStatus);
         mapsButton = (ImageButton) findViewById(R.id.mapsButton);
         friendsButton = (ImageButton) findViewById(R.id.friendsButton);
         editStatus = (EditText) findViewById(R.id.editStatus);
-        friendInput = (EditText) findViewById(R.id.friendInput);
         available = (Switch) findViewById(R.id.available);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
 
@@ -85,7 +86,7 @@ public class StatusActivity extends ActionBarActivity {
 
     private void showFriendInfo(String user, String status, String friends) {
 
-        final TextView myStatus = (TextView) findViewById(R.id.MyStatus);
+
         myStatus.setText(user + ": " + status);
 
         String[] myFriends = friends.split("\\s+");
@@ -146,6 +147,7 @@ public class StatusActivity extends ActionBarActivity {
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
         theListView.setAdapter(resultsAdapter);
     }
+
     private void statusPop(String user, String status, String location) {
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
         dlgAlert.setMessage(status + "\n"+location);
@@ -211,11 +213,6 @@ public class StatusActivity extends ActionBarActivity {
         if(username!=null){
         i.putExtra("username",username);}
         startActivity(i);
-    }
-
-    public void friendsClick(View v) {
-        //Intent i = new Intent(this, StatusActivity.class);
-        //startActivity(i);
     }
 
     public void postStatus(View v) {
