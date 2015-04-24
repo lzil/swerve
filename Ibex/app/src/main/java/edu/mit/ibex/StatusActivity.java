@@ -3,6 +3,7 @@ package edu.mit.ibex;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -85,9 +86,10 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     private void showFriendInfo(String user, String status, String friends) {
-
-
-        myStatus.setText(user + ": " + status);
+        myStatus.setTextSize(20);
+        myStatus.setTypeface(null, Typeface.ITALIC);
+        //BOLD_ITALIC
+        myStatus.setText("\""+status+"\"");
 
         String[] myFriends = friends.split("\\s+");
 
@@ -177,6 +179,7 @@ public class StatusActivity extends ActionBarActivity {
                         frands.setValue(snapshot.getValue() + " " + friendName);
                         friendsInfo = new ArrayList<String>();
                     }
+
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
                     }
