@@ -220,6 +220,7 @@ public class StatusActivity extends ActionBarActivity {
 
     public void postStatus(View v) {
         System.out.println("wow");
+        friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
         myFirebase.child(username + "/available").setValue(on);
