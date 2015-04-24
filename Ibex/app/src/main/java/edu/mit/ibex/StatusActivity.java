@@ -71,6 +71,7 @@ public class StatusActivity extends ActionBarActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
+
                 data = (Map<String, Object>)snapshot.getValue();
 
                 Log.d("Data : ", data.toString());

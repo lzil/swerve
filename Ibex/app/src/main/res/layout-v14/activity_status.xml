@@ -43,7 +43,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editStatus"
-        android:hint="What are you up to?"
+        android:hint="What are you doing now?"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/MyStatus"
@@ -96,25 +96,23 @@
         android:id="@+id/frameLayout">
 
         <ListView
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/listView"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
-        <ImageButton
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/addfriend"
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Friend"
             android:id="@+id/friendButton"
             android:layout_alignParentBottom="true"
-            android:background="@null"
-            android:cropToPadding="true"
-            android:scaleType="centerInside"
+            android:layout_alignRight="@+id/postButton"
+            android:layout_alignEnd="@+id/postButton"
+            android:layout_marginRight="53dp"
+            android:layout_marginEnd="53dp"
             android:onClick="addFriend"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
             android:layout_gravity="right|bottom" />
     </FrameLayout>
 
