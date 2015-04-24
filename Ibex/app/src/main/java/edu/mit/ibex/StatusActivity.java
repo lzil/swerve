@@ -64,8 +64,8 @@ public class StatusActivity extends ActionBarActivity {
             public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
                 data = (Map<String, Object>)snapshot.getValue();
-                Log.d("Data : ", data.toString());
-                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
+//                Log.d("Data : ", data.toString());
+                showFriendInfo(snapshot.getKey(),    data.get("status").toString(), data.get("friends").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
