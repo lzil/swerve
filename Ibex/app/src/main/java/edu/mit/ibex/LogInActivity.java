@@ -65,15 +65,12 @@ public class LogInActivity extends ActionBarActivity {
 
         usr = username.getText().toString();
         psw = password.getText().toString();
-        //Passes usr and psw to some server
-        //if pass:
         Firebase ref = new Firebase("https://hangmonkey.firebaseio.com/" + usr + "/pass");
         psw2 = "test";
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 LogInActivity.psw2 = snapshot.getValue().toString();
-                LogInActivity.isPwdEntered = true;
                 login(LogInActivity.psw2);
             }
 
@@ -81,17 +78,6 @@ public class LogInActivity extends ActionBarActivity {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-        Log.d("pass", psw2);
-//        while (LogInActivity.isPwdEntered == false) {
-//            Log.d("sleep", "STILL SLEEPING T_T");
-//            Thread.sleep(1000);
-//        }
-        //
-        //Log.d("passs", LogInActivity.psw2);
-        //if (psw.equals(psw2)) {
-
-
-        //}
 
     }
 

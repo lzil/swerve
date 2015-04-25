@@ -24,6 +24,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +99,6 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(snapshot.getValue());
                     data = (Map<String, Object>)snapshot.getValue();
                     Log.d("Friend Data : ", data.toString());
                     if(!(data.get("status").equals(null))){
@@ -179,6 +179,9 @@ public class StatusActivity extends ActionBarActivity {
                     public void onDataChange(DataSnapshot snapshot) {
                         frands.setValue(snapshot.getValue() + " " + friendName);
                         friendsInfo = new ArrayList<String>();
+                        Map<String, String> putName = new HashMap<String, String>();
+                        putName.put("name", friendName);
+                        frands.push().setValue(putName);
                     }
 
                     @Override
@@ -220,7 +223,6 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void postStatus(View v) {
-        System.out.println("wow");
         friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
