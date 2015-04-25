@@ -26,7 +26,6 @@ import com.firebase.client.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class StatusActivity extends ActionBarActivity {
@@ -37,7 +36,7 @@ public class StatusActivity extends ActionBarActivity {
     Firebase myFirebase;
     Switch available;
     String username;
-    Map<String, Object> data;
+    HashMap<String, Object> data;
     TextView myStatus;
 
     String friendStatus;
@@ -68,39 +67,84 @@ public class StatusActivity extends ActionBarActivity {
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
         theListView.setAdapter(resultsAdapter);
 
-//        myFirebase.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-////                System.out.println(snapshot.getValue());
-//                data = (Map<String, Object>)snapshot.getValue();
-//
-//                Log.d("Data : ", data.toString());
-////                System.out.println(snapshot.getKey());
-////                System.out.println(data.get("status").toString());
-////                System.out.println(data.get("friends").toString());
-////                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
-//            }
-//            @Override public void onCancelled(FirebaseError error) { }
-//        });
-        myFirebase.child(username).addValueEventListener(new ValueEventListener() {
+        /**
+         * Makes only one call to Firebase
+         */
+        myFirebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(snapshot.getValue());
+                data = (HashMap<String, Object>)snapshot.getValue();
 
-                data = (Map<String, Object>)snapshot.getValue();
-
-                System.out.println(snapshot.getKey());
                 Log.d("Data : ", data.toString());
-//                System.out.println(data.get("status").toString());
-//                System.out.println(data.get("friends").toString());
-                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends"));
+                showFriendInfo(username, data);
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
-//        Log.d("Data : ",data.toString());
-//        showFriendInfo(data);
+
+        /**
+         * Makes N calls to Firebase where N is total number of friends.
+         */
+//        myFirebase.child(username).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snapshot) {
+////                System.out.println(snapshot.getValue());
+//
+//                data = (HashMap<String, Object>)snapshot.getValue();
+//
+//                System.out.println(snapshot.getKey());
+//                Log.d("Data : ", data.toString());
+////                System.out.println(data.get("status").toString());
+////                System.out.println(data.get("friends").toString());
+//                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends"));
+//            }
+//            @Override public void onCancelled(FirebaseError error) { }
+//        });
     }
 
+    /*
+     Makes only one call to Firebase
+     */
+    private void showFriendInfo(String currentUser, HashMap data) {
+        HashMap currentUserInfo = (HashMap) data.get(currentUser);
+        System.out.println(currentUserInfo);
+        String status = currentUserInfo.get("status").toString();
+        System.out.println(status);
+
+        myStatus.setTextSize(20);
+        myStatus.setTypeface(null, Typeface.ITALIC);
+        //BOLD_ITALIC
+        myStatus.setText("\""+status+"\"");
+
+        HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
+        for (Object timestamp:friendsDict.keySet()) {
+            HashMap name = (HashMap) friendsDict.get(timestamp);
+            System.out.println(name.keySet().toArray()[0]);
+            String friendName = name.get(name.keySet().toArray()[0]).toString();
+            System.out.println(friendName);
+
+            HashMap friendInfo = (HashMap)data.get(friendName);
+            String friendStatus = friendInfo.get("status").toString();
+
+            friendsInfo.add(friendName + ": " + friendStatus);
+            System.out.println("FriendsInfo "+friendsInfo);
+            addFriendList(friendsInfo);
+        }
+
+        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
+                Log.d("friendClick", "clicked!");
+                String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
+//                do whatever here
+                final String selectedFriend = selectedFromList.split(":")[0];
+                Log.d("friendClick", selectedFriend);
+                clickFriend(selectedFriend);
+            }
+        });
+    }
+
+    /*
+    Makes N calls to Firebase where N is total number of friends
+     */
     private void showFriendInfo(String user, String status, Object friends) {
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
@@ -121,7 +165,7 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(friendName).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    data = (Map<String, Object>)snapshot.getValue();
+                    data = (HashMap<String, Object>)snapshot.getValue();
                     Log.d("Friend Data : ", data.toString());
                     if(!(data.get("status").equals(null))){
                         tempStatus = data.get("status").toString();
@@ -137,55 +181,40 @@ public class StatusActivity extends ActionBarActivity {
             });
         }
 
-
-//        String[] myFriends = friends.split("\\s+");
-//
-//        for (String friend : myFriends){
-//            myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot snapshot) {
-//                    data = (Map<String, Object>)snapshot.getValue();
-//                    Log.d("Friend Data : ", data.toString());
-//                    if(!(data.get("status").equals(null))){
-//                        tempStatus = data.get("status").toString();
-//                        System.out.println("inside"+tempStatus);
-//                        friendsInfo.add(snapshot.getKey() + ": " + data.get("status"));
-//
-//                        System.out.println("FriendsInfo "+friendsInfo);
-//                        addFriendList(friendsInfo);
-//                    }
-//                }
-//                @Override public void onCancelled(FirebaseError error) { }
-//
-//            });
-//        }
-
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
+                Log.d("friendClick", "clicked!");
                 String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
 //                do whatever here
                 final String selectedFriend = selectedFromList.split(":")[0];
-                myFirebase.child(selectedFriend).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(snapshot.getValue());
-                        data = (Map<String, Object>) snapshot.getValue();
-                        System.out.println(data);
-
-                        friendStatus = data.get("status").toString();
-                        location = data.get("lat").toString() + "," + data.get("long").toString();
-
-                        statusPop(selectedFriend, friendStatus, location);
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError error) {
-                    }
-                });
+                Log.d("friendClick", selectedFriend);
+                clickFriend(selectedFriend);
             }
         });
     }
 
+    private void clickFriend(String selectedFriend) {
+        myFirebase.child(selectedFriend).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+//                System.out.println(snapshot.getValue());
+                data = (HashMap<String, Object>) snapshot.getValue();
+                System.out.println(data);
+
+                friendStatus = data.get("status").toString();
+                Log.d("friendClick", friendStatus);
+                location = data.get("lat").toString() + "," + data.get("long").toString();
+                Log.d("friendClick", location);
+
+                statusPop(snapshot.getKey(), friendStatus, location);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
+        });
+
+    }
     private void addFriendList(List<String> friendsInfo) {
         ArrayAdapter<String> resultsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
@@ -193,6 +222,7 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     private void statusPop(String user, String status, String location) {
+        Log.d("statusPop", "Inside Status Pop");
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
         dlgAlert.setMessage(status + "\n"+location);
         dlgAlert.setTitle(user);
@@ -219,7 +249,7 @@ public class StatusActivity extends ActionBarActivity {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         friendsInfo = new ArrayList<String>();
-                        Map<String, String> putName = new HashMap<String, String>();
+                        HashMap<String, String> putName = new HashMap<String, String>();
                         putName.put("name", friendName);
                         frands.push().setValue(putName);
                     }
