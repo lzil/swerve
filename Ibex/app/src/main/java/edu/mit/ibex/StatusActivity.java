@@ -93,7 +93,7 @@ public class StatusActivity extends ActionBarActivity {
                 Log.d("Data : ", data.toString());
 //                System.out.println(data.get("status").toString());
 //                System.out.println(data.get("friends").toString());
-//                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
+                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends"));
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
@@ -101,16 +101,24 @@ public class StatusActivity extends ActionBarActivity {
 //        showFriendInfo(data);
     }
 
-    private void showFriendInfo(String user, String status, String friends) {
+    private void showFriendInfo(String user, String status, Object friends) {
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
         //BOLD_ITALIC
         myStatus.setText("\""+status+"\"");
 
-        String[] myFriends = friends.split("\\s+");
+        HashMap friendsDict = (HashMap) friends;
+        System.out.println(friendsDict);
+        System.out.println(friendsDict.keySet());
 
-        for (String friend : myFriends){
-            myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
+
+        for (Object timestamp:friendsDict.keySet()) {
+            HashMap name = (HashMap) friendsDict.get(timestamp);
+            System.out.println(name);
+            System.out.println(name.keySet().toArray()[0]);
+            String friendName = name.get(name.keySet().toArray()[0]).toString();
+            System.out.println(friendName);
+            myFirebase.child(friendName).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     data = (Map<String, Object>)snapshot.getValue();
@@ -128,6 +136,29 @@ public class StatusActivity extends ActionBarActivity {
 
             });
         }
+
+
+//        String[] myFriends = friends.split("\\s+");
+//
+//        for (String friend : myFriends){
+//            myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot snapshot) {
+//                    data = (Map<String, Object>)snapshot.getValue();
+//                    Log.d("Friend Data : ", data.toString());
+//                    if(!(data.get("status").equals(null))){
+//                        tempStatus = data.get("status").toString();
+//                        System.out.println("inside"+tempStatus);
+//                        friendsInfo.add(snapshot.getKey() + ": " + data.get("status"));
+//
+//                        System.out.println("FriendsInfo "+friendsInfo);
+//                        addFriendList(friendsInfo);
+//                    }
+//                }
+//                @Override public void onCancelled(FirebaseError error) { }
+//
+//            });
+//        }
 
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
