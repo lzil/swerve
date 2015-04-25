@@ -43,10 +43,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editStatus"
-        android:hint="What are you doing now?"
+        android:hint="What are you up to?"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/available"
+        android:layout_below="@+id/MyStatus"
         android:layout_toLeftOf="@+id/postButton"
         android:layout_toStartOf="@+id/postButton" />
 
@@ -59,7 +59,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/available"
+        android:layout_below="@+id/MyStatus"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -67,9 +67,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/MyStatus"
-        android:layout_below="@+id/postButton"
-        android:layout_alignRight="@+id/postButton"
-        android:layout_alignEnd="@+id/postButton" />
+
+        android:layout_below="@+id/available"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -88,29 +90,31 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/postButton"
+        android:textSize="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:id="@+id/frameLayout">
 
         <ListView
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/listView"
-            android:layout_below="@+id/postButton"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add Friend"
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/addfriend"
             android:id="@+id/friendButton"
             android:layout_alignParentBottom="true"
-            android:layout_alignRight="@+id/postButton"
-            android:layout_alignEnd="@+id/postButton"
-            android:layout_marginRight="53dp"
-            android:layout_marginEnd="53dp"
+            android:background="@null"
+            android:cropToPadding="true"
+            android:scaleType="centerInside"
             android:onClick="addFriend"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
             android:layout_gravity="right|bottom" />
     </FrameLayout>
 

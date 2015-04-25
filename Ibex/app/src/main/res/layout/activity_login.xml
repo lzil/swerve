@@ -4,33 +4,31 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".StatusActivity"
-    android:backgroundTint="#ff62c1ff">
+    android:backgroundTint="#ffffff"><!--"#ffab4e"-->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="HangIns"
+        android:text="@string/app_name"
         android:id="@+id/header"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="44dp"
+        android:textSize="36dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="36dp" />
+        android:layout_centerHorizontal="true" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:id="@+id/usernameEditText"
         android:hint="Username"
         android:singleLine="true"
         android:layout_below="@+id/imageView"
-        android:layout_alignLeft="@+id/passwordEditText"
-        android:layout_alignStart="@+id/passwordEditText"
-        android:layout_alignRight="@+id/passwordEditText"
-        android:layout_alignEnd="@+id/passwordEditText" />
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
@@ -40,7 +38,7 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="Log In"
         android:id="@+id/signUpButton"
@@ -55,7 +53,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:background="@drawable/hangin"
-        android:layout_below="@+id/header"
+        android:layout_below="@+id/tagLine"
+        android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -66,17 +65,27 @@
         android:text="Invalid username/password combination."
         android:textSize="12dp"
         android:textColor="#FF0000"
-        android:layout_below="@+id/registerText"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:textStyle="italic"
+        android:layout_below="@+id/signUpButton"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/registerLink"
         android:id="@+id/registerText"
-        android:layout_below="@+id/signUpButton"
-        android:layout_centerHorizontal="true"
-        android:onClick="reg"/>
+        android:onClick="reg"
+        android:layout_below="@+id/invalidText"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Why work? Just Swerve"
+        android:id="@+id/tagLine"
+        android:layout_below="@+id/header"
+        android:layout_alignStart="@+id/imageView" />
 
 </RelativeLayout>

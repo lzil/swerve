@@ -3,6 +3,7 @@ package edu.mit.ibex;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +86,7 @@ public class StatusActivity extends ActionBarActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
+
                 data = (Map<String, Object>)snapshot.getValue();
 
                 System.out.println(snapshot.getKey());
@@ -99,9 +102,10 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     private void showFriendInfo(String user, String status, String friends) {
-
-
-        myStatus.setText(user + ": " + status);
+        myStatus.setTextSize(20);
+        myStatus.setTypeface(null, Typeface.ITALIC);
+        //BOLD_ITALIC
+        myStatus.setText("\""+status+"\"");
 
         String[] myFriends = friends.split("\\s+");
 
@@ -109,7 +113,6 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(friend).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(snapshot.getValue());
                     data = (Map<String, Object>)snapshot.getValue();
                     Log.d("Friend Data : ", data.toString());
                     if(!(data.get("status").equals(null))){
@@ -184,9 +187,12 @@ public class StatusActivity extends ActionBarActivity {
                 frands.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        frands.setValue(snapshot.getValue() + " " + friendName);
                         friendsInfo = new ArrayList<String>();
+                        Map<String, String> putName = new HashMap<String, String>();
+                        putName.put("name", friendName);
+                        frands.push().setValue(putName);
                     }
+
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
                     }
@@ -226,7 +232,6 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void postStatus(View v) {
-        System.out.println("wow");
         friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
