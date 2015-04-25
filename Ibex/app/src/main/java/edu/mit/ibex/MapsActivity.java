@@ -83,23 +83,33 @@ public class MapsActivity extends FragmentActivity {
         LatLng MIT = new LatLng(42.3598,-71.0921);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MIT, 15));
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
-        myFirebase.child(username).addValueEventListener(new ValueEventListener() {
+        myFirebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 data = (Map<String, Object>)snapshot.getValue();
                 Log.d("Data : ", data.toString());
-                Long lat = (Long) data.get("lat");
-                Long Lon = (Long) data.get("long");
-                String status = (String) data.get("status");
-                myLocation = new LatLng(lat, Lon);
-                mMap.addMarker(new MarkerOptions().position(myLocation).title(username).snippet(status));
-                System.out.println("here " + username + " " + status);
-                System.out.println(lat+" "+Lon);
+//                Long lat = (Long) data.get("lat");
+//                Long Lon = (Long) data.get("long");
+//                String status = (String) data.get("status");
+////                String[] friendsList = friends.split("\\s+");
+//
+//                myLocation = new LatLng(lat, Lon);
+//                mMap.addMarker(new MarkerOptions().position(myLocation).title(username).snippet(status));
+//                System.out.println("here " + username + " " + status);
+//                System.out.println(lat+" "+Lon);
+
+//                for (String friend:friendsList) {
+//
+//                }
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
+
     }
 
+    public void addFriendsToMap(String friend, String status, LatLng location) {
+        mMap.addMarker(new MarkerOptions().position(myLocation).title(username).snippet(status));
+    }
     public void mapsClick(View v) {
         /*Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){

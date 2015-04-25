@@ -66,17 +66,31 @@ public class StatusActivity extends ActionBarActivity {
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
         theListView.setAdapter(resultsAdapter);
 
+//        myFirebase.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snapshot) {
+////                System.out.println(snapshot.getValue());
+//                data = (Map<String, Object>)snapshot.getValue();
+//
+//                Log.d("Data : ", data.toString());
+////                System.out.println(snapshot.getKey());
+////                System.out.println(data.get("status").toString());
+////                System.out.println(data.get("friends").toString());
+////                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
+//            }
+//            @Override public void onCancelled(FirebaseError error) { }
+//        });
         myFirebase.child(username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 //                System.out.println(snapshot.getValue());
                 data = (Map<String, Object>)snapshot.getValue();
 
-                Log.d("Data : ", data.toString());
                 System.out.println(snapshot.getKey());
-                System.out.println(data.get("status").toString());
-                System.out.println(data.get("friends").toString());
-                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
+                Log.d("Data : ", data.toString());
+//                System.out.println(data.get("status").toString());
+//                System.out.println(data.get("friends").toString());
+//                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends").toString());
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
@@ -110,11 +124,7 @@ public class StatusActivity extends ActionBarActivity {
                 @Override public void onCancelled(FirebaseError error) { }
 
             });
-//            System.out.println(tempStatus);
-//            friendsInfo.add(friend + ": " + tempStatus);
         }
-//        System.out.println("FriendsInfo "+friendsInfo);
-//        addFriendList(friendsInfo);
 
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
