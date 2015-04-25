@@ -177,7 +177,6 @@ public class StatusActivity extends ActionBarActivity {
                 frands.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        frands.setValue(snapshot.getValue() + " " + friendName);
                         friendsInfo = new ArrayList<String>();
                         Map<String, String> putName = new HashMap<String, String>();
                         putName.put("name", friendName);
