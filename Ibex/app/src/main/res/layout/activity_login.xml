@@ -67,9 +67,10 @@
         android:text="Invalid username/password combination."
         android:textSize="12dp"
         android:textColor="#FF0000"
-        android:layout_below="@+id/registerText"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_toEndOf="@+id/registerText"
+        android:layout_below="@+id/passwordEditText"
+        android:layout_alignStart="@+id/registerText" />
 
     <TextView
         android:layout_width="wrap_content"

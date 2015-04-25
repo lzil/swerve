@@ -19,12 +19,18 @@ import com.firebase.client.ValueEventListener;
 
 
 public class LogInActivity extends ActionBarActivity {
+    public static String psw2;
+    public static boolean isPwdEntered = false;
+    public static String usr, psw;
+    TextView logText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Firebase.setAndroidContext(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        logText = (TextView) findViewById(R.id.invalidText);
+
     }
 
 
@@ -50,49 +56,56 @@ public class LogInActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void logIn(View view){
-        TextView logText = (TextView) findViewById(R.id.invalidText);
+    public void logIn(View view) throws InterruptedException {
         logText.setTypeface(null, Typeface.ITALIC);
         logText.setText("Confirming user login...");
 
         EditText username =  (EditText) findViewById(R.id.usernameEditText);
         EditText password =  (EditText) findViewById(R.id.passwordEditText);
 
-        String usr = username.getText().toString();
-        String psw = password.getText().toString();
-        String psw2 = new String();
+        usr = username.getText().toString();
+        psw = password.getText().toString();
         //Passes usr and psw to some server
         //if pass:
         Firebase ref = new Firebase("https://hangmonkey.firebaseio.com/" + usr + "/pass");
+        psw2 = "test";
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                //psw2 = snapshot.getValue().toString();
+                LogInActivity.psw2 = snapshot.getValue().toString();
+                LogInActivity.isPwdEntered = true;
+                login(LogInActivity.psw2);
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-        //Log.d("pass", psw2[0]);
-        //Log.d("passs", psw);
+        Log.d("pass", psw2);
+//        while (LogInActivity.isPwdEntered == false) {
+//            Log.d("sleep", "STILL SLEEPING T_T");
+//            Thread.sleep(1000);
+//        }
+        //
+        //Log.d("passs", LogInActivity.psw2);
         //if (psw.equals(psw2)) {
-        Log.d("login", "preintent");
-        Intent intent = new Intent(this, StatusActivity.class);
-        Log.d("login", "postintent");
-        intent.putExtra("username", usr);
-        Log.d("login", "post intent putextra");
-        startActivity(intent);
-        Log.d("login", "post start status activity");
+
+
         //}
-        //else {
-        //    logText.setText("Fail");
-        //}
-        //if fail: Failure message. Same screen. Retry.
-        //logText.setTextColor(Color.RED);
-        //logText.setText("Wrong username and password. Please try again.");
+
     }
 
+    public void login(String psw2) {
+        if (psw2.equals(psw)) {
+            Intent intent = new Intent(this, StatusActivity.class);
+            intent.putExtra("username", usr);
+            startActivity(intent);
+        }
+        else {
+            logText.setVisibility(View.VISIBLE);
+            logText.setText("Wrong username and password. Please try again.");
+        }
+    }
     public void reg(View view){
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
