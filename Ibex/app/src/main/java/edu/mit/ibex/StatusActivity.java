@@ -299,3 +299,5 @@ public class StatusActivity extends ActionBarActivity {
         myFirebase.child(username + "/available").setValue(on);
     }
 }
+
+
