@@ -58,6 +58,7 @@ public class LogInActivity extends ActionBarActivity {
 
     public void logIn(View view) throws InterruptedException {
         logText.setTypeface(null, Typeface.ITALIC);
+        logText.setTextColor(Color.DKGRAY);
         logText.setText("Confirming user login...");
 
         EditText username =  (EditText) findViewById(R.id.usernameEditText);
@@ -89,6 +90,7 @@ public class LogInActivity extends ActionBarActivity {
         }
         else {
             logText.setVisibility(View.VISIBLE);
+            logText.setTextColor(Color.RED);
             logText.setText("Wrong username and password. Please try again.");
         }
     }

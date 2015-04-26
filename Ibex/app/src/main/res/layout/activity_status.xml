@@ -47,6 +47,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/MyStatus"
+        android:maxLength="22"
         android:layout_toLeftOf="@+id/postButton"
         android:layout_toStartOf="@+id/postButton" />
 
