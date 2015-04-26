@@ -116,18 +116,20 @@ public class StatusActivity extends ActionBarActivity {
         myStatus.setText("\""+status+"\"");
 
         HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
-        for (Object timestamp:friendsDict.keySet()) {
-            HashMap name = (HashMap) friendsDict.get(timestamp);
-            System.out.println(name.keySet().toArray()[0]);
-            String friendName = name.get(name.keySet().toArray()[0]).toString();
-            System.out.println(friendName);
+        if (friendsDict != null) {
+            for (Object timestamp : friendsDict.keySet()) {
+                HashMap name = (HashMap) friendsDict.get(timestamp);
+                System.out.println(name.keySet().toArray()[0]);
+                String friendName = name.get(name.keySet().toArray()[0]).toString();
+                System.out.println(friendName);
 
-            HashMap friendInfo = (HashMap)data.get(friendName);
-            String friendStatus = friendInfo.get("status").toString();
+                HashMap friendInfo = (HashMap) data.get(friendName);
+                String friendStatus = friendInfo.get("status").toString();
 
-            friendsInfo.add(friendName + ": " + friendStatus);
-            System.out.println("FriendsInfo "+friendsInfo);
-            addFriendList(friendsInfo);
+                friendsInfo.add(friendName + ": " + friendStatus);
+                System.out.println("FriendsInfo " + friendsInfo);
+                addFriendList(friendsInfo);
+            }
         }
 
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -155,30 +157,34 @@ public class StatusActivity extends ActionBarActivity {
         System.out.println(friendsDict);
         System.out.println(friendsDict.keySet());
 
+        if (friendsDict != null) {
+            for (Object timestamp : friendsDict.keySet()) {
+                HashMap name = (HashMap) friendsDict.get(timestamp);
+                System.out.println(name);
+                System.out.println(name.keySet().toArray()[0]);
+                String friendName = name.get(name.keySet().toArray()[0]).toString();
+                System.out.println(friendName);
+                myFirebase.child(friendName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        data = (HashMap<String, Object>) snapshot.getValue();
+                        Log.d("Friend Data : ", data.toString());
+                        if (!(data.get("status").equals(null))) {
+                            tempStatus = data.get("status").toString();
+                            System.out.println("inside" + tempStatus);
+                            friendsInfo.add(snapshot.getKey() + ": " + data.get("status"));
 
-        for (Object timestamp:friendsDict.keySet()) {
-            HashMap name = (HashMap) friendsDict.get(timestamp);
-            System.out.println(name);
-            System.out.println(name.keySet().toArray()[0]);
-            String friendName = name.get(name.keySet().toArray()[0]).toString();
-            System.out.println(friendName);
-            myFirebase.child(friendName).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    data = (HashMap<String, Object>)snapshot.getValue();
-                    Log.d("Friend Data : ", data.toString());
-                    if(!(data.get("status").equals(null))){
-                        tempStatus = data.get("status").toString();
-                        System.out.println("inside"+tempStatus);
-                        friendsInfo.add(snapshot.getKey() + ": " + data.get("status"));
-
-                        System.out.println("FriendsInfo "+friendsInfo);
-                        addFriendList(friendsInfo);
+                            System.out.println("FriendsInfo " + friendsInfo);
+                            addFriendList(friendsInfo);
+                        }
                     }
-                }
-                @Override public void onCancelled(FirebaseError error) { }
 
-            });
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+                    }
+
+                });
+            }
         }
 
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
