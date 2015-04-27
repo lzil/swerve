@@ -37,7 +37,7 @@ public class StatusActivity extends ActionBarActivity {
     EditText editStatus;
     Firebase myFirebase;
     Switch available;
-    String username;
+    String username, toUser;
     HashMap<String, Object> data;
     TextView myStatus;
 
@@ -119,7 +119,7 @@ public class StatusActivity extends ActionBarActivity {
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
         //BOLD_ITALIC
-        myStatus.setText("My Status: "+ status);
+        myStatus.setText("My Status: " + status);
 
         HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
         if (friendsDict != null) {
@@ -161,7 +161,7 @@ public class StatusActivity extends ActionBarActivity {
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
         //BOLD_ITALIC
-        myStatus.setText("\""+status+"\"");
+        myStatus.setText("\"" + status + "\"");
 
         HashMap friendsDict = (HashMap) friends;
         System.out.println(friendsDict);
@@ -238,13 +238,25 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     private void statusPop(String user, String status, String location) {
-        Log.d("statusPop", "Inside Status Pop");
-        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-        dlgAlert.setMessage(status + "\n"+location);
-        dlgAlert.setTitle(user);
-        dlgAlert.setPositiveButton("OK", null);
-        dlgAlert.setCancelable(true);
-        dlgAlert.create().show();
+//        Log.d("statusPop", "Inside Status Pop");
+//        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+//        dlgAlert.setMessage(status + "\n"+location);
+//        dlgAlert.setTitle(user);
+//        dlgAlert.setPositiveButton("OK", null);
+//        dlgAlert.setCancelable(true);
+//        dlgAlert.create().show();
+        toUser = user;
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setMessage(status + "\n" + location);
+        alert.setTitle(user);
+        alert.setPositiveButton("Message", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                message(toUser);
+            }
+        });
+        alert.setNegativeButton("OK", null);
+        alert.show();
     }
 
     public void addFriend(View view) {
@@ -336,6 +348,10 @@ public class StatusActivity extends ActionBarActivity {
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
         myFirebase.child(username + "/available").setValue(on);
+    }
+
+    public void message(String user) {
+        Log.d("testing", "did it work?");
     }
 }
 
