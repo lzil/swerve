@@ -113,7 +113,7 @@ public class StatusActivity extends ActionBarActivity {
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
         //BOLD_ITALIC
-        myStatus.setText("\""+status+"\"");
+        myStatus.setText("My Status: "+ status);
 
         HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
         if (friendsDict != null) {
