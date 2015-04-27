@@ -16,6 +16,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -25,6 +27,7 @@ public class MapsActivity extends FragmentActivity {
     Firebase myFirebase;
     Map<String, Object> data;
     Map<String, Object> newData;
+    ArrayList<ArrayList<String>> don;
     String username;
 
     @Override
@@ -38,7 +41,10 @@ public class MapsActivity extends FragmentActivity {
         }
 
         username = extras.getString("username");
-
+        don = (ArrayList<ArrayList<String>>) extras.getSerializable("friends");
+        Log.d("FRiends",don.toString());
+        Log.d("user",username);
+        System.out.println(username);
         setUpMapIfNeeded();
     }
     @Override
@@ -83,32 +89,37 @@ public class MapsActivity extends FragmentActivity {
         LatLng MIT = new LatLng(42.3598,-71.0921);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MIT, 15));
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
+        for (ArrayList<String> friend:don){
+            if(friend.size()==4){
+            String name = friend.get(0);
+            String lat = friend.get(1);
+            String lon = friend.get(2);
+            String status = friend.get(3);
+            Double x = Double.parseDouble(lat);
+            Double y = Double.parseDouble(lon);
+            Log.d("name in Map",name);
+            Log.d("lat in Map",lat);
+            Log.d("lon in Map",lon);
+            Log.d("status in Map",status);
+            addFriendsToMap(name,status,new LatLng(x,y));
+            }
+        }
         myFirebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                data = (Map<String, Object>)snapshot.getValue();
-                Log.d("Data : ", data.toString());
-//                Long lat = (Long) data.get("lat");
-//                Long Lon = (Long) data.get("long");
-//                String status = (String) data.get("status");
-////                String[] friendsList = friends.split("\\s+");
-//
-//                myLocation = new LatLng(lat, Lon);
-//                mMap.addMarker(new MarkerOptions().position(myLocation).title(username).snippet(status));
-//                System.out.println("here " + username + " " + status);
-//                System.out.println(lat+" "+Lon);
 
-//                for (String friend:friendsList) {
-//
-//                }
+
             }
-            @Override public void onCancelled(FirebaseError error) { }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
         });
 
     }
 
     public void addFriendsToMap(String friend, String status, LatLng location) {
-        mMap.addMarker(new MarkerOptions().position(myLocation).title(username).snippet(status));
+        mMap.addMarker(new MarkerOptions().position(location).title(friend).snippet(status));
     }
     public void mapsClick(View v) {
         /*Intent i = new Intent(this, MapsActivity.class);
