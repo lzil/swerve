@@ -332,9 +332,6 @@ public class StatusActivity extends ActionBarActivity {
             friendInfo.add(lat.toString());
             friendInfo.add(lon.toString());
             friendInfo.add((String) dataForFriend.get("status"));
-            Log.d("FFFF",friendInfo.toString());
-            Log.d("Fuck",lat.toString());
-            Log.d("Fuck2",lon.toString());
             }
             allFriendsInfo.add((ArrayList<String>) friendInfo);
         }

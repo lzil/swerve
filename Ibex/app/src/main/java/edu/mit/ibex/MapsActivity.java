@@ -97,10 +97,6 @@ public class MapsActivity extends FragmentActivity {
             String status = friend.get(3);
             Double x = Double.parseDouble(lat);
             Double y = Double.parseDouble(lon);
-            Log.d("name in Map",name);
-            Log.d("lat in Map",lat);
-            Log.d("lon in Map",lon);
-            Log.d("status in Map",status);
             addFriendsToMap(name,status,new LatLng(x,y));
             }
         }
