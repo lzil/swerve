@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import com.firebase.client.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 
 public class StatusActivity extends ActionBarActivity {
@@ -43,6 +45,8 @@ public class StatusActivity extends ActionBarActivity {
     String location;
     String tempStatus;
     List<String> friendsInfo;
+    List<String> friendsName;
+    List<List<String>> friendLocation;
     ListView theListView;
 
     @Override
@@ -62,6 +66,8 @@ public class StatusActivity extends ActionBarActivity {
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
 
         friendsInfo = new ArrayList<String>();
+      //  friendsName = new ArrayList<String>();
+      //  friendLocation = new ArrayList<List<String>>();
         theListView = (ListView) findViewById(R.id.listView);
         ArrayAdapter<String> resultsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
@@ -127,8 +133,12 @@ public class StatusActivity extends ActionBarActivity {
                 String friendStatus = friendInfo.get("status").toString();
 
                 friendsInfo.add(friendName + ": " + friendStatus);
+               // friendsName.add(friendName);
+
+              //  Double lat = Double.parseDouble(friendsDict.get(friendName).get(lat));
                 System.out.println("FriendsInfo " + friendsInfo);
                 addFriendList(friendsInfo);
+
             }
         }
 
@@ -292,9 +302,32 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void mapsClick(View v) {
+
         Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){
-        i.putExtra("username",username);}
+        i.putExtra("username",username);
+        }
+        List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
+        for(String name : data.keySet()){
+            List<String> friendInfo = new ArrayList<String>();
+            HashMap<String,Object> dataForFriend = (HashMap<String, Object>) data.get(name);
+
+
+            Object lat =  dataForFriend.get("lat");
+            Object lon =  dataForFriend.get("long");
+            if(lat!=null && lon!=null){
+            friendInfo.add(name);
+            friendInfo.add(lat.toString());
+            friendInfo.add(lon.toString());
+            friendInfo.add((String) dataForFriend.get("status"));
+            Log.d("FFFF",friendInfo.toString());
+            Log.d("Fuck",lat.toString());
+            Log.d("Fuck2",lon.toString());
+            }
+            allFriendsInfo.add((ArrayList<String>) friendInfo);
+        }
+        Log.d("All f info", allFriendsInfo.toString());
+        i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
         startActivity(i);
     }
 
