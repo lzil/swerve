@@ -88,6 +88,7 @@ public class MapsActivity extends FragmentActivity {
     private void setUpMap() {
         LatLng MIT = new LatLng(42.3598,-71.0921);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MIT, 15));
+        mMap.setMyLocationEnabled(true);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
         for (ArrayList<String> friend:don){
             if(friend.size()==4){

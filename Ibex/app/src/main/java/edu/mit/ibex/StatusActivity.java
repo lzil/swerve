@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
@@ -314,17 +317,17 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void mapsClick(View v) {
-
         Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){
         i.putExtra("username",username);
         }
+
         List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
+        HashMap<String,Object> friends = (HashMap<String, Object>) data.get(username);
+
         for(String name : data.keySet()){
             List<String> friendInfo = new ArrayList<String>();
             HashMap<String,Object> dataForFriend = (HashMap<String, Object>) data.get(name);
-
-
             Object lat =  dataForFriend.get("lat");
             Object lon =  dataForFriend.get("long");
             if(lat!=null && lon!=null){
@@ -339,13 +342,33 @@ public class StatusActivity extends ActionBarActivity {
         i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
         startActivity(i);
     }
-
     public void postStatus(View v) {
         friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
         myFirebase.child(username + "/available").setValue(on);
-    }
+        // Getting LocationManager object from System Service LOCATION_SERVICE
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // Creating a criteria object to retrieve provider
+        Criteria criteria = new Criteria();
+
+        // Getting the name of the best provider
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        // Getting Current Location
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        if(location!=null){
+            // Getting latitude of the current location
+            double latitude = location.getLatitude();
+            // Getting longitude of the current location
+            double longitude = location.getLongitude();
+            String latString = Double.toString(latitude);
+            String longString = Double.toString(longitude);
+            myFirebase.child(username + "/lat").setValue(latitude);
+            myFirebase.child(username + "/long").setValue(longitude);
+        }
 
     public void message(String user) {
         Log.d("testing", "did it work?");
