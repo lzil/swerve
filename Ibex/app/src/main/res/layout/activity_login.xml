@@ -40,12 +40,13 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="Log In"
-        android:id="@+id/signUpButton"
+        android:id="@+id/logInButton"
         android:clickable="true"
         android:enabled="true"
         android:onClick="logIn"
         android:layout_below="@+id/passwordEditText"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/passwordEditText"
+        android:layout_alignStart="@+id/passwordEditText" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -72,20 +73,21 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/registerLink"
-        android:id="@+id/registerText"
-        android:onClick="reg"
-        android:layout_below="@+id/invalidText"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Why work? Just Swerve"
         android:id="@+id/tagLine"
         android:layout_below="@+id/header"
         android:layout_alignStart="@+id/imageView"
         android:layout_alignLeft="@+id/imageView"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:id="@+id/signUpButton"
+        android:layout_below="@+id/passwordEditText"
+        android:layout_alignRight="@+id/passwordEditText"
+        android:layout_alignEnd="@+id/passwordEditText"
+        android:onClick="signUp"/>
 
 </RelativeLayout>
