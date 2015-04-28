@@ -47,7 +47,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/MyStatus"
-        android:maxLength="22"
+        android:maxLength="40"
         android:layout_toLeftOf="@+id/postButton"
         android:layout_toStartOf="@+id/postButton" />
 
@@ -68,7 +68,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/MyStatus"
-
         android:layout_below="@+id/available"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
@@ -105,8 +104,8 @@
             android:layout_alignParentStart="true" />
 
         <ImageButton
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/addfriend"
             android:id="@+id/friendButton"
             android:layout_alignParentBottom="true"
