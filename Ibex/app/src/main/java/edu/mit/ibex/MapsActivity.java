@@ -88,6 +88,7 @@ public class MapsActivity extends FragmentActivity {
     private void setUpMap() {
         LatLng MIT = new LatLng(42.3598,-71.0921);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MIT, 15));
+        mMap.setMyLocationEnabled(true);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
         for (ArrayList<String> friend:don){
             if(friend.size()==4){
@@ -97,10 +98,6 @@ public class MapsActivity extends FragmentActivity {
             String status = friend.get(3);
             Double x = Double.parseDouble(lat);
             Double y = Double.parseDouble(lon);
-            Log.d("name in Map",name);
-            Log.d("lat in Map",lat);
-            Log.d("lon in Map",lon);
-            Log.d("status in Map",status);
             addFriendsToMap(name,status,new LatLng(x,y));
             }
         }
