@@ -23,6 +23,7 @@ public class LogInActivity extends ActionBarActivity {
     public static boolean isPwdEntered = false;
     public static String usr, psw;
     TextView logText;
+    EditText username, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,8 @@ public class LogInActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         logText = (TextView) findViewById(R.id.invalidText);
-
+        username =  (EditText) findViewById(R.id.usernameEditText);
+        password =  (EditText) findViewById(R.id.passwordEditText);
     }
 
 
@@ -60,9 +62,6 @@ public class LogInActivity extends ActionBarActivity {
         logText.setTypeface(null, Typeface.ITALIC);
         logText.setTextColor(Color.DKGRAY);
         logText.setText("Confirming user login...");
-
-        EditText username =  (EditText) findViewById(R.id.usernameEditText);
-        EditText password =  (EditText) findViewById(R.id.passwordEditText);
 
         usr = username.getText().toString();
         psw = password.getText().toString();
@@ -94,8 +93,22 @@ public class LogInActivity extends ActionBarActivity {
             logText.setText("Wrong username and password. Please try again.");
         }
     }
-    public void reg(View view){
-        Intent intent = new Intent(this, RegisterActivity.class);
+
+    public void signUp(View view){
+        //logText.setTypeface(null, Typeface.ITALIC);
+        //logText.setTextColor(Color.GRAY);
+        //logText.setText("Signing up...");
+        String usr = username.getText().toString();
+        String psw = password.getText().toString();
+
+        //Passes usr and psw to some server
+        //if pass:
+        Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
+        myFirebase.child("/status").setValue("");
+        myFirebase.child("/password").setValue(psw);
+        myFirebase.child("/available").setValue("false");
+        Intent intent = new Intent(this, StatusActivity.class);
+        intent.putExtra("username", usr);
         startActivity(intent);
     }
 }

@@ -3,6 +3,7 @@ package edu.mit.ibex;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
@@ -121,8 +122,9 @@ public class StatusActivity extends ActionBarActivity {
 
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
+        myStatus.setTextColor(Color.rgb(3,171,244));
         //BOLD_ITALIC
-        myStatus.setText("My Status: " + status);
+        myStatus.setText(status);
 
         HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
         if (friendsDict != null) {
@@ -163,6 +165,7 @@ public class StatusActivity extends ActionBarActivity {
     private void showFriendInfo(String user, String status, Object friends) {
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
+        myStatus.setTextColor(Color.rgb(3,171,244));
         //BOLD_ITALIC
         myStatus.setText("\"" + status + "\"");
 
@@ -359,7 +362,7 @@ public class StatusActivity extends ActionBarActivity {
         // Getting Current Location
         Location location = locationManager.getLastKnownLocation(provider);
 
-        if(location!=null){
+        if (location != null) {
             // Getting latitude of the current location
             double latitude = location.getLatitude();
             // Getting longitude of the current location
@@ -368,7 +371,8 @@ public class StatusActivity extends ActionBarActivity {
             String longString = Double.toString(longitude);
             myFirebase.child(username + "/lat").setValue(latitude);
             myFirebase.child(username + "/long").setValue(longitude);
-        }}
+        }
+    }
 
     public void message(String user) {
         Log.d("testing", "did it work?");
