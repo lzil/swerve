@@ -368,7 +368,7 @@ public class StatusActivity extends ActionBarActivity {
             String longString = Double.toString(longitude);
             myFirebase.child(username + "/lat").setValue(latitude);
             myFirebase.child(username + "/long").setValue(longitude);
-        }
+        }}
 
     public void message(String user) {
         Log.d("testing", "did it work?");
