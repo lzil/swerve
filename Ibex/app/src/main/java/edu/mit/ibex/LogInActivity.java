@@ -129,17 +129,27 @@ public class LogInActivity extends ActionBarActivity {
         //logText.setTypeface(null, Typeface.ITALIC);
         //logText.setTextColor(Color.GRAY);
         //logText.setText("Signing up...");
+
         String usr = username.getText().toString();
         String psw = password.getText().toString();
 
         //Passes usr and psw to some server
         //if pass:
-        Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
-        myFirebase.child("/status").setValue("");
-        myFirebase.child("/pass").setValue(psw);
-        myFirebase.child("/available").setValue("false");
-        Intent intent = new Intent(this, StatusActivity.class);
-        intent.putExtra("username", usr);
-        startActivity(intent);
+        if(usr.equals("") || psw.equals("")){
+            logText.setTypeface(null, Typeface.ITALIC);
+            logText.setTextColor(Color.RED);
+            logText.setText("Username or password empty. Can't register.");
+        }
+        else {
+            //Passes usr and psw to some server
+            //if pass:
+            Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
+            myFirebase.child("/status").setValue("");
+            myFirebase.child("/pass").setValue(psw);
+            myFirebase.child("/available").setValue("false");
+            Intent intent = new Intent(this, StatusActivity.class);
+            intent.putExtra("username", usr);
+            startActivity(intent);
+        }
     }
 }
