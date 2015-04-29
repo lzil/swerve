@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.firebase.client.DataSnapshot;
@@ -79,6 +80,15 @@ public class MapsActivity extends FragmentActivity {
             }
         }
     }
+    @Override
+    public  boolean onKeyDown(int keyCode, KeyEvent event){
+        if((keyCode==KeyEvent.KEYCODE_BACK)){
+            finish();
+           Log.d("Message:","Activity Done YAY");
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
      * just add a marker near Africa.
