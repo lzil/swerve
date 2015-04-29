@@ -122,7 +122,7 @@ public class StatusActivity extends ActionBarActivity {
 
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
-        myStatus.setTextColor(Color.rgb(3,171,244));
+        myStatus.setTextColor(Color.rgb(3, 171, 244));
         //BOLD_ITALIC
         myStatus.setText(status);
 
@@ -165,7 +165,7 @@ public class StatusActivity extends ActionBarActivity {
     private void showFriendInfo(String user, String status, Object friends) {
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
-        myStatus.setTextColor(Color.rgb(3,171,244));
+        myStatus.setTextColor(Color.rgb(3, 171, 244));
         //BOLD_ITALIC
         myStatus.setText("\"" + status + "\"");
 
@@ -375,7 +375,23 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void message(String user) {
-        Log.d("testing", "did it work?");
+        final Firebase notifs = new Firebase("https://hangmonkey.firebaseio.com/" + user + "/notifications");
+        Log.d("testing", user);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setMessage("Message to " + user);
+        alert.setTitle(user);
+        final EditText edittext= new EditText(StatusActivity.this);
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                final String msg = edittext.getText().toString();
+                Log.d("message here", msg);
+            }
+        });
+        alert.setNegativeButton("OK", null);
+        alert.show();
     }
 }
 
