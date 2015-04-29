@@ -17,6 +17,9 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Set;
+
 
 public class LogInActivity extends ActionBarActivity {
     public static String psw2;
@@ -24,6 +27,9 @@ public class LogInActivity extends ActionBarActivity {
     public static String usr, psw;
     TextView logText;
     EditText username, password;
+    HashMap<String, Object> data;
+    Set<String> userList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,21 @@ public class LogInActivity extends ActionBarActivity {
         logText = (TextView) findViewById(R.id.invalidText);
         username =  (EditText) findViewById(R.id.usernameEditText);
         password =  (EditText) findViewById(R.id.passwordEditText);
+
+        Firebase checkUser = new Firebase("https://hangmonkey.firebaseio.com/");
+        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                data = (HashMap<String, Object>)snapshot.getValue();
+                Log.d("data", data.toString());
+                Log.d("data", data.keySet().toString());
+                userList = data.keySet();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
     }
 
 
@@ -65,19 +86,28 @@ public class LogInActivity extends ActionBarActivity {
 
         usr = username.getText().toString();
         psw = password.getText().toString();
-        Firebase ref = new Firebase("https://hangmonkey.firebaseio.com/" + usr + "/pass");
-        psw2 = "test";
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                LogInActivity.psw2 = snapshot.getValue().toString();
-                login(LogInActivity.psw2);
-            }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
+        //TODO need to check if user exists
+        System.out.println(userList);
+        if (userList.contains(usr)) {
+            Firebase ref = new Firebase("https://hangmonkey.firebaseio.com/" + usr + "/pass");
+            psw2 = "test"; //Can we get rid of this? looks like throw away code
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    LogInActivity.psw2 = snapshot.getValue().toString();
+                    login(LogInActivity.psw2);
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
+        } else{
+            logText.setVisibility(View.VISIBLE);
+            logText.setTextColor(Color.RED);
+            logText.setText("User does not exist");
+        }
 
     }
 
@@ -85,6 +115,7 @@ public class LogInActivity extends ActionBarActivity {
         if (psw2.equals(psw)) {
             Intent intent = new Intent(this, StatusActivity.class);
             intent.putExtra("username", usr);
+            Log.d("login", "Log in success");
             startActivity(intent);
         }
         else {
@@ -105,7 +136,7 @@ public class LogInActivity extends ActionBarActivity {
         //if pass:
         Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
         myFirebase.child("/status").setValue("");
-        myFirebase.child("/password").setValue(psw);
+        myFirebase.child("/pass").setValue(psw);
         myFirebase.child("/available").setValue("false");
         Intent intent = new Intent(this, StatusActivity.class);
         intent.putExtra("username", usr);

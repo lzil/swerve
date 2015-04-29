@@ -3,9 +3,7 @@ package edu.mit.ibex;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -76,7 +74,7 @@ public class RegisterActivity extends ActionBarActivity {
         //Passes usr and psw to some server
         //if pass:
         myFirebase.child(usr + "/status").setValue("");
-        myFirebase.child(usr + "/password").setValue(psw);
+        myFirebase.child(usr + "/pass").setValue(psw);
         myFirebase.child(usr + "/available").setValue("false");
         Intent intent = new Intent(this, StatusActivity.class);
         intent.putExtra("username", usr);
