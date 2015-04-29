@@ -130,6 +130,7 @@ public class StatusActivity extends ActionBarActivity {
         HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
         System.out.println(friendsDict);
         if (friendsDict != null) {
+            friendsInfo = new ArrayList<String>();
             Log.d("data", "friendsDict not null");
             for (Object timestamp : friendsDict.keySet()) {
                 HashMap name = (HashMap) friendsDict.get(timestamp);
@@ -139,7 +140,7 @@ public class StatusActivity extends ActionBarActivity {
 
                 HashMap friendInfo = (HashMap) data.get(friendName);
                 String friendStatus = friendInfo.get("status").toString();
-
+                Log.d("Add Friend", friendName+ " added to list");
                 friendsInfo.add(friendName + ": " + friendStatus);
                // friendsName.add(friendName);
 
@@ -219,6 +220,7 @@ public class StatusActivity extends ActionBarActivity {
             }
         });
     }
+
     /*
     This decides what happens when we click a friend in the Friends List
     Right now, clicking a friend opens notification of their status and long/lat coordinates.
