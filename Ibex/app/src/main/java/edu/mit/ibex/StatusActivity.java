@@ -29,6 +29,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -320,20 +321,46 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void mapsClick(View v) {
+        final List<String> ami = new ArrayList<String>();
         Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){
         i.putExtra("username",username);
         }
+        Firebase friendsForMap = new Firebase("https://hangmonkey.firebaseio.com/" + username + "/friends");
+        friendsForMap.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String,HashMap<String,String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
+                Collection<HashMap<String, String>> friendsNames =  fd.values();
+                for(HashMap<String,String> amiDic : friendsNames){
+                    String amigo = amiDic.get("name");
+                    if(!ami.contains(amigo)){
+                        ami.add(amigo);
+                    }
+                }
+                Log.d("HHHHH",ami.toString());
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
 
         List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
         HashMap<String,Object> friends = (HashMap<String, Object>) data.get(username);
 
-        for(String name : data.keySet()){
+        Log.d("DataforFriends ", friends.toString());
+        for(String name : ami){
             List<String> friendInfo = new ArrayList<String>();
             HashMap<String,Object> dataForFriend = (HashMap<String, Object>) data.get(name);
+            Log.d("Name",name);
+            Log.d("Data4Name",dataForFriend.toString());
             Object lat =  dataForFriend.get("lat");
             Object lon =  dataForFriend.get("long");
-            if(lat!=null && lon!=null){
+            boolean available = (boolean) dataForFriend.get("available");
+            if(lat!=null && lon!=null && available==true){
             friendInfo.add(name);
             friendInfo.add(lat.toString());
             friendInfo.add(lon.toString());
