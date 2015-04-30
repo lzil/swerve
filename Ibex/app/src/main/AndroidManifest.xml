@@ -25,7 +25,7 @@
 
         <activity
             android:name=".LogInActivity"
-            android:label="@string/app_name" >
+            android:label="Log in to Swerve!" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,7 +40,8 @@
 
         <activity
             android:name=".StatusActivity"
-            android:label="@string/app_name" >
+            android:label="Swervin' Status"
+            android:windowSoftInputMode="adjustPan">
         </activity>
 
         <meta-data
@@ -49,7 +50,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" >
+            android:label="Swervin' Map" >
         </activity>
     </application>
 
