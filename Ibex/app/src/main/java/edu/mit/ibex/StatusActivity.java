@@ -390,7 +390,7 @@ public class StatusActivity extends ActionBarActivity {
                 Log.d("message here", msg);
             }
         });
-        alert.setNegativeButton("OK", null);
+        alert.setNegativeButton("Cancel", null);
         alert.show();
     }
 }
