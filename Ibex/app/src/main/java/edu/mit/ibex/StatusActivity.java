@@ -1,6 +1,8 @@
 package edu.mit.ibex;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -392,7 +394,7 @@ public class StatusActivity extends ActionBarActivity {
     public void mapsClick(View v) {
         Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){
-        i.putExtra("username",username);
+            i.putExtra("username",username);
         }
 
         List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
@@ -442,6 +444,14 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(username + "/lat").setValue(latitude);
             myFirebase.child(username + "/long").setValue(longitude);
         }
+        Notification noti = new Notification.Builder(this)
+                .setContentTitle("New mail from " + username.toString())
+                .setContentText("something message")
+                .setSmallIcon(R.drawable.maps)
+                .build();
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, noti);
     }
 
     public void message(String user) {
@@ -458,6 +468,9 @@ public class StatusActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 final String msg = edittext.getText().toString();
                 Log.d("message here", msg);
+                HashMap<String, String> putMessage = new HashMap<String, String>();
+                putMessage.put(username, msg);
+                notifs.push().setValue(putMessage);
             }
         });
         alert.setNegativeButton("Cancel", null);
