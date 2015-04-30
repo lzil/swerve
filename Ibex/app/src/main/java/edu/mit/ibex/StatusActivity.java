@@ -1,5 +1,6 @@
 package edu.mit.ibex;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +11,7 @@ import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputFilter;
@@ -404,6 +406,13 @@ public class StatusActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void edittingStatus(View v){
+        if(!available.isChecked()){
+            available.setChecked(true);
+        }
+    }
+
     public void mapsClick(View v) {
         Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){
@@ -430,7 +439,11 @@ public class StatusActivity extends ActionBarActivity {
         i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
         startActivity(i);
     }
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void postStatus(View v) {
+        if(!available.isChecked()) {
+            available.setChecked(true);
+        }
         friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
@@ -458,12 +471,12 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(username + "/long").setValue(longitude);
         }
         Notification noti = new Notification.Builder(this)
-                .setContentTitle("New mail from " + username.toString())
-                .setContentText("something message")
-                .setSmallIcon(R.drawable.maps)
-                .build();
+            .setContentTitle("New mail from " + username.toString())
+            .setContentText("something message")
+            .setSmallIcon(R.drawable.maps)
+            .build();
         NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, noti);
     }
 
