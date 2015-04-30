@@ -397,40 +397,6 @@ public class StatusActivity extends ActionBarActivity {
     public void edittingStatus(View v){
         if(!available.isChecked()){
             available.setChecked(true);
-            friendsInfo = new ArrayList<String>();
-            boolean on = available.isChecked();
-            myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
-            myFirebase.child(username + "/available").setValue(on);
-            // Getting LocationManager object from System Service LOCATION_SERVICE
-            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-            // Creating a criteria object to retrieve provider
-            Criteria criteria = new Criteria();
-
-            // Getting the name of the best provider
-            String provider = locationManager.getBestProvider(criteria, true);
-
-            // Getting Current Location
-            Location location = locationManager.getLastKnownLocation(provider);
-
-            if (location != null) {
-                // Getting latitude of the current location
-                double latitude = location.getLatitude();
-                // Getting longitude of the current location
-                double longitude = location.getLongitude();
-                String latString = Double.toString(latitude);
-                String longString = Double.toString(longitude);
-                myFirebase.child(username + "/lat").setValue(latitude);
-                myFirebase.child(username + "/long").setValue(longitude);
-            }
-            Notification noti = new Notification.Builder(this)
-                    .setContentTitle("New mail from " + username.toString())
-                    .setContentText("something message")
-                    .setSmallIcon(R.drawable.maps)
-                    .build();
-            NotificationManager notificationManager =
-                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(0, noti);
         }
     }
 
@@ -460,7 +426,11 @@ public class StatusActivity extends ActionBarActivity {
         i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
         startActivity(i);
     }
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void postStatus(View v) {
+        if(!available.isChecked()) {
+            available.setChecked(true);
+        }
         friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
@@ -488,12 +458,12 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(username + "/long").setValue(longitude);
         }
         Notification noti = new Notification.Builder(this)
-                .setContentTitle("New mail from " + username.toString())
-                .setContentText("something message")
-                .setSmallIcon(R.drawable.maps)
-                .build();
+            .setContentTitle("New mail from " + username.toString())
+            .setContentText("something message")
+            .setSmallIcon(R.drawable.maps)
+            .build();
         NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, noti);
     }
 
