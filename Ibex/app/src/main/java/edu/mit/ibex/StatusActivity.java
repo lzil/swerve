@@ -1,6 +1,8 @@
 package edu.mit.ibex;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +12,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -299,6 +302,9 @@ public class StatusActivity extends ActionBarActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         final EditText edittext= new EditText(StatusActivity.this);
+        //only allows user to input max 24 chars (limit of username length)
+        edittext.setFilters(new InputFilter[] {
+                new InputFilter.LengthFilter(24) });
         alert.setMessage("Add a Friend");
         alert.setView(edittext);
 
@@ -401,7 +407,7 @@ public class StatusActivity extends ActionBarActivity {
     public void mapsClick(View v) {
         Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){
-        i.putExtra("username",username);
+            i.putExtra("username",username);
         }
 
         List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
@@ -451,6 +457,14 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(username + "/lat").setValue(latitude);
             myFirebase.child(username + "/long").setValue(longitude);
         }
+        Notification noti = new Notification.Builder(this)
+                .setContentTitle("New mail from " + username.toString())
+                .setContentText("something message")
+                .setSmallIcon(R.drawable.maps)
+                .build();
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, noti);
     }
 
     public void message(String user) {
@@ -467,9 +481,12 @@ public class StatusActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 final String msg = edittext.getText().toString();
                 Log.d("message here", msg);
+                HashMap<String, String> putMessage = new HashMap<String, String>();
+                putMessage.put(username, msg);
+                notifs.push().setValue(putMessage);
             }
         });
-        alert.setNegativeButton("OK", null);
+        alert.setNegativeButton("Cancel", null);
         alert.show();
     }
 }
