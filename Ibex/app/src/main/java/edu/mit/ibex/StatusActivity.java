@@ -388,7 +388,7 @@ public class StatusActivity extends ActionBarActivity {
     public void mapsClick(View v) {
         Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){
-        i.putExtra("username",username);
+            i.putExtra("username",username);
         }
 
         List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
@@ -454,6 +454,9 @@ public class StatusActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 final String msg = edittext.getText().toString();
                 Log.d("message here", msg);
+                HashMap<String, String> putMessage = new HashMap<String, String>();
+                putMessage.put(username, msg);
+                notifs.push().setValue(putMessage);
             }
         });
         alert.setNegativeButton("Cancel", null);
