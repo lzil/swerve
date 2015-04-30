@@ -9,7 +9,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -31,7 +30,7 @@ import com.firebase.client.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 
 
 public class StatusActivity extends ActionBarActivity {
@@ -52,6 +51,7 @@ public class StatusActivity extends ActionBarActivity {
     List<String> friendsName;
     List<List<String>> friendLocation;
     ListView theListView;
+    Set<String> userList; //List of ALL users in database. Used for checking if friend is valid
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +67,8 @@ public class StatusActivity extends ActionBarActivity {
         friendsButton = (ImageButton) findViewById(R.id.friendsButton);
         editStatus = (EditText) findViewById(R.id.editStatus);
         available = (Switch) findViewById(R.id.available);
-        myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
 
         friendsInfo = new ArrayList<String>();
-      //  friendsName = new ArrayList<String>();
-      //  friendLocation = new ArrayList<List<String>>();
         theListView = (ListView) findViewById(R.id.listView);
         ArrayAdapter<String> resultsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
@@ -80,12 +77,15 @@ public class StatusActivity extends ActionBarActivity {
         /**
          * Makes only one call to Firebase
          */
+        myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
+        Log.d("made link to Firebase","good");
         myFirebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 data = (HashMap<String, Object>)snapshot.getValue();
-
-                Log.d("Data : ", data.toString());
+                Log.d("data - (raw)", data.toString());
+                Log.d("data - Users", data.keySet().toString());
+                userList = data.keySet();
                 showFriendInfo(username, data);
             }
             @Override public void onCancelled(FirebaseError error) { }
@@ -115,10 +115,11 @@ public class StatusActivity extends ActionBarActivity {
      Makes only one call to Firebase
      */
     private void showFriendInfo(String currentUser, HashMap data) {
+        Log.d("inside showFriendInfo", "inside");
         HashMap currentUserInfo = (HashMap) data.get(currentUser);
-        System.out.println(currentUserInfo);
+//        System.out.println(currentUserInfo);
         String status = currentUserInfo.get("status").toString();
-        System.out.println(status);
+//        System.out.println(status);
 
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
@@ -127,24 +128,29 @@ public class StatusActivity extends ActionBarActivity {
         myStatus.setText(status);
 
         HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
+        System.out.println(friendsDict);
         if (friendsDict != null) {
+            friendsInfo = new ArrayList<String>();
+            Log.d("data", "friendsDict not null");
             for (Object timestamp : friendsDict.keySet()) {
                 HashMap name = (HashMap) friendsDict.get(timestamp);
-                System.out.println(name.keySet().toArray()[0]);
+//                System.out.println(name.keySet().toArray()[0]);
                 String friendName = name.get(name.keySet().toArray()[0]).toString();
-                System.out.println(friendName);
+//                System.out.println(friendName);
 
                 HashMap friendInfo = (HashMap) data.get(friendName);
                 String friendStatus = friendInfo.get("status").toString();
-
+                Log.d("Add Friend", friendName+ " added to list");
                 friendsInfo.add(friendName + ": " + friendStatus);
                // friendsName.add(friendName);
 
               //  Double lat = Double.parseDouble(friendsDict.get(friendName).get(lat));
-                System.out.println("FriendsInfo " + friendsInfo);
+//                System.out.println("FriendsInfo " + friendsInfo);
                 addFriendList(friendsInfo);
 
             }
+        }else{
+            Log.d("Error","No Friends");
         }
 
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -215,6 +221,11 @@ public class StatusActivity extends ActionBarActivity {
         });
     }
 
+    /*
+    This decides what happens when we click a friend in the Friends List
+    Right now, clicking a friend opens notification of their status and long/lat coordinates.
+    We can make it so when a friend is clicked we open maps tab up to their location
+     */
     private void clickFriend(String selectedFriend) {
         myFirebase.child(selectedFriend).addValueEventListener(new ValueEventListener() {
             @Override
@@ -237,12 +248,19 @@ public class StatusActivity extends ActionBarActivity {
         });
 
     }
+
+    /*
+    Helper function to add a friend to the Friends List
+     */
     private void addFriendList(List<String> friendsInfo) {
         ArrayAdapter<String> resultsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
         theListView.setAdapter(resultsAdapter);
     }
 
+    /*
+    Notification popup with more information about a friend
+     */
     private void statusPop(String user, String status, String location) {
 //        Log.d("statusPop", "Inside Status Pop");
 //        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
@@ -265,9 +283,17 @@ public class StatusActivity extends ActionBarActivity {
         alert.show();
     }
 
+    /*
+    Not sure the point of this.....it literally just calls another function. Who did this?
+     */
     public void addFriend(View view) {
         friendPop(username);
     }
+
+    /*
+    Adds a friend to the database under current user's friends list
+    Checks if friend exists in database and if friend is already in user's friends.
+     */
     private void friendPop(String user) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -282,10 +308,50 @@ public class StatusActivity extends ActionBarActivity {
                 frands.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        friendsInfo = new ArrayList<String>();
-                        HashMap<String, String> putName = new HashMap<String, String>();
-                        putName.put("name", friendName);
-                        frands.push().setValue(putName);
+                        List friends = new ArrayList();
+                        HashMap<String,Object> friendList = (HashMap<String,Object> )snapshot.getValue();
+                        System.out.println("friendsList");
+                        System.out.println(friendList);
+
+
+                        if (friendList != null) {
+                            Log.d("data", "friendList not null");
+                            for (Object timestamp : friendList.keySet()) {
+                                HashMap name = (HashMap) friendList.get(timestamp);
+//                                System.out.println(name.keySet().toArray()[0]);
+                                String friendName = name.get(name.keySet().toArray()[0]).toString();
+//                                System.out.println(friendName);
+                                friends.add(friendName);                            }
+                        }else{
+                            //No friends yet
+                            //Check if friend is in database
+                            if(userList.contains(friendName)){
+                                //Add friend
+                                friendsInfo = new ArrayList<String>();
+                                HashMap<String, String> putName = new HashMap<String, String>();
+                                putName.put("name", friendName);
+                                frands.push().setValue(putName);
+                                Log.d("Add Friend", friendName+" added");
+                            }
+                        }
+
+                        if (friends.contains(friendName)) {
+                            //Check if friend is already in friends list
+                            Log.d("Add Friend", friendName+" already added");
+                        }else{
+                            //Check if friend exists in database
+                            if(userList.contains(friendName)){
+                                //Add friend
+                                friendsInfo = new ArrayList<String>();
+                                HashMap<String, String> putName = new HashMap<String, String>();
+                                putName.put("name", friendName);
+                                frands.push().setValue(putName);
+                                Log.d("Add Friend", friendName+"added");
+                            }else{
+                                Log.d("Add Friend", friendName+" does not exist");
+                            }
+                        }
+
                     }
 
                     @Override
