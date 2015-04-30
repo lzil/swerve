@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -325,19 +326,25 @@ public class StatusActivity extends ActionBarActivity {
                         }else{
                             //No friends yet
                             //Check if friend is in database
-                            if(userList.contains(friendName)){
-                                //Add friend
-                                friendsInfo = new ArrayList<String>();
-                                HashMap<String, String> putName = new HashMap<String, String>();
-                                putName.put("name", friendName);
-                                frands.push().setValue(putName);
-                                Log.d("Add Friend", friendName+" added");
-                            }
+//                            if(userList.contains(friendName)){
+//                                //Add friend
+//                                friendsInfo = new ArrayList<String>();
+//                                HashMap<String, String> putName = new HashMap<String, String>();
+//                                putName.put("name", friendName);
+//                                frands.push().setValue(putName);
+//                                Log.d("Add Friend", friendName+" added");
+//                                Toast.makeText(getApplicationContext(),
+//                                        friendName+" added",
+//                                        Toast.LENGTH_LONG).show();
+//                            }
                         }
 
                         if (friends.contains(friendName)) {
                             //Check if friend is already in friends list
                             Log.d("Add Friend", friendName+" already added");
+                            Toast.makeText(getApplicationContext(),
+                                    friendName+" already added",
+                                    Toast.LENGTH_LONG).show();
                         }else{
                             //Check if friend exists in database
                             if(userList.contains(friendName)){
@@ -347,8 +354,14 @@ public class StatusActivity extends ActionBarActivity {
                                 putName.put("name", friendName);
                                 frands.push().setValue(putName);
                                 Log.d("Add Friend", friendName+"added");
+                                Toast.makeText(getApplicationContext(),
+                                        friendName+" added",
+                                        Toast.LENGTH_LONG).show();
                             }else{
                                 Log.d("Add Friend", friendName+" does not exist");
+                                Toast.makeText(getApplicationContext(),
+                                        friendName+" does not use Swerve",
+                                        Toast.LENGTH_LONG).show();
                             }
                         }
 
