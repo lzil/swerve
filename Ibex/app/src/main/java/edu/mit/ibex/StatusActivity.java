@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -298,6 +299,9 @@ public class StatusActivity extends ActionBarActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         final EditText edittext= new EditText(StatusActivity.this);
+        //only allows user to input max 24 chars (limit of username length)
+        edittext.setFilters(new InputFilter[] {
+                new InputFilter.LengthFilter(24) });
         alert.setMessage("Add a Friend");
         alert.setView(edittext);
 
