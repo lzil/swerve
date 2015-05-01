@@ -367,15 +367,13 @@ public class StatusActivity extends ActionBarActivity {
         alert.show();
     }
 
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void editingStatus(View v){
+    public void setAvailable(View v){
         if(!available.isChecked()){
             available.setChecked(true);
             availableClick(v);
         }
     }
-
 
     public void mapsClick(View v) {
         final List<String> ami = new ArrayList<String>();
@@ -431,11 +429,7 @@ public class StatusActivity extends ActionBarActivity {
     }
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void postStatus(View v) {
-
-        if(!available.isChecked()) {
-            available.setChecked(true);
-            availableClick(v);
-        }
+        setAvailable(v);
 
         friendsInfo = new ArrayList<String>();
         tempStatus = editStatus.getText().toString();

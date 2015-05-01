@@ -1,5 +1,7 @@
 package edu.mit.ibex;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -12,7 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -161,7 +165,65 @@ public class LogInActivity extends ActionBarActivity {
     }
 
     public void signUp(View view){
-        logText.setTypeface(null, Typeface.ITALIC);
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        LinearLayout lila1= new LinearLayout(this);
+        lila1.setOrientation(LinearLayout.VERTICAL); //1 is for vertical orientation
+        final EditText username = new EditText(this);
+        username.setHint("Username");
+        final EditText password = new EditText(this);
+        password.setHint("Password");
+
+        lila1.addView(username);
+        lila1.addView(password);
+        alert.setView(lila1);
+
+        alert.setIcon(R.drawable.hangin);
+        alert.setTitle("Register for Swerve!");
+
+        alert.setPositiveButton("Sign up", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String usr = username.getText().toString();
+                String psw = password.getText().toString();
+
+                if(usr.equals("") || psw.equals("")){
+                    Log.d("Sign Up", "User or pass is empty");
+                    logText.setVisibility(View.VISIBLE);
+                    logText.setTypeface(null, Typeface.ITALIC);
+                    logText.setTextColor(Color.RED);
+                    logText.setText("Username or password empty. Can't register.");
+                }
+                else {
+                    //User/Pass are valid
+                    //Check if user already exists
+                    if (userList.contains(usr)) {
+                        logText.setVisibility(View.VISIBLE);
+                        logText.setText("User already taken");
+                    } else {
+                        Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
+                        myFirebase.child("/status").setValue("");
+                        myFirebase.child("/pass").setValue(psw);
+                        myFirebase.child("/available").setValue("false");
+                        myFirebase.child("/long").setValue(studLong);
+                        myFirebase.child("/lat").setValue(studLat);
+                        goToStatus();
+                        return;
+                    }
+                }
+                //Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
+            }
+        });
+        alert.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                });
+        alert.show();
+
+
+        /*logText.setTypeface(null, Typeface.ITALIC);
         logText.setTextColor(Color.DKGRAY);
         logText.setText("Signing up...");
 
@@ -194,6 +256,12 @@ public class LogInActivity extends ActionBarActivity {
                 intent.putExtra("curUser", usr);
                 startActivity(intent);
             }
-        }
+        }*/
+    }
+
+    public void goToStatus(){
+        Intent intent = new Intent(this, StatusActivity.class);
+        intent.putExtra("curUser", usr);
+        startActivity(intent);
     }
 }
