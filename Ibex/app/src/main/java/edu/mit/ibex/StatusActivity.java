@@ -93,6 +93,7 @@ public class StatusActivity extends ActionBarActivity {
 
         //notifications from Firebase
         notifFire.addChildEventListener(new ChildEventListener() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 Map<String, String> msgPack = (Map<String, String>) snapshot.getValue();
@@ -133,17 +134,19 @@ public class StatusActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                //Toast.makeText(getApplicationContext(),"Item 1 Selected",Toast.LENGTH_LONG).show();
+                //return true;
+                return super.onOptionsItemSelected(item);
+            case R.id.action_logout:
+                Intent intent = new Intent(this, LogInActivity.class);
+                //intent.putExtra("curUser", usr);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /*
@@ -164,7 +167,7 @@ public class StatusActivity extends ActionBarActivity {
 
     //show the status list
     private void showStatusList(){
-        Log.d("made link to Firebase","good");
+        Log.d("made link to Firebase", "good");
         myFire.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -288,8 +291,8 @@ public class StatusActivity extends ActionBarActivity {
 
         final EditText friendInput = new EditText(StatusActivity.this);
         //only allows user to input max 24 chars (limit of curUser length)
-        friendInput.setFilters(new InputFilter[] {
-                new InputFilter.LengthFilter(24) });
+        friendInput.setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(24)});
         alert.setMessage("Add a Friend");
         alert.setView(friendInput);
 
