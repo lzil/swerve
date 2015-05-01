@@ -165,6 +165,7 @@ public class LogInActivity extends ActionBarActivity {
     }
 
     public void signUp(View view){
+        /*
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         LinearLayout lila1= new LinearLayout(this);
@@ -221,9 +222,9 @@ public class LogInActivity extends ActionBarActivity {
                     }
                 });
         alert.show();
+        */
 
-
-        /*logText.setTypeface(null, Typeface.ITALIC);
+        logText.setTypeface(null, Typeface.ITALIC);
         logText.setTextColor(Color.DKGRAY);
         logText.setText("Signing up...");
 
@@ -256,7 +257,7 @@ public class LogInActivity extends ActionBarActivity {
                 intent.putExtra("curUser", usr);
                 startActivity(intent);
             }
-        }*/
+        }
     }
 
     public void goToStatus(){
