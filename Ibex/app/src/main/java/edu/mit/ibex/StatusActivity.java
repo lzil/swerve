@@ -389,7 +389,7 @@ public class StatusActivity extends ActionBarActivity {
                                     HashMap<String, String> putName = new HashMap<String, String>();
                                     putName.put("name", friendName);
                                     frands.push().setValue(putName);
-                                    Log.d("Add Friend", friendName+"added");
+                                    Log.d("Add Friend", friendName+" added");
                                     Toast.makeText(getApplicationContext(),
                                             friendName+" added",
                                             Toast.LENGTH_LONG).show();
