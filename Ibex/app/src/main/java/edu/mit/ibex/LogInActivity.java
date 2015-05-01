@@ -165,7 +165,7 @@ public class LogInActivity extends ActionBarActivity {
     }
 
     public void signUp(View view){
-        /*
+
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         LinearLayout lila1= new LinearLayout(this);
@@ -203,13 +203,13 @@ public class LogInActivity extends ActionBarActivity {
                         logText.setText("User already taken");
                         alert.show();
                     } else {
-                        Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
-                        myFirebase.child("/status").setValue("");
-                        myFirebase.child("/pass").setValue(psw);
-                        myFirebase.child("/available").setValue("false");
-                        myFirebase.child("/long").setValue(studLong);
-                        myFirebase.child("/lat").setValue(studLat);
-                        goToStatus();
+                        myFire = baseFire.child(usr);
+                        myFire.child("status").setValue("");
+                        myFire.child("pass").setValue(psw);
+                        myFire.child("available").setValue("false");
+                        myFire.child("long").setValue(studLong);
+                        myFire.child("lat").setValue(studLat);
+                        goToStatus(usr);
                     }
                 }
                 //Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
@@ -222,8 +222,8 @@ public class LogInActivity extends ActionBarActivity {
                     }
                 });
         alert.show();
-        */
 
+        /*
         logText.setTypeface(null, Typeface.ITALIC);
         logText.setTextColor(Color.DKGRAY);
         logText.setText("Signing up...");
@@ -258,9 +258,10 @@ public class LogInActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         }
+        */
     }
 
-    public void goToStatus(){
+    public void goToStatus(String usr){
         Intent intent = new Intent(this, StatusActivity.class);
         intent.putExtra("curUser", usr);
         startActivity(intent);

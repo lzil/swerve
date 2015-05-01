@@ -137,18 +137,14 @@ public class StatusActivity extends ActionBarActivity {
                 //return true;
                 return super.onOptionsItemSelected(item);
             case R.id.action_logout:
+                /*SharedPreferences sp = this.getSharedPreferences("Login", 0);
+
+                String user = sp.getString("curUser", null);
+                String pass = sp.getString("curPsw", null);*/
+                SharedPreferences sp = getSharedPreferences("Login", 0);
+                sp.edit().clear().commit();
+                Log.d("sharepref", "deleted shared pref");
                 super.finish();
-//                Intent intent = new Intent(this, LogInActivity.class);
-//
-//                /*SharedPreferences sp = this.getSharedPreferences("Login", 0);
-//
-//                String user = sp.getString("curUser", null);
-//                String pass = sp.getString("curPsw", null);*/
-//                SharedPreferences sp = getSharedPreferences("Login", 0);
-//                sp.edit().clear().commit();
-//                Log.d("sharepref", "deleted shared pref");
-//
-//                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -342,8 +338,11 @@ public class StatusActivity extends ActionBarActivity {
                                     friendsInfo = new ArrayList<String>();
                                     HashMap<String, String> putName = new HashMap<String, String>();
                                     putName.put("name", friendName);
+
                                     myFire.child("friends").push().setValue(putName);
+
                                     Log.d("Add Friend", friendName+"added");
+
                                     Toast.makeText(getApplicationContext(),
                                             friendName+" added!",
                                             Toast.LENGTH_LONG).show();
@@ -384,8 +383,7 @@ public class StatusActivity extends ActionBarActivity {
         myFire.child("friends").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, HashMap<String, String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
-                Collection<HashMap<String, String>> friendsNames = fd.values();
+                HashMap on<HashMap<String, String>> friendsNames = fd.values();
                 for (HashMap<String, String> amiDic : friendsNames) {
                     String amigo = amiDic.get("name");
                     if (!ami.contains(amigo)) {
