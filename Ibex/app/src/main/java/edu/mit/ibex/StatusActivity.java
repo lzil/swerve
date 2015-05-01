@@ -137,18 +137,14 @@ public class StatusActivity extends ActionBarActivity {
                 //return true;
                 return super.onOptionsItemSelected(item);
             case R.id.action_logout:
+                /*SharedPreferences sp = this.getSharedPreferences("Login", 0);
+
+                String user = sp.getString("curUser", null);
+                String pass = sp.getString("curPsw", null);*/
+                SharedPreferences sp = getSharedPreferences("Login", 0);
+                sp.edit().clear().commit();
+                Log.d("sharepref", "deleted shared pref");
                 super.finish();
-//                Intent intent = new Intent(this, LogInActivity.class);
-//
-//                /*SharedPreferences sp = this.getSharedPreferences("Login", 0);
-//
-//                String user = sp.getString("curUser", null);
-//                String pass = sp.getString("curPsw", null);*/
-//                SharedPreferences sp = getSharedPreferences("Login", 0);
-//                sp.edit().clear().commit();
-//                Log.d("sharepref", "deleted shared pref");
-//
-//                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

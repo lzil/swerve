@@ -165,6 +165,7 @@ public class LogInActivity extends ActionBarActivity {
     }
 
     public void signUp(View view){
+
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         LinearLayout lila1= new LinearLayout(this);
@@ -222,6 +223,42 @@ public class LogInActivity extends ActionBarActivity {
                 });
         alert.show();
 
+        /*
+        logText.setTypeface(null, Typeface.ITALIC);
+        logText.setTextColor(Color.DKGRAY);
+        logText.setText("Signing up...");
+
+        String usr = username.getText().toString();
+        String psw = password.getText().toString();
+
+        //Passes usr and psw to some server
+        //if pass:
+        if(usr.equals("") || psw.equals("")){
+            Log.d("Sign Up", "User or pass is empty");
+            logText.setVisibility(View.VISIBLE);
+            logText.setTypeface(null, Typeface.ITALIC);
+            logText.setTextColor(Color.RED);
+            logText.setText("Username or password empty. Can't register.");
+        }
+        else {
+            //User/Pass are valid
+            //Check if user already exists
+            if (userList.contains(usr)) {
+                logText.setVisibility(View.VISIBLE);
+                logText.setText("User already taken");
+            } else{
+                Firebase myFire = baseFire.child(usr);
+                myFire.child("status").setValue("");
+                myFire.child("pass").setValue(psw);
+                myFire.child("available").setValue("false");
+                myFire.child("long").setValue(studLong);
+                myFire.child("lat").setValue(studLat);
+                Intent intent = new Intent(this, StatusActivity.class);
+                intent.putExtra("curUser", usr);
+                startActivity(intent);
+            }
+        }
+        */
     }
 
     public void goToStatus(String usr){
