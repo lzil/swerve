@@ -1,9 +1,11 @@
 package edu.mit.ibex;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -31,7 +34,7 @@ public class LogInActivity extends ActionBarActivity {
     Set<String> userList;
     double studLong = -71.094659;
     double studLat = 42.358991;
-
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +45,33 @@ public class LogInActivity extends ActionBarActivity {
         username =  (EditText) findViewById(R.id.usernameEditText);
         password =  (EditText) findViewById(R.id.passwordEditText);
 
+        sp = getSharedPreferences("Login", 0);
+
+        Map<String,?> keys = sp.getAll();
+        Log.d("sharepref", "testing : map made");
+
+        if(keys.entrySet().size()==0){
+            Log.d("sharepref", "empty map");
+        }
+        else {
+            Log.d("sharepref", "Map is populated");
+            Intent intent = new Intent(this, StatusActivity.class);
+
+            intent.putExtra("curUser", keys.get("curUser").toString());
+            Log.d("login", "Log in success");
+            startActivity(intent);
+        }
+        /*
+        for(Map.Entry<String,?> entry : keys.entrySet()){
+            Log.d("sharepref",entry.getKey() + ": " +
+                    entry.getValue().toString());
+        }*/
+
         Firebase checkUser = new Firebase("https://hangmonkey.firebaseio.com/");
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                data = (HashMap<String, Object>)snapshot.getValue();
+                data = (HashMap<String, Object>) snapshot.getValue();
                 Log.d("data", data.toString());
                 Log.d("data", data.keySet().toString());
                 userList = data.keySet();
@@ -118,6 +143,13 @@ public class LogInActivity extends ActionBarActivity {
             Intent intent = new Intent(this, StatusActivity.class);
             intent.putExtra("curUser", usr);
             Log.d("login", "Log in success");
+
+            SharedPreferences.Editor ed = sp.edit();
+            ed.putString("curUser", usr);
+            //ed.putString("curPsw", psw2);
+            ed.commit();
+            Log.d("sharepref", "added shared pref user"+usr+" psw"+psw2);
+
             startActivity(intent);
         }
         else {
@@ -128,9 +160,9 @@ public class LogInActivity extends ActionBarActivity {
     }
 
     public void signUp(View view){
-        //logText.setTypeface(null, Typeface.ITALIC);
-        //logText.setTextColor(Color.GRAY);
-        //logText.setText("Signing up...");
+        logText.setTypeface(null, Typeface.ITALIC);
+        logText.setTextColor(Color.DKGRAY);
+        logText.setText("Signing up...");
 
         String usr = username.getText().toString();
         String psw = password.getText().toString();

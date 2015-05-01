@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Criteria;
@@ -141,7 +142,15 @@ public class StatusActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
             case R.id.action_logout:
                 Intent intent = new Intent(this, LogInActivity.class);
-                //intent.putExtra("curUser", usr);
+
+                /*SharedPreferences sp = this.getSharedPreferences("Login", 0);
+
+                String user = sp.getString("curUser", null);
+                String pass = sp.getString("curPsw", null);*/
+                SharedPreferences sp = getSharedPreferences("Login", 0);
+                sp.edit().clear().commit();
+                Log.d("sharepref", "deleted shared pref");
+
                 startActivity(intent);
                 return true;
             default:
