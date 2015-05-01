@@ -47,7 +47,7 @@ public class StatusActivity extends ActionBarActivity {
     EditText editStatus;
     Switch available;
     String curUser, toUser;
-    Firebase myFire, msgFire, friendFire, notifFire;
+    Firebase myFire, curFire, msgFire, friendFire, notifFire;
     HashMap<String, Object> data;
     TextView myStatus;
 
@@ -70,6 +70,7 @@ public class StatusActivity extends ActionBarActivity {
         setContentView(R.layout.activity_status);
         Firebase.setAndroidContext(this);
         myFire = new Firebase("https://hangmonkey.firebaseio.com/");
+        curFire = new Firebase("https://hangmonkey.firebaseio.com/" + curUser);
         notifFire = new Firebase("https://hangmonkey.firebaseio.com/" + curUser + "/messages/");
         friendFire = new Firebase("https://hangmonkey.firebaseio.com/" + curUser + "/friends/");
         myStatus = (TextView) findViewById(R.id.MyStatus);
@@ -87,6 +88,7 @@ public class StatusActivity extends ActionBarActivity {
         /**
          * Makes only one call to Firebase
          */
+        myStatus.setText("");
         showStatusList();
 
         //notifications from Firebase
@@ -144,7 +146,7 @@ public class StatusActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    /*
     //availability
     public void availableClick(View v){
         if (available.isChecked()) {
@@ -158,6 +160,7 @@ public class StatusActivity extends ActionBarActivity {
             theListView.setAdapter(resultsAdapter);
         }
     }
+    */
 
     //show the status list
     private void showStatusList(){
@@ -187,10 +190,6 @@ public class StatusActivity extends ActionBarActivity {
     private void showFriendInfo(String currentUser, HashMap data) {
         HashMap currentUserInfo = (HashMap) data.get(currentUser);
         String status = currentUserInfo.get("status").toString();
-
-        myStatus.setTextSize(20);
-        myStatus.setTypeface(null, Typeface.ITALIC);
-        myStatus.setTextColor(Color.rgb(3, 171, 244));
         myStatus.setText(status);
 
         HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
@@ -284,7 +283,7 @@ public class StatusActivity extends ActionBarActivity {
     Adds a friend to the database under current user's friends list
     Checks if friend exists in database and if friend is already in user's friends.
      */
-    public void addFriend() {
+    public void addFriend(View v) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         final EditText friendInput = new EditText(StatusActivity.this);
@@ -359,13 +358,15 @@ public class StatusActivity extends ActionBarActivity {
         alert.show();
     }
 
+    /*
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void edittingStatus(View v){
+    public void editingStatus(View v){
         if(!available.isChecked()){
             available.setChecked(true);
             availableClick(v);
         }
     }
+    */
 
     public void mapsClick(View v) {
         final List<String> ami = new ArrayList<String>();
@@ -421,12 +422,18 @@ public class StatusActivity extends ActionBarActivity {
     }
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void postStatus(View v) {
+        /*
         if(!available.isChecked()) {
             available.setChecked(true);
             availableClick(v);
         }
+        */
         friendsInfo = new ArrayList<String>();
+        tempStatus = editStatus.getText().toString();
         boolean on = available.isChecked();
+        if (tempStatus == "") {
+            return;
+        }
         myFire.child(curUser + "/status").setValue(editStatus.getText().toString());
         myFire.child(curUser + "/available").setValue(on);
         // Getting LocationManager object from System Service LOCATION_SERVICE
