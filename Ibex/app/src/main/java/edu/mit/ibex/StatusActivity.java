@@ -416,7 +416,7 @@ public class StatusActivity extends ActionBarActivity {
 
     public void mapsClick(View v) {
         final List<String> ami = new ArrayList<String>();
-        Intent i = new Intent(this, MapsActivity.class);
+        final Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){
             i.putExtra("username",username);
         }
@@ -433,6 +433,36 @@ public class StatusActivity extends ActionBarActivity {
                     }
                 }
                 Log.d("HHHHH",ami.toString());
+
+                List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
+                HashMap<String,Object> friends = (HashMap<String, Object>) data.get(username);
+
+                Log.d("DataforFriends ", friends.toString());
+                for(String name : ami){
+                    List<String> friendInfo = new ArrayList<String>();
+                    HashMap<String,Object> dataForFriend = (HashMap<String, Object>) data.get(name);
+                    Log.d("Name",name);
+                    Log.d("Data4Name",dataForFriend.toString());
+                    Object lat =  dataForFriend.get("lat");
+                    Object lon =  dataForFriend.get("long");
+                    boolean available = (boolean) dataForFriend.get("available");
+                    if(lat!=null && lon!=null && available==true){
+                        friendInfo.add(name);
+                        friendInfo.add(lat.toString());
+                        friendInfo.add(lon.toString());
+                        friendInfo.add((String) dataForFriend.get("status"));
+                    }
+                    allFriendsInfo.add((ArrayList<String>) friendInfo);
+                }
+                Log.d("All f info", allFriendsInfo.toString());
+                i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
+                startActivity(i);
+
+
+
+
+
+
             }
 
             @Override
@@ -441,30 +471,6 @@ public class StatusActivity extends ActionBarActivity {
             }
         });
 
-
-        List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
-        HashMap<String,Object> friends = (HashMap<String, Object>) data.get(username);
-
-        Log.d("DataforFriends ", friends.toString());
-        for(String name : ami){
-            List<String> friendInfo = new ArrayList<String>();
-            HashMap<String,Object> dataForFriend = (HashMap<String, Object>) data.get(name);
-            Log.d("Name",name);
-            Log.d("Data4Name",dataForFriend.toString());
-            Object lat =  dataForFriend.get("lat");
-            Object lon =  dataForFriend.get("long");
-            boolean available = (boolean) dataForFriend.get("available");
-            if(lat!=null && lon!=null && available==true){
-            friendInfo.add(name);
-            friendInfo.add(lat.toString());
-            friendInfo.add(lon.toString());
-            friendInfo.add((String) dataForFriend.get("status"));
-            }
-            allFriendsInfo.add((ArrayList<String>) friendInfo);
-        }
-        Log.d("All f info", allFriendsInfo.toString());
-        i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
-        startActivity(i);
     }
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void postStatus(View v) {
