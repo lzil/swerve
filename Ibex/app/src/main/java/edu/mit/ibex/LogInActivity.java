@@ -202,13 +202,13 @@ public class LogInActivity extends ActionBarActivity {
                         logText.setText("User already taken");
                         alert.show();
                     } else {
-                        Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
-                        myFirebase.child("/status").setValue("");
-                        myFirebase.child("/pass").setValue(psw);
-                        myFirebase.child("/available").setValue("false");
-                        myFirebase.child("/long").setValue(studLong);
-                        myFirebase.child("/lat").setValue(studLat);
-                        goToStatus();
+                        myFire = baseFire.child(usr);
+                        myFire.child("status").setValue("");
+                        myFire.child("pass").setValue(psw);
+                        myFire.child("available").setValue("false");
+                        myFire.child("long").setValue(studLong);
+                        myFire.child("lat").setValue(studLat);
+                        goToStatus(usr);
                     }
                 }
                 //Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
@@ -222,44 +222,9 @@ public class LogInActivity extends ActionBarActivity {
                 });
         alert.show();
 
-
-        /*logText.setTypeface(null, Typeface.ITALIC);
-        logText.setTextColor(Color.DKGRAY);
-        logText.setText("Signing up...");
-
-        String usr = username.getText().toString();
-        String psw = password.getText().toString();
-
-        //Passes usr and psw to some server
-        //if pass:
-        if(usr.equals("") || psw.equals("")){
-            Log.d("Sign Up", "User or pass is empty");
-            logText.setVisibility(View.VISIBLE);
-            logText.setTypeface(null, Typeface.ITALIC);
-            logText.setTextColor(Color.RED);
-            logText.setText("Username or password empty. Can't register.");
-        }
-        else {
-            //User/Pass are valid
-            //Check if user already exists
-            if (userList.contains(usr)) {
-                logText.setVisibility(View.VISIBLE);
-                logText.setText("User already taken");
-            } else{
-                Firebase myFire = baseFire.child(usr);
-                myFire.child("status").setValue("");
-                myFire.child("pass").setValue(psw);
-                myFire.child("available").setValue("false");
-                myFire.child("long").setValue(studLong);
-                myFire.child("lat").setValue(studLat);
-                Intent intent = new Intent(this, StatusActivity.class);
-                intent.putExtra("curUser", usr);
-                startActivity(intent);
-            }
-        }*/
     }
 
-    public void goToStatus(){
+    public void goToStatus(String usr){
         Intent intent = new Intent(this, StatusActivity.class);
         intent.putExtra("curUser", usr);
         startActivity(intent);
