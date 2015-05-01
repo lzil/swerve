@@ -535,20 +535,11 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(username + "/long").setValue(longitude);
         }
         Notification noti = new Notification.Builder(this)
-<<<<<<< HEAD
                 .setContentTitle("New mail from " + username.toString())
                 .setContentText("something message")
                 .setSmallIcon(R.drawable.maps)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-=======
-            .setContentTitle("New mail from " + username.toString())
-            .setContentText("something message")
-            .setSmallIcon(R.drawable.maps)
-            .build();
-        NotificationManager notificationManager =
-            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
->>>>>>> 1bb581d28e7a074bfb24b3569edf972f9018a44b
         notificationManager.notify(0, noti);
     }
 
