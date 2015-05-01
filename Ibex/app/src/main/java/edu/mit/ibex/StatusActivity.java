@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -91,9 +92,10 @@ public class StatusActivity extends ActionBarActivity {
         notifs.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+                Map<String, String> msgPack = (Map<String, String>) snapshot.getValue();
                 Notification noti = new Notification.Builder(StatusActivity.this)
-                        .setContentTitle("New mail from " + username.toString())
-                        .setContentText("something message")
+                        .setContentTitle("New message from " + msgPack.get("name"))
+                        .setContentText(msgPack.get("message"))
                         .setSmallIcon(R.drawable.maps)
                         .build();
                 NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -592,7 +594,8 @@ public class StatusActivity extends ActionBarActivity {
                 final String msg = edittext.getText().toString();
                 Log.d("message here", msg);
                 HashMap<String, String> putMessage = new HashMap<String, String>();
-                putMessage.put(username, msg);
+                putMessage.put("name", username);
+                putMessage.put("message", msg);
                 notifs.push().setValue(putMessage);
             }
         });
