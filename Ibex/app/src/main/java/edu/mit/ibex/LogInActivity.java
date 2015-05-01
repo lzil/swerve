@@ -116,14 +116,14 @@ public class LogInActivity extends ActionBarActivity {
     public void login(String psw2) {
         if (psw2.equals(psw)) {
             Intent intent = new Intent(this, StatusActivity.class);
-            intent.putExtra("username", usr);
+            intent.putExtra("curUser", usr);
             Log.d("login", "Log in success");
             startActivity(intent);
         }
         else {
             logText.setVisibility(View.VISIBLE);
             logText.setTextColor(Color.RED);
-            logText.setText("Wrong username and password. Please try again.");
+            logText.setText("Wrong curUser and password. Please try again.");
         }
     }
 
@@ -158,7 +158,7 @@ public class LogInActivity extends ActionBarActivity {
                 myFirebase.child("/long").setValue(studLong);
                 myFirebase.child("/lat").setValue(studLat);
                 Intent intent = new Intent(this, StatusActivity.class);
-                intent.putExtra("username", usr);
+                intent.putExtra("curUser", usr);
                 startActivity(intent);
             }
         }

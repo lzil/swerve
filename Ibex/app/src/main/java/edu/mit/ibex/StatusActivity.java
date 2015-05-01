@@ -43,34 +43,35 @@ import java.util.Set;
 
 
 public class StatusActivity extends ActionBarActivity {
-    private String LOG_MESSAGE = "HangMonkey";
-
     ImageButton mapsButton, friendsButton;
     EditText editStatus;
-    Firebase myFirebase;
     Switch available;
-    String username, toUser;
+    String curUser, toUser;
+    Firebase myFire, msgFire, friendFire, notifFire;
     HashMap<String, Object> data;
     TextView myStatus;
 
     String friendStatus;
     String location;
     String tempStatus;
-    List<String> friendsInfo;
-    List<String> friendsName;
+    List<String> friendsInfo, friendsName;
     List<List<String>> friendLocation;
     ListView theListView;
     Set<String> userList; //List of ALL users in database. Used for checking if friend is valid
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        username = intent.getExtras().getString("username");
+        curUser = intent.getExtras().getString("curUser");
 
         setContentView(R.layout.activity_status);
         Firebase.setAndroidContext(this);
+        myFire = new Firebase("https://hangmonkey.firebaseio.com/");
+        notifFire = new Firebase("https://hangmonkey.firebaseio.com/" + curUser + "/messages/");
+        friendFire = new Firebase("https://hangmonkey.firebaseio.com/" + curUser + "/friends/");
         myStatus = (TextView) findViewById(R.id.MyStatus);
         mapsButton = (ImageButton) findViewById(R.id.mapsButton);
         friendsButton = (ImageButton) findViewById(R.id.friendsButton);
@@ -86,63 +87,65 @@ public class StatusActivity extends ActionBarActivity {
         /**
          * Makes only one call to Firebase
          */
-        Log.d("onCreate", "call showStatusList");
         showStatusList();
-        Firebase notifs = new Firebase("https://hangmonkey.firebaseio.com/" + username + "/notifications/");
-        notifs.addChildEventListener(new ChildEventListener() {
+
+        //notifications from Firebase
+        notifFire.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 Map<String, String> msgPack = (Map<String, String>) snapshot.getValue();
-                Notification noti = new Notification.Builder(StatusActivity.this)
+                Notification notif = new Notification.Builder(StatusActivity.this)
                         .setContentTitle("New message from " + msgPack.get("name"))
                         .setContentText(msgPack.get("message"))
                         .setSmallIcon(R.drawable.maps)
                         .build();
                 NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                notificationManager.notify(0, noti);
+                notificationManager.notify(0, notif);
             }
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
             }
-
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
 
             }
-
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
             }
-
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
 
-
-        /**
-         * Makes N calls to Firebase where N is total number of friends.
-         */
-//        myFirebase.child(username).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-////                System.out.println(snapshot.getValue());
-//
-//                data = (HashMap<String, Object>)snapshot.getValue();
-//
-//                System.out.println(snapshot.getKey());
-//                Log.d("Data : ", data.toString());
-////                System.out.println(data.get("status").toString());
-////                System.out.println(data.get("friends").toString());
-//                showFriendInfo(snapshot.getKey(), data.get("status").toString(), data.get("friends"));
-//            }
-//            @Override public void onCancelled(FirebaseError error) { }
-//        });
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_status, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    //availability
     public void availableClick(View v){
         if (available.isChecked()) {
             Log.d("availableClicked", "calling showStatusList");
@@ -156,22 +159,25 @@ public class StatusActivity extends ActionBarActivity {
         }
     }
 
+    //show the status list
     private void showStatusList(){
-        myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
         Log.d("made link to Firebase","good");
-        myFirebase.addValueEventListener(new ValueEventListener() {
+        myFire.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                data = (HashMap<String, Object>)snapshot.getValue();
+                data = (HashMap<String, Object>) snapshot.getValue();
                 Log.d("data - (raw)", data.toString());
                 Log.d("data - Users", data.keySet().toString());
                 userList = data.keySet();
-                if (available.isChecked()){
+                if (available.isChecked()) {
                     Log.d("showStatusList", "calling showFriendInfo");
-                    showFriendInfo(username, data);
+                    showFriendInfo(curUser, data);
                 }
             }
-            @Override public void onCancelled(FirebaseError error) { }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
         });
     }
 
@@ -179,16 +185,12 @@ public class StatusActivity extends ActionBarActivity {
      Makes only one call to Firebase
      */
     private void showFriendInfo(String currentUser, HashMap data) {
-        Log.d("inside showFriendInfo", "inside");
         HashMap currentUserInfo = (HashMap) data.get(currentUser);
-//        System.out.println(currentUserInfo);
         String status = currentUserInfo.get("status").toString();
-//        System.out.println(status);
 
         myStatus.setTextSize(20);
         myStatus.setTypeface(null, Typeface.ITALIC);
         myStatus.setTextColor(Color.rgb(3, 171, 244));
-        //BOLD_ITALIC
         myStatus.setText(status);
 
         HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
@@ -198,18 +200,14 @@ public class StatusActivity extends ActionBarActivity {
             Log.d("data", "friendsDict not null");
             for (Object timestamp : friendsDict.keySet()) {
                 HashMap name = (HashMap) friendsDict.get(timestamp);
-//                System.out.println(name.keySet().toArray()[0]);
                 String friendName = name.get(name.keySet().toArray()[0]).toString();
-//                System.out.println(friendName);
 
                 HashMap friendInfo = (HashMap) data.get(friendName);
                 String friendStatus = friendInfo.get("status").toString();
                 Log.d("Add Friend", friendName+ " added to list");
                 friendsInfo.add(friendName + ": " + friendStatus);
-               // friendsName.add(friendName);
 
               //  Double lat = Double.parseDouble(friendsDict.get(friendName).get(lat));
-//                System.out.println("FriendsInfo " + friendsInfo);
                 addFriendList(friendsInfo);
 
             }
@@ -221,63 +219,6 @@ public class StatusActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
                 Log.d("friendClick", "clicked!");
                 String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
-//                do whatever here
-                final String selectedFriend = selectedFromList.split(":")[0];
-                Log.d("friendClick", selectedFriend);
-                clickFriend(selectedFriend);
-            }
-        });
-    }
-
-    /*
-    Makes N calls to Firebase where N is total number of friends
-     */
-    private void showFriendInfo(String user, String status, Object friends) {
-        myStatus.setTextSize(20);
-        myStatus.setTypeface(null, Typeface.ITALIC);
-        myStatus.setTextColor(Color.rgb(3, 171, 244));
-        //BOLD_ITALIC
-        myStatus.setText("\"" + status + "\"");
-
-        HashMap friendsDict = (HashMap) friends;
-        System.out.println(friendsDict);
-        System.out.println(friendsDict.keySet());
-
-        if (friendsDict != null) {
-            for (Object timestamp : friendsDict.keySet()) {
-                HashMap name = (HashMap) friendsDict.get(timestamp);
-                System.out.println(name);
-                System.out.println(name.keySet().toArray()[0]);
-                String friendName = name.get(name.keySet().toArray()[0]).toString();
-                System.out.println(friendName);
-                myFirebase.child(friendName).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        data = (HashMap<String, Object>) snapshot.getValue();
-                        Log.d("Friend Data : ", data.toString());
-                        if (!(data.get("status").equals(null))) {
-                            tempStatus = data.get("status").toString();
-                            System.out.println("inside" + tempStatus);
-                            friendsInfo.add(snapshot.getKey() + ": " + data.get("status"));
-
-                            System.out.println("FriendsInfo " + friendsInfo);
-                            addFriendList(friendsInfo);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError error) {
-                    }
-
-                });
-            }
-        }
-
-        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
-                Log.d("friendClick", "clicked!");
-                String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
-//                do whatever here
                 final String selectedFriend = selectedFromList.split(":")[0];
                 Log.d("friendClick", selectedFriend);
                 clickFriend(selectedFriend);
@@ -291,10 +232,9 @@ public class StatusActivity extends ActionBarActivity {
     We can make it so when a friend is clicked we open maps tab up to their location
      */
     private void clickFriend(String selectedFriend) {
-        myFirebase.child(selectedFriend).addValueEventListener(new ValueEventListener() {
+        myFire.child(selectedFriend).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(snapshot.getValue());
                 data = (HashMap<String, Object>) snapshot.getValue();
                 System.out.println(data);
 
@@ -326,18 +266,11 @@ public class StatusActivity extends ActionBarActivity {
     Notification popup with more information about a friend
      */
     private void statusPop(String user, String status, String location) {
-//        Log.d("statusPop", "Inside Status Pop");
-//        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-//        dlgAlert.setMessage(status + "\n"+location);
-//        dlgAlert.setTitle(user);
-//        dlgAlert.setPositiveButton("OK", null);
-//        dlgAlert.setCancelable(true);
-//        dlgAlert.create().show();
         toUser = user;
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setMessage(status + "\n" + location);
-        alert.setTitle(user);
+        alert.setTitle(toUser);
         alert.setPositiveButton("Message", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 message(toUser);
@@ -348,32 +281,23 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     /*
-    Not sure the point of this.....it literally just calls another function. Who did this?
-    Liang: I did this because various variable access trouble issues. pls keep it i need it for it to work
-     */
-    public void addFriend(View view) {
-        friendPop(username);
-    }
-
-    /*
     Adds a friend to the database under current user's friends list
     Checks if friend exists in database and if friend is already in user's friends.
      */
-    private void friendPop(String user) {
+    public void addFriend() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        final EditText edittext= new EditText(StatusActivity.this);
-        //only allows user to input max 24 chars (limit of username length)
-        edittext.setFilters(new InputFilter[] {
+        final EditText friendInput = new EditText(StatusActivity.this);
+        //only allows user to input max 24 chars (limit of curUser length)
+        friendInput.setFilters(new InputFilter[] {
                 new InputFilter.LengthFilter(24) });
         alert.setMessage("Add a Friend");
-        alert.setView(edittext);
+        alert.setView(friendInput);
 
         alert.setPositiveButton("Add Friend", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                final Firebase frands = new Firebase("https://hangmonkey.firebaseio.com/" + username + "/friends");
-                final String friendName = edittext.getText().toString();
-                frands.addListenerForSingleValueEvent(new ValueEventListener() {
+                final String friendName = friendInput.getText().toString();
+                friendFire.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         List friends = new ArrayList();
@@ -386,24 +310,9 @@ public class StatusActivity extends ActionBarActivity {
                             Log.d("data", "friendList not null");
                             for (Object timestamp : friendList.keySet()) {
                                 HashMap name = (HashMap) friendList.get(timestamp);
-//                                System.out.println(name.keySet().toArray()[0]);
                                 String friendName = name.get(name.keySet().toArray()[0]).toString();
-//                                System.out.println(friendName);
-                                friends.add(friendName);                            }
-                        }else{
-                            //No friends yet
-                            //Check if friend is in database
-//                            if(userList.contains(friendName)){
-//                                //Add friend
-//                                friendsInfo = new ArrayList<String>();
-//                                HashMap<String, String> putName = new HashMap<String, String>();
-//                                putName.put("name", friendName);
-//                                frands.push().setValue(putName);
-//                                Log.d("Add Friend", friendName+" added");
-//                                Toast.makeText(getApplicationContext(),
-//                                        friendName+" added",
-//                                        Toast.LENGTH_LONG).show();
-//                            }
+                                friends.add(friendName);
+                            }
                         }
 
                         if (friends.contains(friendName)) {
@@ -415,7 +324,7 @@ public class StatusActivity extends ActionBarActivity {
                         }else{
                             //Check if friend exists in database
                             if(userList.contains(friendName)){
-                                if (friendName.equals(username)){
+                                if (friendName.equals(curUser)){
                                     Log.d("Add Friend", "Tried to add self. Motivational message sent");
                                     Toast.makeText(getApplicationContext(),
                                             "Are you lonely? You are always you're own friend! :D",
@@ -425,7 +334,7 @@ public class StatusActivity extends ActionBarActivity {
                                     friendsInfo = new ArrayList<String>();
                                     HashMap<String, String> putName = new HashMap<String, String>();
                                     putName.put("name", friendName);
-                                    frands.push().setValue(putName);
+                                    friendFire.push().setValue(putName);
                                     Log.d("Add Friend", friendName+"added");
                                     Toast.makeText(getApplicationContext(),
                                             friendName+" added",
@@ -450,28 +359,6 @@ public class StatusActivity extends ActionBarActivity {
         alert.show();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_status, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void edittingStatus(View v){
         if(!available.isChecked()){
@@ -483,11 +370,10 @@ public class StatusActivity extends ActionBarActivity {
     public void mapsClick(View v) {
         final List<String> ami = new ArrayList<String>();
         final Intent i = new Intent(this, MapsActivity.class);
-        if (username != null) {
-            i.putExtra("username", username);
+        if (curUser != null) {
+            i.putExtra("curUser", curUser);
         }
-        Firebase friendsForMap = new Firebase("https://hangmonkey.firebaseio.com/" + username + "/friends");
-        friendsForMap.addValueEventListener(new ValueEventListener() {
+        friendFire.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, HashMap<String, String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
@@ -501,7 +387,7 @@ public class StatusActivity extends ActionBarActivity {
                 Log.d("HHHHH", ami.toString());
 
                 List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
-                HashMap<String, Object> friends = (HashMap<String, Object>) data.get(username);
+                HashMap<String, Object> friends = (HashMap<String, Object>) data.get(curUser);
 
                 Log.d("DataforFriends ", friends.toString());
                 for (String name : ami) {
@@ -524,11 +410,6 @@ public class StatusActivity extends ActionBarActivity {
                 i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
                 startActivity(i);
 
-
-
-
-
-
             }
 
             @Override
@@ -546,8 +427,8 @@ public class StatusActivity extends ActionBarActivity {
         }
         friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();
-        myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
-        myFirebase.child(username + "/available").setValue(on);
+        myFire.child(curUser + "/status").setValue(editStatus.getText().toString());
+        myFire.child(curUser + "/available").setValue(on);
         // Getting LocationManager object from System Service LOCATION_SERVICE
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -565,38 +446,32 @@ public class StatusActivity extends ActionBarActivity {
             double latitude = location.getLatitude();
             // Getting longitude of the current location
             double longitude = location.getLongitude();
-            String latString = Double.toString(latitude);
-            String longString = Double.toString(longitude);
-            myFirebase.child(username + "/lat").setValue(latitude);
-            myFirebase.child(username + "/long").setValue(longitude);
+            //String latString = Double.toString(latitude);
+            //String longString = Double.toString(longitude);
+            myFire.child(curUser + "/lat").setValue(latitude);
+            myFire.child(curUser + "/long").setValue(longitude);
         }
-        Notification noti = new Notification.Builder(this)
-                .setContentTitle("New mail from " + username.toString())
-                .setContentText("something message")
-                .setSmallIcon(R.drawable.maps)
-                .build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0, noti);
     }
 
+
+    //Sends a message to a specified user
     public void message(String user) {
-        final Firebase notifs = new Firebase("https://hangmonkey.firebaseio.com/" + user + "/notifications");
-        Log.d("testing", user);
+        toUser = user;
+        msgFire = new Firebase("https://hangmonkey.firebaseio.com/" + toUser + "/notifications");
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setMessage("Message to " + user);
-        alert.setTitle(user);
+        alert.setMessage("Message to " + toUser);
+        alert.setTitle(toUser);
         final EditText edittext= new EditText(StatusActivity.this);
         alert.setView(edittext);
 
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 final String msg = edittext.getText().toString();
-                Log.d("message here", msg);
                 HashMap<String, String> putMessage = new HashMap<String, String>();
-                putMessage.put("name", username);
+                putMessage.put("name", curUser);
                 putMessage.put("message", msg);
-                notifs.push().setValue(putMessage);
+                msgFire.push().setValue(putMessage);
             }
         });
         alert.setNegativeButton("Cancel", null);

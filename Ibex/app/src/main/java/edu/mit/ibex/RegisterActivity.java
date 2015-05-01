@@ -77,11 +77,11 @@ public class RegisterActivity extends ActionBarActivity {
         myFirebase.child(usr + "/pass").setValue(psw);
         myFirebase.child(usr + "/available").setValue("false");
         Intent intent = new Intent(this, StatusActivity.class);
-        intent.putExtra("username", usr);
+        intent.putExtra("curUser", usr);
         startActivity(intent);
         //if fail: Failure message. Same screen. Retry.
         //logText.setTextColor(Color.RED);
-        //logText.setText("This username is taken. Please try again.");
+        //logText.setText("This curUser is taken. Please try again.");
     }
 
     public void takePhoto(View view) {
