@@ -1,5 +1,6 @@
 package edu.mit.ibex;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,8 +11,10 @@ import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -30,6 +34,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -79,19 +84,9 @@ public class StatusActivity extends ActionBarActivity {
         /**
          * Makes only one call to Firebase
          */
-        myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
-        Log.d("made link to Firebase","good");
-        myFirebase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                data = (HashMap<String, Object>)snapshot.getValue();
-                Log.d("data - (raw)", data.toString());
-                Log.d("data - Users", data.keySet().toString());
-                userList = data.keySet();
-                showFriendInfo(username, data);
-            }
-            @Override public void onCancelled(FirebaseError error) { }
-        });
+        Log.d("onCreate", "call showStatusList");
+        showStatusList();
+
 
         /**
          * Makes N calls to Firebase where N is total number of friends.
@@ -111,6 +106,37 @@ public class StatusActivity extends ActionBarActivity {
 //            }
 //            @Override public void onCancelled(FirebaseError error) { }
 //        });
+    }
+    public void availableClick(View v){
+        if (available.isChecked()) {
+            Log.d("availableClicked", "calling showStatusList");
+            showStatusList();
+        }else{
+            Log.d("availableClicked", "clearing everything!");
+            friendsInfo = new ArrayList<String>();
+            ArrayAdapter<String> resultsAdapter =
+                    new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
+            theListView.setAdapter(resultsAdapter);
+        }
+    }
+
+    private void showStatusList(){
+        myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
+        Log.d("made link to Firebase","good");
+        myFirebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                data = (HashMap<String, Object>)snapshot.getValue();
+                Log.d("data - (raw)", data.toString());
+                Log.d("data - Users", data.keySet().toString());
+                userList = data.keySet();
+                if (available.isChecked()){
+                    Log.d("showStatusList", "calling showFriendInfo");
+                    showFriendInfo(username, data);
+                }
+            }
+            @Override public void onCancelled(FirebaseError error) { }
+        });
     }
 
     /*
@@ -301,6 +327,9 @@ public class StatusActivity extends ActionBarActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         final EditText edittext= new EditText(StatusActivity.this);
+        //only allows user to input max 24 chars (limit of username length)
+        edittext.setFilters(new InputFilter[] {
+                new InputFilter.LengthFilter(24) });
         alert.setMessage("Add a Friend");
         alert.setView(edittext);
 
@@ -328,30 +357,49 @@ public class StatusActivity extends ActionBarActivity {
                         }else{
                             //No friends yet
                             //Check if friend is in database
-                            if(userList.contains(friendName)){
-                                //Add friend
-                                friendsInfo = new ArrayList<String>();
-                                HashMap<String, String> putName = new HashMap<String, String>();
-                                putName.put("name", friendName);
-                                frands.push().setValue(putName);
-                                Log.d("Add Friend", friendName+" added");
-                            }
+//                            if(userList.contains(friendName)){
+//                                //Add friend
+//                                friendsInfo = new ArrayList<String>();
+//                                HashMap<String, String> putName = new HashMap<String, String>();
+//                                putName.put("name", friendName);
+//                                frands.push().setValue(putName);
+//                                Log.d("Add Friend", friendName+" added");
+//                                Toast.makeText(getApplicationContext(),
+//                                        friendName+" added",
+//                                        Toast.LENGTH_LONG).show();
+//                            }
                         }
 
                         if (friends.contains(friendName)) {
                             //Check if friend is already in friends list
                             Log.d("Add Friend", friendName+" already added");
+                            Toast.makeText(getApplicationContext(),
+                                    friendName+" already added",
+                                    Toast.LENGTH_LONG).show();
                         }else{
                             //Check if friend exists in database
                             if(userList.contains(friendName)){
-                                //Add friend
-                                friendsInfo = new ArrayList<String>();
-                                HashMap<String, String> putName = new HashMap<String, String>();
-                                putName.put("name", friendName);
-                                frands.push().setValue(putName);
-                                Log.d("Add Friend", friendName+"added");
+                                if (friendName.equals(username)){
+                                    Log.d("Add Friend", "Tried to add self. Motivational message sent");
+                                    Toast.makeText(getApplicationContext(),
+                                            "Are you lonely? You are always you're own friend! :D",
+                                            Toast.LENGTH_LONG).show();
+                                }else{
+                                    //Add friend
+                                    friendsInfo = new ArrayList<String>();
+                                    HashMap<String, String> putName = new HashMap<String, String>();
+                                    putName.put("name", friendName);
+                                    frands.push().setValue(putName);
+                                    Log.d("Add Friend", friendName+"added");
+                                    Toast.makeText(getApplicationContext(),
+                                            friendName+" added",
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }else{
                                 Log.d("Add Friend", friendName+" does not exist");
+                                Toast.makeText(getApplicationContext(),
+                                        friendName+" does not use Swerve",
+                                        Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -388,33 +436,78 @@ public class StatusActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void edittingStatus(View v){
+        if(!available.isChecked()){
+            available.setChecked(true);
+            availableClick(v);
+        }
+    }
+
     public void mapsClick(View v) {
-        Intent i = new Intent(this, MapsActivity.class);
+        final List<String> ami = new ArrayList<String>();
+        final Intent i = new Intent(this, MapsActivity.class);
         if(username!=null){
             i.putExtra("username",username);
         }
+        Firebase friendsForMap = new Firebase("https://hangmonkey.firebaseio.com/" + username + "/friends");
+        friendsForMap.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String,HashMap<String,String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
+                Collection<HashMap<String, String>> friendsNames =  fd.values();
+                for(HashMap<String,String> amiDic : friendsNames){
+                    String amigo = amiDic.get("name");
+                    if(!ami.contains(amigo)){
+                        ami.add(amigo);
+                    }
+                }
+                Log.d("HHHHH",ami.toString());
 
-        List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
-        HashMap<String,Object> friends = (HashMap<String, Object>) data.get(username);
+                List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
+                HashMap<String,Object> friends = (HashMap<String, Object>) data.get(username);
 
-        for(String name : data.keySet()){
-            List<String> friendInfo = new ArrayList<String>();
-            HashMap<String,Object> dataForFriend = (HashMap<String, Object>) data.get(name);
-            Object lat =  dataForFriend.get("lat");
-            Object lon =  dataForFriend.get("long");
-            if(lat!=null && lon!=null){
-            friendInfo.add(name);
-            friendInfo.add(lat.toString());
-            friendInfo.add(lon.toString());
-            friendInfo.add((String) dataForFriend.get("status"));
+                Log.d("DataforFriends ", friends.toString());
+                for(String name : ami){
+                    List<String> friendInfo = new ArrayList<String>();
+                    HashMap<String,Object> dataForFriend = (HashMap<String, Object>) data.get(name);
+                    Log.d("Name",name);
+                    Log.d("Data4Name",dataForFriend.toString());
+                    Object lat =  dataForFriend.get("lat");
+                    Object lon =  dataForFriend.get("long");
+                    boolean available = (boolean) dataForFriend.get("available");
+                    if(lat!=null && lon!=null && available==true){
+                        friendInfo.add(name);
+                        friendInfo.add(lat.toString());
+                        friendInfo.add(lon.toString());
+                        friendInfo.add((String) dataForFriend.get("status"));
+                    }
+                    allFriendsInfo.add((ArrayList<String>) friendInfo);
+                }
+                Log.d("All f info", allFriendsInfo.toString());
+                i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
+                startActivity(i);
+
+
+
+
+
+
             }
-            allFriendsInfo.add((ArrayList<String>) friendInfo);
-        }
-        Log.d("All f info", allFriendsInfo.toString());
-        i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
-        startActivity(i);
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
     }
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void postStatus(View v) {
+        if(!available.isChecked()) {
+            available.setChecked(true);
+            availableClick(v);
+        }
         friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
@@ -442,11 +535,20 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(username + "/long").setValue(longitude);
         }
         Notification noti = new Notification.Builder(this)
+<<<<<<< HEAD
                 .setContentTitle("New mail from " + username.toString())
                 .setContentText("something message")
                 .setSmallIcon(R.drawable.maps)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+=======
+            .setContentTitle("New mail from " + username.toString())
+            .setContentText("something message")
+            .setSmallIcon(R.drawable.maps)
+            .build();
+        NotificationManager notificationManager =
+            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+>>>>>>> 1bb581d28e7a074bfb24b3569edf972f9018a44b
         notificationManager.notify(0, noti);
     }
 
