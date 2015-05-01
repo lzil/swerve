@@ -28,6 +28,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -86,6 +87,33 @@ public class StatusActivity extends ActionBarActivity {
          */
         Log.d("onCreate", "call showStatusList");
         showStatusList();
+        Firebase notifs = new Firebase("https://hangmonkey.firebaseio.com/" + username + "/notifications/");
+        notifs.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+                Log.d("welp", "msg here");
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
 
 
         /**
@@ -447,36 +475,36 @@ public class StatusActivity extends ActionBarActivity {
     public void mapsClick(View v) {
         final List<String> ami = new ArrayList<String>();
         final Intent i = new Intent(this, MapsActivity.class);
-        if(username!=null){
-            i.putExtra("username",username);
+        if (username != null) {
+            i.putExtra("username", username);
         }
         Firebase friendsForMap = new Firebase("https://hangmonkey.firebaseio.com/" + username + "/friends");
         friendsForMap.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String,HashMap<String,String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
-                Collection<HashMap<String, String>> friendsNames =  fd.values();
-                for(HashMap<String,String> amiDic : friendsNames){
+                HashMap<String, HashMap<String, String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
+                Collection<HashMap<String, String>> friendsNames = fd.values();
+                for (HashMap<String, String> amiDic : friendsNames) {
                     String amigo = amiDic.get("name");
-                    if(!ami.contains(amigo)){
+                    if (!ami.contains(amigo)) {
                         ami.add(amigo);
                     }
                 }
-                Log.d("HHHHH",ami.toString());
+                Log.d("HHHHH", ami.toString());
 
                 List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
-                HashMap<String,Object> friends = (HashMap<String, Object>) data.get(username);
+                HashMap<String, Object> friends = (HashMap<String, Object>) data.get(username);
 
                 Log.d("DataforFriends ", friends.toString());
-                for(String name : ami){
+                for (String name : ami) {
                     List<String> friendInfo = new ArrayList<String>();
-                    HashMap<String,Object> dataForFriend = (HashMap<String, Object>) data.get(name);
-                    Log.d("Name",name);
-                    Log.d("Data4Name",dataForFriend.toString());
-                    Object lat =  dataForFriend.get("lat");
-                    Object lon =  dataForFriend.get("long");
+                    HashMap<String, Object> dataForFriend = (HashMap<String, Object>) data.get(name);
+                    Log.d("Name", name);
+                    Log.d("Data4Name", dataForFriend.toString());
+                    Object lat = dataForFriend.get("lat");
+                    Object lon = dataForFriend.get("long");
                     boolean available = (boolean) dataForFriend.get("available");
-                    if(lat!=null && lon!=null && available==true){
+                    if (lat != null && lon != null && available == true) {
                         friendInfo.add(name);
                         friendInfo.add(lat.toString());
                         friendInfo.add(lon.toString());
