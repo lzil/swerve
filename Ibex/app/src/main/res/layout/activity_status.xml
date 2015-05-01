@@ -50,8 +50,7 @@
         android:maxLength="40"
         android:layout_toLeftOf="@+id/postButton"
         android:layout_toStartOf="@+id/postButton"
-        android:nestedScrollingEnabled="false"
-        android:onClick="edittingStatus" />
+        android:nestedScrollingEnabled="false" />
 
     <Button
         android:layout_width="wrap_content"
@@ -67,15 +66,6 @@
         android:layout_alignParentEnd="true" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/MyStatus"
-        android:layout_below="@+id/available"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Available"
@@ -87,6 +77,18 @@
         android:layout_below="@+id/linearLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/MyStatus"
+        android:layout_below="@+id/available"
+        android:textStyle="italic"
+        android:textColor="#03ABF4"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:text="Status here" />
 
     <FrameLayout
         android:layout_width="fill_parent"

@@ -41,7 +41,7 @@ public class MapsActivity extends FragmentActivity {
             return;
         }
 
-        username = extras.getString("username");
+        username = extras.getString("curUser");
         don = (ArrayList<ArrayList<String>>) extras.getSerializable("friends");
         Log.d("FRiends",don.toString());
         Log.d("user",username);
@@ -130,8 +130,8 @@ public class MapsActivity extends FragmentActivity {
     }
     public void mapsClick(View v) {
         /*Intent i = new Intent(this, MapsActivity.class);
-        if(username!=null){
-            i.putExtra("username",username);}
+        if(curUser!=null){
+            i.putExtra("curUser",curUser);}
         startActivity(i);*/
     }
 
