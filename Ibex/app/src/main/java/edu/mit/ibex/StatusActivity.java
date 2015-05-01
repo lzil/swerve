@@ -461,6 +461,7 @@ public class StatusActivity extends ActionBarActivity {
         // Getting Current Location
         Location location = locationManager.getLastKnownLocation(provider);
 
+
         if (location != null) {
             // Getting latitude of the current location
             double latitude = location.getLatitude();
