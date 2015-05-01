@@ -29,6 +29,8 @@ public class LogInActivity extends ActionBarActivity {
     EditText username, password;
     HashMap<String, Object> data;
     Set<String> userList;
+    double studLong = -71.094659;
+    double studLat = 42.358991;
 
 
     @Override
@@ -146,12 +148,15 @@ public class LogInActivity extends ActionBarActivity {
             //User/Pass are valid
             //Check if user already exists
             if (userList.contains(usr)) {
+                logText.setVisibility(View.VISIBLE);
                 logText.setText("User already taken");
             } else{
                 Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
                 myFirebase.child("/status").setValue("");
                 myFirebase.child("/pass").setValue(psw);
                 myFirebase.child("/available").setValue("false");
+                myFirebase.child("/long").setValue(studLong);
+                myFirebase.child("/lat").setValue(studLat);
                 Intent intent = new Intent(this, StatusActivity.class);
                 intent.putExtra("username", usr);
                 startActivity(intent);

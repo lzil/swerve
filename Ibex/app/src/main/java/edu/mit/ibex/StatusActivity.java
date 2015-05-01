@@ -1,5 +1,6 @@
 package edu.mit.ibex;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,8 +11,10 @@ import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -301,6 +305,9 @@ public class StatusActivity extends ActionBarActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         final EditText edittext= new EditText(StatusActivity.this);
+        //only allows user to input max 24 chars (limit of username length)
+        edittext.setFilters(new InputFilter[] {
+                new InputFilter.LengthFilter(24) });
         alert.setMessage("Add a Friend");
         alert.setView(edittext);
 
@@ -328,19 +335,25 @@ public class StatusActivity extends ActionBarActivity {
                         }else{
                             //No friends yet
                             //Check if friend is in database
-                            if(userList.contains(friendName)){
-                                //Add friend
-                                friendsInfo = new ArrayList<String>();
-                                HashMap<String, String> putName = new HashMap<String, String>();
-                                putName.put("name", friendName);
-                                frands.push().setValue(putName);
-                                Log.d("Add Friend", friendName+" added");
-                            }
+//                            if(userList.contains(friendName)){
+//                                //Add friend
+//                                friendsInfo = new ArrayList<String>();
+//                                HashMap<String, String> putName = new HashMap<String, String>();
+//                                putName.put("name", friendName);
+//                                frands.push().setValue(putName);
+//                                Log.d("Add Friend", friendName+" added");
+//                                Toast.makeText(getApplicationContext(),
+//                                        friendName+" added",
+//                                        Toast.LENGTH_LONG).show();
+//                            }
                         }
 
                         if (friends.contains(friendName)) {
                             //Check if friend is already in friends list
                             Log.d("Add Friend", friendName+" already added");
+                            Toast.makeText(getApplicationContext(),
+                                    friendName+" already added",
+                                    Toast.LENGTH_LONG).show();
                         }else{
                             //Check if friend exists in database
                             if(userList.contains(friendName)){
@@ -350,8 +363,14 @@ public class StatusActivity extends ActionBarActivity {
                                 putName.put("name", friendName);
                                 frands.push().setValue(putName);
                                 Log.d("Add Friend", friendName+"added");
+                                Toast.makeText(getApplicationContext(),
+                                        friendName+" added",
+                                        Toast.LENGTH_LONG).show();
                             }else{
                                 Log.d("Add Friend", friendName+" does not exist");
+                                Toast.makeText(getApplicationContext(),
+                                        friendName+" does not use Swerve",
+                                        Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -386,6 +405,13 @@ public class StatusActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void edittingStatus(View v){
+        if(!available.isChecked()){
+            available.setChecked(true);
+        }
     }
 
     public void mapsClick(View v) {
@@ -440,7 +466,11 @@ public class StatusActivity extends ActionBarActivity {
         i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
         startActivity(i);
     }
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void postStatus(View v) {
+        if(!available.isChecked()) {
+            available.setChecked(true);
+        }
         friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();
         myFirebase.child(username + "/status").setValue(editStatus.getText().toString());
@@ -468,12 +498,12 @@ public class StatusActivity extends ActionBarActivity {
             myFirebase.child(username + "/long").setValue(longitude);
         }
         Notification noti = new Notification.Builder(this)
-                .setContentTitle("New mail from " + username.toString())
-                .setContentText("something message")
-                .setSmallIcon(R.drawable.maps)
-                .build();
+            .setContentTitle("New mail from " + username.toString())
+            .setContentText("something message")
+            .setSmallIcon(R.drawable.maps)
+            .build();
         NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, noti);
     }
 
