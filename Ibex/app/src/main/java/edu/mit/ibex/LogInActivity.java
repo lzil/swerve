@@ -28,6 +28,7 @@ public class LogInActivity extends ActionBarActivity {
     public static String psw2;
     public static boolean isPwdEntered = false;
     public static String usr, psw;
+    Firebase baseFire, myFire;
     TextView logText;
     EditText username, password;
     HashMap<String, Object> data;
@@ -39,6 +40,7 @@ public class LogInActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Firebase.setAndroidContext(this);
+        baseFire = new Firebase("https://hangmonkey.firebaseio.com/");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         logText = (TextView) findViewById(R.id.invalidText);
@@ -67,8 +69,8 @@ public class LogInActivity extends ActionBarActivity {
                     entry.getValue().toString());
         }*/
 
-        Firebase checkUser = new Firebase("https://hangmonkey.firebaseio.com/");
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        baseFire.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 data = (HashMap<String, Object>) snapshot.getValue();
@@ -117,9 +119,8 @@ public class LogInActivity extends ActionBarActivity {
         //TODO need to check if user exists
         System.out.println(userList);
         if (userList.contains(usr)) {
-            Firebase ref = new Firebase("https://hangmonkey.firebaseio.com/" + usr + "/pass");
             psw2 = "test"; //Can we get rid of this? looks like throw away code
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            baseFire.child(usr).child("pass").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     LogInActivity.psw2 = snapshot.getValue().toString();
@@ -183,12 +184,12 @@ public class LogInActivity extends ActionBarActivity {
                 logText.setVisibility(View.VISIBLE);
                 logText.setText("User already taken");
             } else{
-                Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
-                myFirebase.child("/status").setValue("");
-                myFirebase.child("/pass").setValue(psw);
-                myFirebase.child("/available").setValue("false");
-                myFirebase.child("/long").setValue(studLong);
-                myFirebase.child("/lat").setValue(studLat);
+                Firebase myFire = baseFire.child(usr);
+                myFire.child("status").setValue("");
+                myFire.child("pass").setValue(psw);
+                myFire.child("available").setValue("false");
+                myFire.child("long").setValue(studLong);
+                myFire.child("lat").setValue(studLat);
                 Intent intent = new Intent(this, StatusActivity.class);
                 intent.putExtra("curUser", usr);
                 startActivity(intent);
