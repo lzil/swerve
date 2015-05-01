@@ -149,7 +149,7 @@ public class StatusActivity extends ActionBarActivity {
         }
     }
 
-    /*
+
     //availability
     public void availableClick(View v){
         if (available.isChecked()) {
@@ -163,7 +163,7 @@ public class StatusActivity extends ActionBarActivity {
             theListView.setAdapter(resultsAdapter);
         }
     }
-    */
+
 
     //show the status list
     private void showStatusList(){
@@ -361,7 +361,7 @@ public class StatusActivity extends ActionBarActivity {
         alert.show();
     }
 
-    /*
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void editingStatus(View v){
         if(!available.isChecked()){
@@ -369,7 +369,7 @@ public class StatusActivity extends ActionBarActivity {
             availableClick(v);
         }
     }
-    */
+
 
     public void mapsClick(View v) {
         final List<String> ami = new ArrayList<String>();
@@ -425,12 +425,12 @@ public class StatusActivity extends ActionBarActivity {
     }
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void postStatus(View v) {
-        /*
+
         if(!available.isChecked()) {
             available.setChecked(true);
             availableClick(v);
         }
-        */
+
         friendsInfo = new ArrayList<String>();
         tempStatus = editStatus.getText().toString();
         boolean on = available.isChecked();
