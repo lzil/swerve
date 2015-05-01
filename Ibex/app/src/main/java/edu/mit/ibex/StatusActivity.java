@@ -99,7 +99,7 @@ public class StatusActivity extends ActionBarActivity {
                 Notification notif = new Notification.Builder(StatusActivity.this)
                         .setContentTitle("New message from " + msgPack.get("name"))
                         .setContentText(msgPack.get("message"))
-                        .setSmallIcon(R.drawable.maps)
+                        .setSmallIcon(R.mipmap.ic_action_mail)
                         .build();
                 NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 notificationManager.notify(0, notif);
@@ -109,11 +109,9 @@ public class StatusActivity extends ActionBarActivity {
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
             }
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -139,17 +137,18 @@ public class StatusActivity extends ActionBarActivity {
                 //return true;
                 return super.onOptionsItemSelected(item);
             case R.id.action_logout:
-                Intent intent = new Intent(this, LogInActivity.class);
-
-                /*SharedPreferences sp = this.getSharedPreferences("Login", 0);
-
-                String user = sp.getString("curUser", null);
-                String pass = sp.getString("curPsw", null);*/
-                SharedPreferences sp = getSharedPreferences("Login", 0);
-                sp.edit().clear().commit();
-                Log.d("sharepref", "deleted shared pref");
-
-                startActivity(intent);
+                super.finish();
+//                Intent intent = new Intent(this, LogInActivity.class);
+//
+//                /*SharedPreferences sp = this.getSharedPreferences("Login", 0);
+//
+//                String user = sp.getString("curUser", null);
+//                String pass = sp.getString("curPsw", null);*/
+//                SharedPreferences sp = getSharedPreferences("Login", 0);
+//                sp.edit().clear().commit();
+//                Log.d("sharepref", "deleted shared pref");
+//
+//                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -328,7 +327,7 @@ public class StatusActivity extends ActionBarActivity {
                             //Check if friend is already in friends list
                             Log.d("Add Friend", friendName+" already added");
                             Toast.makeText(getApplicationContext(),
-                                    friendName+" already added",
+                                    friendName+" is already your friend!",
                                     Toast.LENGTH_LONG).show();
                         }else{
                             //Check if friend exists in database
@@ -336,7 +335,7 @@ public class StatusActivity extends ActionBarActivity {
                                 if (friendName.equals(curUser)){
                                     Log.d("Add Friend", "Tried to add self. Motivational message sent");
                                     Toast.makeText(getApplicationContext(),
-                                            "Are you lonely? You are always you're own friend! :D",
+                                            "Are you lonely? You're always your own friend! :D",
                                             Toast.LENGTH_LONG).show();
                                 }else{
                                     //Add friend
@@ -346,13 +345,13 @@ public class StatusActivity extends ActionBarActivity {
                                     myFire.child("friends").push().setValue(putName);
                                     Log.d("Add Friend", friendName+"added");
                                     Toast.makeText(getApplicationContext(),
-                                            friendName+" added",
+                                            friendName+" added!",
                                             Toast.LENGTH_LONG).show();
                                 }
                             }else{
                                 Log.d("Add Friend", friendName+" does not exist");
                                 Toast.makeText(getApplicationContext(),
-                                        friendName+" does not use Swerve",
+                                        friendName+" does not use Swerve :(",
                                         Toast.LENGTH_LONG).show();
                             }
                         }
@@ -441,10 +440,14 @@ public class StatusActivity extends ActionBarActivity {
         friendsInfo = new ArrayList<String>();
         tempStatus = editStatus.getText().toString();
         boolean on = available.isChecked();
-        if (tempStatus == "") {
+        if (tempStatus.equals("")) {
+            Toast.makeText(getApplicationContext(),
+                    "Post a status!",
+                    Toast.LENGTH_LONG).show();
             return;
         }
         myFire.child("status").setValue(editStatus.getText().toString());
+        editStatus.setText("");
         myFire.child("available").setValue(on);
         // Getting LocationManager object from System Service LOCATION_SERVICE
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);

@@ -40,7 +40,7 @@
 
         <activity
             android:name=".StatusActivity"
-            android:label="Swervin' Status"
+            android:label="Status"
             android:windowSoftInputMode="adjustPan">
         </activity>
 
@@ -50,7 +50,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="Swervin' Map" >
+            android:label="Map" >
         </activity>
     </application>
 
