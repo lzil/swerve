@@ -181,7 +181,6 @@ public class LogInActivity extends ActionBarActivity {
         alert.setTitle("Register for Swerve!");
 
         alert.setPositiveButton("Sign up", new DialogInterface.OnClickListener() {
-            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 String usr = username.getText().toString();
                 String psw = password.getText().toString();
@@ -192,6 +191,7 @@ public class LogInActivity extends ActionBarActivity {
                     logText.setTypeface(null, Typeface.ITALIC);
                     logText.setTextColor(Color.RED);
                     logText.setText("Username or password empty. Can't register.");
+                    alert.show();
                 }
                 else {
                     //User/Pass are valid
@@ -199,6 +199,7 @@ public class LogInActivity extends ActionBarActivity {
                     if (userList.contains(usr)) {
                         logText.setVisibility(View.VISIBLE);
                         logText.setText("User already taken");
+                        alert.show();
                     } else {
                         Firebase myFirebase = new Firebase("https://hangmonkey.firebaseio.com/" + usr);
                         myFirebase.child("/status").setValue("");
@@ -207,7 +208,6 @@ public class LogInActivity extends ActionBarActivity {
                         myFirebase.child("/long").setValue(studLong);
                         myFirebase.child("/lat").setValue(studLat);
                         goToStatus();
-                        return;
                     }
                 }
                 //Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
