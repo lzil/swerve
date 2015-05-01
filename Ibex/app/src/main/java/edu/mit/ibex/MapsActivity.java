@@ -114,24 +114,10 @@ public class MapsActivity extends FragmentActivity {
         myFirebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                data = (Map<String, Object>)snapshot.getValue();
-                Log.d("Data : ", data.toString());
-                String lat =  data.get("lat").toString();
-                String Lon =  data.get("long").toString();
-                Long lagF = Long.parseLong(lat);
-                Long lonF = Long.parseLong(Lon);
-                String status = (String) data.get("status");
-                myLocation = new LatLng(lagF, lonF);
-                mMap.addMarker(new MarkerOptions().position(myLocation).title(username).snippet(status));
-                System.out.println("here " + username + " " + status);
-                System.out.println(lat+" "+Lon);
-        }
-
+            }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                
-            }
-
+            }}
             );
 
     }

@@ -132,10 +132,10 @@ public class StatusActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                //Toast.makeText(getApplicationContext(),"Item 1 Selected",Toast.LENGTH_LONG).show();
-                //return true;
-                return super.onOptionsItemSelected(item);
+//            case R.id.action_settings:
+//                //Toast.makeText(getApplicationContext(),"Item 1 Selected",Toast.LENGTH_LONG).show();
+//                //return true;
+//                return super.onOptionsItemSelected(item);
             case R.id.action_logout:
                 /*SharedPreferences sp = this.getSharedPreferences("Login", 0);
 
@@ -383,7 +383,8 @@ public class StatusActivity extends ActionBarActivity {
         myFire.child("friends").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap on<HashMap<String, String>> friendsNames = fd.values();
+                HashMap<String, HashMap<String,String>> fd = (HashMap<String, HashMap<String,String>>) dataSnapshot.getValue();
+                Collection<HashMap<String, String>> friendsNames = fd.values();
                 for (HashMap<String, String> amiDic : friendsNames) {
                     String amigo = amiDic.get("name");
                     if (!ami.contains(amigo)) {
