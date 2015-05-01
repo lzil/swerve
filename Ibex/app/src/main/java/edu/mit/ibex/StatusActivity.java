@@ -84,19 +84,9 @@ public class StatusActivity extends ActionBarActivity {
         /**
          * Makes only one call to Firebase
          */
-        myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
-        Log.d("made link to Firebase","good");
-        myFirebase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                data = (HashMap<String, Object>)snapshot.getValue();
-                Log.d("data - (raw)", data.toString());
-                Log.d("data - Users", data.keySet().toString());
-                userList = data.keySet();
-                showFriendInfo(username, data);
-            }
-            @Override public void onCancelled(FirebaseError error) { }
-        });
+        Log.d("onCreate", "call showStatusList");
+        showStatusList();
+
 
         /**
          * Makes N calls to Firebase where N is total number of friends.
@@ -116,6 +106,37 @@ public class StatusActivity extends ActionBarActivity {
 //            }
 //            @Override public void onCancelled(FirebaseError error) { }
 //        });
+    }
+    public void availableClick(View v){
+        if (available.isChecked()) {
+            Log.d("availableClicked", "calling showStatusList");
+            showStatusList();
+        }else{
+            Log.d("availableClicked", "clearing everything!");
+            friendsInfo = new ArrayList<String>();
+            ArrayAdapter<String> resultsAdapter =
+                    new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,friendsInfo);
+            theListView.setAdapter(resultsAdapter);
+        }
+    }
+
+    private void showStatusList(){
+        myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
+        Log.d("made link to Firebase","good");
+        myFirebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                data = (HashMap<String, Object>)snapshot.getValue();
+                Log.d("data - (raw)", data.toString());
+                Log.d("data - Users", data.keySet().toString());
+                userList = data.keySet();
+                if (available.isChecked()){
+                    Log.d("showStatusList", "calling showFriendInfo");
+                    showFriendInfo(username, data);
+                }
+            }
+            @Override public void onCancelled(FirebaseError error) { }
+        });
     }
 
     /*
@@ -357,15 +378,22 @@ public class StatusActivity extends ActionBarActivity {
                         }else{
                             //Check if friend exists in database
                             if(userList.contains(friendName)){
-                                //Add friend
-                                friendsInfo = new ArrayList<String>();
-                                HashMap<String, String> putName = new HashMap<String, String>();
-                                putName.put("name", friendName);
-                                frands.push().setValue(putName);
-                                Log.d("Add Friend", friendName+"added");
-                                Toast.makeText(getApplicationContext(),
-                                        friendName+" added",
-                                        Toast.LENGTH_LONG).show();
+                                if (friendName.equals(username)){
+                                    Log.d("Add Friend", "Tried to add self. Motivational message sent");
+                                    Toast.makeText(getApplicationContext(),
+                                            "Are you lonely? You are always you're own friend! :D",
+                                            Toast.LENGTH_LONG).show();
+                                }else{
+                                    //Add friend
+                                    friendsInfo = new ArrayList<String>();
+                                    HashMap<String, String> putName = new HashMap<String, String>();
+                                    putName.put("name", friendName);
+                                    frands.push().setValue(putName);
+                                    Log.d("Add Friend", friendName+"added");
+                                    Toast.makeText(getApplicationContext(),
+                                            friendName+" added",
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }else{
                                 Log.d("Add Friend", friendName+" does not exist");
                                 Toast.makeText(getApplicationContext(),
@@ -411,6 +439,7 @@ public class StatusActivity extends ActionBarActivity {
     public void edittingStatus(View v){
         if(!available.isChecked()){
             available.setChecked(true);
+            availableClick(v);
         }
     }
 
@@ -476,6 +505,7 @@ public class StatusActivity extends ActionBarActivity {
     public void postStatus(View v) {
         if(!available.isChecked()) {
             available.setChecked(true);
+            availableClick(v);
         }
         friendsInfo = new ArrayList<String>();
         boolean on = available.isChecked();

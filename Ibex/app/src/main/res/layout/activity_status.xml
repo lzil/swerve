@@ -128,6 +128,8 @@
 
         android:layout_alignTop="@+id/textView"
         android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView" />
+        android:layout_toEndOf="@+id/textView"
+        android:checked="false"
+        android:onClick="availableClick" />
 
 </RelativeLayout>
