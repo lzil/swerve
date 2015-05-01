@@ -457,7 +457,7 @@ public class StatusActivity extends ActionBarActivity {
     //Sends a message to a specified user
     public void message(String user) {
         toUser = user;
-        msgFire = new Firebase("https://hangmonkey.firebaseio.com/" + toUser + "/notifications");
+        msgFire = new Firebase("https://hangmonkey.firebaseio.com/" + toUser + "/messages");
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setMessage("Message to " + toUser);
