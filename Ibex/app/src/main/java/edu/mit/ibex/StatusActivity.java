@@ -287,6 +287,7 @@ public class StatusActivity extends ActionBarActivity {
 
     /*
     Not sure the point of this.....it literally just calls another function. Who did this?
+    Liang: I did this because various variable access trouble issues. pls keep it i need it for it to work
      */
     public void addFriend(View view) {
         friendPop(username);
@@ -445,8 +446,7 @@ public class StatusActivity extends ActionBarActivity {
                 .setContentText("something message")
                 .setSmallIcon(R.drawable.maps)
                 .build();
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, noti);
     }
 
