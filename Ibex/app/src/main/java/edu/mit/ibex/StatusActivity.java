@@ -91,7 +91,13 @@ public class StatusActivity extends ActionBarActivity {
         notifs.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
-                Log.d("welp", "msg here");
+                Notification noti = new Notification.Builder(StatusActivity.this)
+                        .setContentTitle("New mail from " + username.toString())
+                        .setContentText("something message")
+                        .setSmallIcon(R.drawable.maps)
+                        .build();
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.notify(0, noti);
             }
 
             @Override
