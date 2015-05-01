@@ -1,6 +1,7 @@
 package edu.mit.ibex;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -189,28 +190,21 @@ public class LogInActivity extends ActionBarActivity {
 
                 if(usr.equals("") || psw.equals("")){
                     Log.d("Sign Up", "User or pass is empty");
-                    logText.setVisibility(View.VISIBLE);
-                    logText.setTypeface(null, Typeface.ITALIC);
-                    logText.setTextColor(Color.RED);
-                    logText.setText("Username or password empty. Can't register.");
-                    alert.show();
-                }
-                else {
-                    //User/Pass are valid
-                    //Check if user already exists
-                    if (userList.contains(usr)) {
-                        logText.setVisibility(View.VISIBLE);
-                        logText.setText("User already taken");
-                        alert.show();
-                    } else {
-                        myFire = baseFire.child(usr);
-                        myFire.child("status").setValue("");
-                        myFire.child("pass").setValue(psw);
-                        myFire.child("available").setValue("false");
-                        myFire.child("long").setValue(studLong);
-                        myFire.child("lat").setValue(studLat);
-                        goToStatus(usr);
-                    }
+                    Toast.makeText(getApplicationContext(),
+                            "Username or password is empty! Can't register q.q",
+                                    Toast.LENGTH_LONG).show();
+                } else if (userList.contains(usr)) {
+                    Toast.makeText(getApplicationContext(),
+                            "Username already taken :(",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    myFire = baseFire.child(usr);
+                    myFire.child("status").setValue("");
+                    myFire.child("pass").setValue(psw);
+                    myFire.child("available").setValue("false");
+                    myFire.child("long").setValue(studLong);
+                    myFire.child("lat").setValue(studLat);
+                    goToStatus(usr);
                 }
                 //Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
             }
@@ -222,43 +216,6 @@ public class LogInActivity extends ActionBarActivity {
                     }
                 });
         alert.show();
-
-        /*
-        logText.setTypeface(null, Typeface.ITALIC);
-        logText.setTextColor(Color.DKGRAY);
-        logText.setText("Signing up...");
-
-        String usr = username.getText().toString();
-        String psw = password.getText().toString();
-
-        //Passes usr and psw to some server
-        //if pass:
-        if(usr.equals("") || psw.equals("")){
-            Log.d("Sign Up", "User or pass is empty");
-            logText.setVisibility(View.VISIBLE);
-            logText.setTypeface(null, Typeface.ITALIC);
-            logText.setTextColor(Color.RED);
-            logText.setText("Username or password empty. Can't register.");
-        }
-        else {
-            //User/Pass are valid
-            //Check if user already exists
-            if (userList.contains(usr)) {
-                logText.setVisibility(View.VISIBLE);
-                logText.setText("User already taken");
-            } else{
-                Firebase myFire = baseFire.child(usr);
-                myFire.child("status").setValue("");
-                myFire.child("pass").setValue(psw);
-                myFire.child("available").setValue("false");
-                myFire.child("long").setValue(studLong);
-                myFire.child("lat").setValue(studLat);
-                Intent intent = new Intent(this, StatusActivity.class);
-                intent.putExtra("curUser", usr);
-                startActivity(intent);
-            }
-        }
-        */
     }
 
     public void goToStatus(String usr){

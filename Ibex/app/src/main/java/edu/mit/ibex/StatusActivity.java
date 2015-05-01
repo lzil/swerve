@@ -132,10 +132,10 @@ public class StatusActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                //Toast.makeText(getApplicationContext(),"Item 1 Selected",Toast.LENGTH_LONG).show();
-                //return true;
-                return super.onOptionsItemSelected(item);
+//            case R.id.action_settings:
+//                //Toast.makeText(getApplicationContext(),"Item 1 Selected",Toast.LENGTH_LONG).show();
+//                //return true;
+//                return super.onOptionsItemSelected(item);
             case R.id.action_logout:
                 /*SharedPreferences sp = this.getSharedPreferences("Login", 0);
 
