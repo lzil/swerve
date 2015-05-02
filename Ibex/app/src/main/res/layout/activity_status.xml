@@ -19,7 +19,6 @@
             android:layout_height="70dp"
             android:id="@+id/friendsButton"
             android:src="@drawable/friends"
-            android:onClick="friendsClick"
             android:cropToPadding="true"
             android:scaleType="centerInside"
             android:layout_weight="1"

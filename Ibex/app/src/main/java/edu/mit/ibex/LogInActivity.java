@@ -122,6 +122,7 @@ public class LogInActivity extends ActionBarActivity {
         psw = password.getText().toString();
 
         //TODO need to check if user exists
+        if(usr!=null){
         System.out.println(userList);
         if (userList.contains(usr)) {
             psw2 = "test"; //Can we get rid of this? looks like throw away code
@@ -142,7 +143,7 @@ public class LogInActivity extends ActionBarActivity {
             logText.setText("User does not exist");
         }
 
-    }
+    }}
 
     public void login(String psw2) {
         if (psw2.equals(psw)) {
