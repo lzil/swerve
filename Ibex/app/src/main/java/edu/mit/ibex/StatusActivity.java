@@ -176,10 +176,8 @@ public class StatusActivity extends ActionBarActivity {
                 Log.d("data - (raw)", data.toString());
                 Log.d("data - Users", data.keySet().toString());
                 userList = data.keySet();
-                if (available.isChecked()) {
-                    Log.d("showStatusList", "calling showFriendInfo");
-                    showFriendInfo(curUser, data);
-                }
+                Log.d("showStatusList", "calling showFriendInfo");
+                showFriendInfo(curUser, data);
             }
 
             @Override
