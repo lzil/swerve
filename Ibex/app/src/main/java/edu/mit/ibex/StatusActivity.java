@@ -7,8 +7,6 @@ import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -207,8 +205,11 @@ public class StatusActivity extends ActionBarActivity {
 
                 HashMap friendInfo = (HashMap) data.get(friendName);
                 String friendStatus = friendInfo.get("status").toString();
-                Log.d("Add Friend", friendName+ " added to list");
-                friendsInfo.add(friendName + ": " + friendStatus);
+                boolean friendAvailable = (boolean) friendInfo.get("available");
+                if (friendAvailable) {
+                    Log.d("Add Friend", friendName + " added to list");
+                    friendsInfo.add(friendName + ": " + friendStatus);
+                }
 
               //  Double lat = Double.parseDouble(friendsDict.get(friendName).get(lat));
                 addFriendList(friendsInfo);
