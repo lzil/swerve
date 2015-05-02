@@ -29,6 +29,7 @@ public class MapsActivity extends FragmentActivity {
     Map<String, Object> data;
     Map<String, Object> newData;
     ArrayList<ArrayList<String>> don;
+    LatLng Center;
     String username;
 
     @Override
@@ -46,6 +47,7 @@ public class MapsActivity extends FragmentActivity {
         Log.d("FRiends",don.toString());
         Log.d("user",username);
         System.out.println(username);
+        Center = (LatLng) extras.get("center");
         setUpMapIfNeeded();
     }
     @Override
@@ -96,8 +98,10 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        LatLng MIT = new LatLng(42.3598,-71.0921);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MIT, 15));
+        if(Center ==null){
+            Center = new LatLng(42.3598,-71.0921);
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Center, 15));
         mMap.setMyLocationEnabled(true);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
         for (ArrayList<String> friend:don){
@@ -124,6 +128,8 @@ public class MapsActivity extends FragmentActivity {
 
     public void addFriendsToMap(String friend, String status, LatLng location) {
         mMap.addMarker(new MarkerOptions().position(location).title(friend).snippet(status));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Center, 15));
+
     }
     public void mapsClick(View v) {
         /*Intent i = new Intent(this, MapsActivity.class);

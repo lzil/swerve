@@ -34,6 +34,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +60,7 @@ public class StatusActivity extends ActionBarActivity {
     List<List<String>> friendLocation;
     ListView theListView;
     Set<String> userList; //List of ALL users in database. Used for checking if friend is valid
+    LatLng center;
 
 
     @Override
@@ -232,26 +234,8 @@ public class StatusActivity extends ActionBarActivity {
     Right now, clicking a friend opens notification of their status and long/lat coordinates.
     We can make it so when a friend is clicked we open maps tab up to their location
      */
-    private void clickFriend(String selectedFriend) {
-        baseFire.child(selectedFriend).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                data = (HashMap<String, Object>) snapshot.getValue();
-                System.out.println(data);
-
-                friendStatus = data.get("status").toString();
-                Log.d("friendClick", friendStatus);
-                location = data.get("lat").toString() + "," + data.get("long").toString();
-                Log.d("friendClick", location);
-
-                statusPop(snapshot.getKey(), friendStatus, location);
-            }
-
-            @Override
-            public void onCancelled(FirebaseError error) {
-            }
-        });
-
+    private void clickFriend(final String selectedFriend) {
+        startMap(selectedFriend);
     }
 
     /*
@@ -371,7 +355,7 @@ public class StatusActivity extends ActionBarActivity {
         }
     }
 
-    public void mapsClick(View v) {
+    public void startMap() {
         final List<String> ami = new ArrayList<String>();
         final Intent i = new Intent(this, MapsActivity.class);
         if (curUser != null) {
@@ -380,7 +364,7 @@ public class StatusActivity extends ActionBarActivity {
         myFire.child("friends").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, HashMap<String,String>> fd = (HashMap<String, HashMap<String,String>>) dataSnapshot.getValue();
+                HashMap<String, HashMap<String, String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
                 Collection<HashMap<String, String>> friendsNames = fd.values();
                 for (HashMap<String, String> amiDic : friendsNames) {
                     String amigo = amiDic.get("name");
@@ -423,6 +407,66 @@ public class StatusActivity extends ActionBarActivity {
         });
 
     }
+    public void startMap(final String friend){
+        final List<String> ami = new ArrayList<String>();
+        final Intent i = new Intent(this, MapsActivity.class);
+        if (curUser != null) {
+            i.putExtra("curUser", curUser);
+        }
+        myFire.child("friends").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, HashMap<String,String>> fd = (HashMap<String, HashMap<String,String>>) dataSnapshot.getValue();
+                Collection<HashMap<String, String>> friendsNames = fd.values();
+                for (HashMap<String, String> amiDic : friendsNames) {
+                    String amigo = amiDic.get("name");
+                    if (!ami.contains(amigo)) {
+                        ami.add(amigo);
+                    }
+                }
+                Log.d("HHHHH", ami.toString());
+
+                List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
+                HashMap<String, Object> friends = (HashMap<String, Object>) data.get(curUser);
+                if(friends !=null){
+                Log.d("DataforFriends ", friends.toString());
+                for (String name : ami) {
+                    List<String> friendInfo = new ArrayList<String>();
+                    HashMap<String, Object> dataForFriend = (HashMap<String, Object>) data.get(name);
+                    Log.d("Name", name);
+                    Log.d("Data4Name", dataForFriend.toString());
+                    Object lat = dataForFriend.get("lat");
+                    Object lon = dataForFriend.get("long");
+                    boolean available = (boolean) dataForFriend.get("available");
+                    if(friend.equals(name)){
+                        center = new LatLng((double)lat,(double)lon);
+                    }
+                    if (lat != null && lon != null && available == true) {
+                        friendInfo.add(name);
+                        friendInfo.add(lat.toString());
+                        friendInfo.add(lon.toString());
+                        friendInfo.add((String) dataForFriend.get("status"));
+                    }
+                    allFriendsInfo.add((ArrayList<String>) friendInfo);
+                }}
+                Log.d("All f info", allFriendsInfo.toString());
+                i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
+                i.putExtra("center",center);
+                startActivity(i);
+
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+    public void mapsClick(View v) {
+        startMap();
+    }
+
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void postStatus(View v) {
         setAvailable(v);
