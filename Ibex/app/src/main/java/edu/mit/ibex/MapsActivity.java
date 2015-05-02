@@ -114,14 +114,11 @@ public class MapsActivity extends FragmentActivity {
         myFirebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
-
             }
-
             @Override
-            public void onCancelled(FirebaseError error) {
-            }
-        });
+            public void onCancelled(FirebaseError firebaseError) {
+            }}
+            );
 
     }
 

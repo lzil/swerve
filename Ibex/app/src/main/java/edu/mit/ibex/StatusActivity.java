@@ -382,7 +382,7 @@ public class StatusActivity extends ActionBarActivity {
         myFire.child("friends").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, HashMap<String, String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
+                HashMap<String, HashMap<String,String>> fd = (HashMap<String, HashMap<String,String>>) dataSnapshot.getValue();
                 Collection<HashMap<String, String>> friendsNames = fd.values();
                 for (HashMap<String, String> amiDic : friendsNames) {
                     String amigo = amiDic.get("name");
@@ -452,6 +452,7 @@ public class StatusActivity extends ActionBarActivity {
 
         // Getting Current Location
         Location location = locationManager.getLastKnownLocation(provider);
+
 
         if (location != null) {
             // Getting latitude of the current location
