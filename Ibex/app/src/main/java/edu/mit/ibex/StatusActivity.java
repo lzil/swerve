@@ -87,7 +87,6 @@ public class StatusActivity extends ActionBarActivity {
         /**
          * Makes only one call to Firebase
          */
-        myStatus.setText("");
         showStatusList();
 
         //notifications from Firebase
@@ -192,7 +191,7 @@ public class StatusActivity extends ActionBarActivity {
     private void showFriendInfo(String currentUser, HashMap data) {
         HashMap currentUserInfo = (HashMap) data.get(currentUser);
         String status = currentUserInfo.get("status").toString();
-        myStatus.setText(status);
+        myStatus.setText(curUser + ": " + status);
 
         HashMap friendsDict = (HashMap) currentUserInfo.get("friends");
         System.out.println(friendsDict);
@@ -432,13 +431,16 @@ public class StatusActivity extends ActionBarActivity {
         boolean on = available.isChecked();
         if (tempStatus.equals("")) {
             Toast.makeText(getApplicationContext(),
-                    "Post a status!",
+                    "Post a (nonempty) status!",
                     Toast.LENGTH_LONG).show();
             return;
         }
         myFire.child("status").setValue(editStatus.getText().toString());
         editStatus.setText("");
         myFire.child("available").setValue(on);
+        Toast.makeText(getApplicationContext(),
+                "Status posted!",
+                Toast.LENGTH_LONG).show();
         // Getting LocationManager object from System Service LOCATION_SERVICE
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
