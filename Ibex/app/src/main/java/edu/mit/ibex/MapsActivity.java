@@ -1,6 +1,9 @@
 package edu.mit.ibex;
 
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -98,8 +101,32 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+        //Center is null when you click directly on maps, otherwise it is already set with the location of the friend you clicked on
         if(Center ==null){
-            Center = new LatLng(42.3598,-71.0921);
+            // Getting LocationManager object from System Service LOCATION_SERVICE
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+            // Creating a criteria object to retrieve provider
+            Criteria criteria = new Criteria();
+
+            // Getting the name of the best provider
+            String provider = locationManager.getBestProvider(criteria, true);
+
+            // Getting Current Location
+            Location location = locationManager.getLastKnownLocation(provider);
+
+
+            if (location != null) {
+                // Getting latitude of the current location
+                double latitude = location.getLatitude();
+                // Getting longitude of the current location
+                double longitude = location.getLongitude();
+                Center = new LatLng(latitude,longitude);
+            }
+            else{
+                //Should'nt get here but centers on MIT
+                Center = new LatLng(42.3598,-71.0921);
+            }
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Center, 15));
         mMap.setMyLocationEnabled(true);
