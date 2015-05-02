@@ -118,7 +118,6 @@ public class StatusActivity extends ActionBarActivity {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
-
     }
 
 
