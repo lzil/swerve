@@ -49,8 +49,8 @@ public class LogInActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         logText = (TextView) findViewById(R.id.invalidText);
-        username =  (EditText) findViewById(R.id.usernameEditText);
-        password =  (EditText) findViewById(R.id.passwordEditText);
+        username =  (EditText) findViewById(R.id.usernameInput);
+        password =  (EditText) findViewById(R.id.passwordInput);
 
         sp = getSharedPreferences("Login", 0);
 
@@ -170,16 +170,11 @@ public class LogInActivity extends ActionBarActivity {
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        LinearLayout lila1= new LinearLayout(this);
-        lila1.setOrientation(LinearLayout.VERTICAL); //1 is for vertical orientation
-        final EditText username = new EditText(this);
-        username.setHint("Username");
-        final EditText password = new EditText(this);
-        password.setHint("Password");
+        View signUpLayout = getLayoutInflater().inflate(R.layout.layout_sign_up, null);
+        final EditText username = (EditText) signUpLayout.findViewById(R.id.usernameInput);
+        final EditText password = (EditText) signUpLayout.findViewById(R.id.passwordInput);
 
-        lila1.addView(username);
-        lila1.addView(password);
-        alert.setView(lila1);
+        alert.setView(signUpLayout);
 
         alert.setIcon(R.drawable.hangin);
         alert.setTitle("Register for Swerve!");

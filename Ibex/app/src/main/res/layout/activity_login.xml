@@ -19,7 +19,7 @@
     <EditText
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:id="@+id/usernameEditText"
+        android:id="@+id/usernameInput"
         android:hint="Username"
         android:singleLine="true"
         android:maxLength="24"
@@ -34,7 +34,7 @@
         android:ems="10"
         android:id="@+id/passwordEditText"
         android:hint="Password"
-        android:layout_below="@+id/usernameEditText"
+        android:layout_below="@+id/usernameInput"
         android:layout_centerHorizontal="true" />
 
     <Button
