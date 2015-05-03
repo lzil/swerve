@@ -36,6 +36,9 @@ public class MapsActivity extends FragmentActivity {
     String username;
 
     @Override
+    /**
+     * Initialize the setting up of the map
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
@@ -85,7 +88,9 @@ public class MapsActivity extends FragmentActivity {
             }
         }
     }
+
     @Override
+
     public  boolean onKeyDown(int keyCode, KeyEvent event){
         if((keyCode==KeyEvent.KEYCODE_BACK)){
             finish();
@@ -128,6 +133,7 @@ public class MapsActivity extends FragmentActivity {
                 Center = new LatLng(42.3598,-71.0921);
             }
         }
+        // Center the map, displayslocation and add friends
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Center, 15));
         mMap.setMyLocationEnabled(true);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
@@ -152,6 +158,13 @@ public class MapsActivity extends FragmentActivity {
             );
 
     }
+
+    /**
+     * Takes information about a friend and display him on a map
+     * @param friend, a string with the name of the friend. The friend should be present in the DB
+     * @param status a string describing the friends activity
+     * @param location a LatLng which indicates the position of the friend
+     */
 
     public void addFriendsToMap(String friend, String status, LatLng location) {
         mMap.addMarker(new MarkerOptions().position(location).title(friend).snippet(status));
