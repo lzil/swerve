@@ -120,17 +120,6 @@
             android:layout_marginBottom="20dp"
             android:layout_gravity="right|bottom" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="new message"
-            android:id="@+id/messageButton"
-            android:layout_gravity="right|center_vertical"
-            android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/available"
-            android:layout_alignStart="@+id/available"
-            android:onClick="message"/>
-
     </FrameLayout>
 
     <Switch
@@ -144,5 +133,16 @@
         android:layout_toEndOf="@+id/textView"
         android:checked="false"
         android:onClick="availableClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="new message"
+        android:id="@+id/messageButton"
+        android:layout_gravity="center_horizontal|bottom"
+        android:onClick="message"
+        android:layout_alignTop="@+id/available"
+        android:layout_alignRight="@+id/postButton"
+        android:layout_alignEnd="@+id/postButton" />
 
 </RelativeLayout>
