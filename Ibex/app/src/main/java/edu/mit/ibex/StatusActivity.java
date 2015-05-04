@@ -539,10 +539,39 @@ public class StatusActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String toUser = messageUser.getText().toString();
                 String msg = messageContent.getText().toString();
-                HashMap<String, String> putMessage = new HashMap<String, String>();
-                putMessage.put("name", curUser);
-                putMessage.put("message", msg);
-                baseFire.child(toUser).child("messages").push().setValue(putMessage);
+                if(toUser.equals("")) {
+                    Log.d("Sign Up", "User or pass is empty");
+                    Toast.makeText(getApplicationContext(),
+                            "Who are we sending this message to?",
+                            Toast.LENGTH_LONG).show();
+                } else if(msg.equals("")){
+                    Log.d("Sign Up", "User or pass is empty");
+                    Toast.makeText(getApplicationContext(),
+                            "What are we sending to "+toUser+"?",
+                            Toast.LENGTH_LONG).show();
+                } else if (userList.contains(toUser)) {
+                    if (toUser.equals(curUser)){
+                        HashMap<String, String> putMessage = new HashMap<String, String>();
+                        putMessage.put("name", curUser);
+                        putMessage.put("message", msg);
+                        baseFire.child(toUser).child("messages").push().setValue(putMessage);
+                        Toast.makeText(getApplicationContext(),
+                                "Don't worry, I talk to myself too.",
+                                Toast.LENGTH_LONG).show();
+                    }else {
+                        HashMap<String, String> putMessage = new HashMap<String, String>();
+                        putMessage.put("name", curUser);
+                        putMessage.put("message", msg);
+                        baseFire.child(toUser).child("messages").push().setValue(putMessage);
+                        Toast.makeText(getApplicationContext(),
+                                toUser+" messaged!",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            toUser+" doesn't use Swerve",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
         alert.setNegativeButton("Cancel", null);
