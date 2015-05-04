@@ -355,6 +355,10 @@ public class StatusActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * Setup a map with current friends of the user and centers on its last saved location
+     */
+
     public void startMap() {
         final List<String> ami = new ArrayList<String>();
         final Intent i = new Intent(this, MapsActivity.class);
@@ -407,6 +411,12 @@ public class StatusActivity extends ActionBarActivity {
         });
 
     }
+
+    /**
+     * Triggers a map activity intent and display all the currently available friends of the current logged in user
+     * Also centers the map on the friend mentionned
+     * @param friend
+     */
     public void startMap(final String friend){
         final List<String> ami = new ArrayList<String>();
         final Intent i = new Intent(this, MapsActivity.class);
@@ -415,6 +425,9 @@ public class StatusActivity extends ActionBarActivity {
         }
         myFire.child("friends").addValueEventListener(new ValueEventListener() {
             @Override
+            /*
+            Take a snapshot of current data and displays these friends on the map
+             */
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, HashMap<String,String>> fd = (HashMap<String, HashMap<String,String>>) dataSnapshot.getValue();
                 Collection<HashMap<String, String>> friendsNames = fd.values();
