@@ -173,12 +173,14 @@ public class StatusActivity extends ActionBarActivity {
         baseFire.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                data = (HashMap<String, Object>) snapshot.getValue();
-                Log.d("data - (raw)", data.toString());
-                Log.d("data - Users", data.keySet().toString());
-                userList = data.keySet();
-                Log.d("showStatusList", "calling showFriendInfo");
-                showFriendInfo(curUser, data);
+                if (available.isChecked()) {
+                    data = (HashMap<String, Object>) snapshot.getValue();
+                    Log.d("data - (raw)", data.toString());
+                    Log.d("data - Users", data.keySet().toString());
+                    userList = data.keySet();
+                    Log.d("showStatusList", "calling showFriendInfo");
+                    showFriendInfo(curUser, data);
+                }
             }
 
             @Override
@@ -352,6 +354,7 @@ public class StatusActivity extends ActionBarActivity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void setAvailable(View v){
         if(!available.isChecked()){
+
             available.setChecked(true);
             availableClick(v);
         }
