@@ -46,8 +46,7 @@
         android:enabled="true"
         android:onClick="logIn"
         android:layout_below="@+id/passwordInput"
-        android:layout_alignRight="@+id/passwordInput"
-        android:layout_alignEnd="@+id/passwordInput" />
+        android:layout_alignLeft="@+id/passwordInput" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -88,7 +87,6 @@
         android:id="@+id/signUpButton"
         android:onClick="signUp"
         android:layout_alignTop="@+id/logInButton"
-        android:layout_alignLeft="@+id/passwordInput"
-        android:layout_alignStart="@+id/passwordInput" />
+        android:layout_alignRight="@+id/passwordInput" />
 
 </RelativeLayout>
