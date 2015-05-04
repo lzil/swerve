@@ -154,8 +154,10 @@ public class StatusActivity extends ActionBarActivity {
     public void availableClick(View v){
         if (available.isChecked()) {
             Log.d("availableClicked", "calling showStatusList");
+            myFire.child("available").setValue(true);
             showStatusList();
         }else{
+            myFire.child("available").setValue(false);
             Log.d("availableClicked", "clearing everything!");
             friendsInfo = new ArrayList<String>();
             ArrayAdapter<String> resultsAdapter =
