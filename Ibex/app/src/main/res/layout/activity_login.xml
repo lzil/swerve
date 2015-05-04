@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/passwordEditText"
+        android:id="@+id/passwordInput"
         android:hint="Password"
         android:layout_below="@+id/usernameInput"
         android:layout_centerHorizontal="true" />
@@ -45,9 +45,9 @@
         android:clickable="true"
         android:enabled="true"
         android:onClick="logIn"
-        android:layout_below="@+id/passwordEditText"
-        android:layout_alignLeft="@+id/passwordEditText"
-        android:layout_alignStart="@+id/passwordEditText" />
+        android:layout_below="@+id/passwordInput"
+        android:layout_alignRight="@+id/passwordInput"
+        android:layout_alignEnd="@+id/passwordInput" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -86,9 +86,9 @@
         android:layout_height="wrap_content"
         android:text="Register"
         android:id="@+id/signUpButton"
-        android:layout_below="@+id/passwordEditText"
-        android:layout_alignRight="@+id/passwordEditText"
-        android:layout_alignEnd="@+id/passwordEditText"
-        android:onClick="signUp"/>
+        android:onClick="signUp"
+        android:layout_alignTop="@+id/logInButton"
+        android:layout_alignLeft="@+id/passwordInput"
+        android:layout_alignStart="@+id/passwordInput" />
 
 </RelativeLayout>

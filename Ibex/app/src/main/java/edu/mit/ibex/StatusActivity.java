@@ -250,20 +250,20 @@ public class StatusActivity extends ActionBarActivity {
     /*
     Notification popup with more information about a friend
      */
-    private void statusPop(String user, String status, String location) {
-        toUser = user;
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        alert.setMessage(status + "\n" + location);
-        alert.setTitle(toUser);
-        alert.setPositiveButton("Message", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                message(toUser);
-            }
-        });
-        alert.setNegativeButton("OK", null);
-        alert.show();
-    }
+//    private void statusPop(String user, String status, String location) {
+//        toUser = user;
+//        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+//
+//        alert.setMessage(status + "\n" + location);
+//        alert.setTitle(toUser);
+//        alert.setPositiveButton("Message", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int whichButton) {
+//                message(toUser);
+//            }
+//        });
+//        alert.setNegativeButton("OK", null);
+//        alert.show();
+//    }
 
     /*
     Adds a friend to the database under current user's friends list
@@ -513,18 +513,19 @@ public class StatusActivity extends ActionBarActivity {
 
 
     //Sends a message to a specified user
-    public void message(String user) {
-        toUser = user;
+    public void message(View v) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setMessage("Message to " + toUser);
-        alert.setTitle(toUser);
-        final EditText edittext= new EditText(StatusActivity.this);
-        alert.setView(edittext);
+        View messageLayout = getLayoutInflater().inflate(R.layout.layout_message, null);
+        alert.setView(messageLayout);
+        alert.setTitle("Send Message");
+        final EditText messageUser = (EditText) messageLayout.findViewById(R.id.messageTo);
+        final EditText messageContent = (EditText) messageLayout.findViewById(R.id.messageContent);
 
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                final String msg = edittext.getText().toString();
+                String toUser = messageUser.getText().toString();
+                String msg = messageContent.getText().toString();
                 HashMap<String, String> putMessage = new HashMap<String, String>();
                 putMessage.put("name", curUser);
                 putMessage.put("message", msg);

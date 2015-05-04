@@ -31,7 +31,6 @@ import java.util.Set;
 
 public class LogInActivity extends ActionBarActivity {
     public static String psw2;
-    public static boolean isPwdEntered = false;
     public static String usr, psw;
     Firebase baseFire, myFire;
     TextView logText;

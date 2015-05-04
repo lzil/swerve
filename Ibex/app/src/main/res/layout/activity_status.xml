@@ -119,6 +119,18 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             android:layout_gravity="right|bottom" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="new message"
+            android:id="@+id/messageButton"
+            android:layout_gravity="right|center_vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/available"
+            android:layout_alignStart="@+id/available"
+            android:onClick="message"/>
+
     </FrameLayout>
 
     <Switch
