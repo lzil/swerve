@@ -16,7 +16,7 @@
 
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:id="@+id/friendsButton"
             android:src="@drawable/friends"
             android:cropToPadding="true"
@@ -27,7 +27,7 @@
 
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:id="@+id/mapsButton"
             android:src="@drawable/maps"
             android:onClick="mapsClick"
@@ -86,8 +86,7 @@
         android:textColor="#03ABF4"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:text="Status here" />
+        android:layout_marginTop="10dp" />
 
     <FrameLayout
         android:layout_width="fill_parent"

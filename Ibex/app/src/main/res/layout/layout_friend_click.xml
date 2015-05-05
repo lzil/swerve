@@ -3,24 +3,39 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/friendStatus"
-        android:hint="Status Of Clicked Friend"
-        android:phoneNumber="true"
-        android:textSize="20dp" />
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Delete Friend"
-            android:id="@+id/deleteFriend" />
+            android:id="@+id/friendStatus"
+            android:hint="Status Of Clicked Friend"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textSize="20dp"
+            android:layout_weight="2"
+            android:maxLines="5"
+            android:singleLine="false"
+            />
 
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toRightOf="@+id/friendStatus"
+            android:src="@drawable/trashicon"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="deleteFriend"
+            android:background="@null"
+            android:cropToPadding="true"
+            android:scaleType="centerInside"
+            android:id="@+id/deleteFriend"
+            android:layout_weight="0"
+            />
     </LinearLayout>
+
 </LinearLayout>
