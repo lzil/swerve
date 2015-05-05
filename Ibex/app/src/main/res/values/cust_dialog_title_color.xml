@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="cust_dialog_title_color" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:windowTitleStyle">@style/dialog_title_style
+        </item>
+    </style>
+
+    <style name="dialog_title_style" parent="android:Widget.TextView">
+        <item name="android:background">@color/myyellow</item>
+        <item name="android:padding">10dp</item>
+    </style>
+</resources>
