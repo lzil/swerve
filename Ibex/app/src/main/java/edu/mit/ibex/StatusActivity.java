@@ -563,6 +563,7 @@ public class StatusActivity extends ActionBarActivity {
         }
     }
 
+    pubic void deleteFriend()
 
     //Sends a message to a specified user
     public void message(View v) {
