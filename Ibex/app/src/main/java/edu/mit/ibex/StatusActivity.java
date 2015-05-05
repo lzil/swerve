@@ -575,7 +575,7 @@ public class StatusActivity extends ActionBarActivity {
     }
 
 
-    pubic void deleteFriend(){
+    public void deleteFriend(){
 
     }
 
