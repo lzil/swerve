@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -231,9 +230,12 @@ public class StatusActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
                 Log.d("friendClick", "clicked!");
                 String selectedFromList = (String) (theListView.getItemAtPosition(myItemInt));
+                Log.d("friendClick", selectedFromList);
                 final String selectedFriend = selectedFromList.split(":")[0];
+                final String selectedFriendStatus = selectedFromList.split(": ")[1];
                 Log.d("friendClick", selectedFriend);
-                clickFriend(selectedFriend);
+                Log.d("friendClick", selectedFriendStatus);
+                clickFriend(selectedFriend,selectedFriendStatus );
             }
         });
     }
@@ -243,9 +245,26 @@ public class StatusActivity extends ActionBarActivity {
     Right now, clicking a friend opens notification of their status and long/lat coordinates.
     We can make it so when a friend is clicked we open maps tab up to their location
      */
-    private void clickFriend(final String selectedFriend) {
-        startMap(selectedFriend);
+    private void clickFriend(final String selectedFriend, final String selectedFriendStatus) {
+        Log.d("clickFriend", selectedFriend+" clicked!");
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        View clickLayout = getLayoutInflater().inflate(R.layout.layout_friend_click, null);
+        alert.setView(clickLayout);
+        alert.setMessage("Add a Friend");
+        TextView friendStatus = (TextView)clickLayout.findViewById(R.id.friendStatus);
+        friendStatus.setText(selectedFriendStatus);
+
+        alert.setPositiveButton("Find "+selectedFriend, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                startMap(selectedFriend);
+            }
+        });
+        alert.setNegativeButton("Cancel", null);
+        alert.show();
     }
+
+    //TODO: Onclick methods for DeleteFriend and MessageFriend
 
     /*
     Helper function to add a friend to the Friends List
