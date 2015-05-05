@@ -73,6 +73,7 @@ public class StatusActivity extends ActionBarActivity {
         baseFire = new Firebase("https://hangmonkey.firebaseio.com/");
         myFire = baseFire.child(curUser);
         myStatus = (TextView) findViewById(R.id.MyStatus);
+        myStatus.setText(curUser+":");
         mapsButton = (ImageButton) findViewById(R.id.mapsButton);
         friendsButton = (ImageButton) findViewById(R.id.friendsButton);
         editStatus = (EditText) findViewById(R.id.editStatus);
@@ -95,22 +96,23 @@ public class StatusActivity extends ActionBarActivity {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 Map<String, String> msgPack = (Map<String, String>) snapshot.getValue();
-//                if (msgPack.get("seen").equals("true")) {
-//                    return;
-//                }
-                Intent msgIntent = new Intent(StatusActivity.this, LogInActivity.class);
-                PendingIntent pIntent = PendingIntent.getActivity(StatusActivity.this, 0, msgIntent, 0);
-                Notification notif = new Notification.Builder(StatusActivity.this)
-                        .setContentTitle("New message from " + msgPack.get("name"))
-                        .setContentIntent(pIntent)
-                        .setContentText(msgPack.get("message"))
-                        .setSmallIcon(R.mipmap.ic_action_mail)
-                        .build();
-                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                notificationManager.notify(0, notif);
-                myFire.child("messages").child(snapshot.getKey()).child("seen").setValue("true");
-                Log.d("key", snapshot.getKey());
-                Log.d("posting something", "done!");
+                if (msgPack.get("seen").equals("false")) {
+                    Intent intent = new Intent(StatusActivity.this, Notifications.class);
+//                    Intent msgIntent = new Intent(StatusActivity.this, LogInActivity.class);
+//                    PendingIntent pIntent = PendingIntent.getActivity(StatusActivity.this, 0, msgIntent, 0);
+                    PendingIntent pIntent = PendingIntent.getActivity(StatusActivity.this, 0, intent, 0);
+                    Notification notif = new Notification.Builder(StatusActivity.this)
+                            .setContentTitle("New message from " + msgPack.get("name"))
+                            .setContentIntent(pIntent)
+                            .setContentText(msgPack.get("message"))
+                            .setSmallIcon(R.mipmap.ic_action_mail)
+                            .build();
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    notificationManager.notify(0, notif);
+//                    myFire.child("messages").child(snapshot.getKey()).child("seen").setValue("true");
+                    Log.d("key", snapshot.getKey());
+                    Log.d("posting something", "done!");
+                }
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -588,6 +590,7 @@ public class StatusActivity extends ActionBarActivity {
                         HashMap<String, String> putMessage = new HashMap<String, String>();
                         putMessage.put("name", curUser);
                         putMessage.put("message", msg);
+                        putMessage.put("seen", "false");
                         baseFire.child(toUser).child("messages").push().setValue(putMessage);
                         Toast.makeText(getApplicationContext(),
                                 "Don't worry, I talk to myself too.",

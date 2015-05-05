@@ -86,8 +86,7 @@
         android:textColor="#03ABF4"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:text="Status here" />
+        android:layout_marginTop="10dp" />
 
     <FrameLayout
         android:layout_width="fill_parent"
