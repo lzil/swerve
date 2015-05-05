@@ -17,7 +17,9 @@ import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class MapsActivity extends FragmentActivity {
     Map<String, Object> newData;
     ArrayList<ArrayList<String>> don;
     LatLng Center;
+    String friendCenter;
+    String friendStatus;
     String username;
 
     @Override
@@ -54,6 +58,8 @@ public class MapsActivity extends FragmentActivity {
         Log.d("user",username);
         System.out.println(username);
         Center = (LatLng) extras.get("center");
+        friendCenter = (String) extras.get("friend");
+        friendStatus = (String) extras.get("status");
         setUpMapIfNeeded();
     }
     @Override
@@ -140,6 +146,7 @@ public class MapsActivity extends FragmentActivity {
         for (ArrayList<String> friend:don){
             if(friend.size()==4){
             String name = friend.get(0);
+            if(!name.equals(friendCenter)){
             String lat = friend.get(1);
             String lon = friend.get(2);
             String status = friend.get(3);
@@ -147,6 +154,11 @@ public class MapsActivity extends FragmentActivity {
             Double y = Double.parseDouble(lon);
             addFriendsToMap(name,status,new LatLng(x,y));
             }
+            else{
+                addSpecialFriendToMap(friendCenter,friendStatus,Center);
+            }
+            }
+
         }
         myFirebase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -170,6 +182,13 @@ public class MapsActivity extends FragmentActivity {
         mMap.addMarker(new MarkerOptions().position(location).title(friend).snippet(status));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Center, 15));
 
+    }
+
+    public void addSpecialFriendToMap(String friend, String status, LatLng location) {
+        MarkerOptions friendMarkerOptions = new MarkerOptions().position(location).title(friend).snippet(status).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        Marker friendMarker= mMap.addMarker(friendMarkerOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Center, 15));
+        friendMarker.showInfoWindow();
     }
     public void mapsClick(View v) {
         /*Intent i = new Intent(this, MapsActivity.class);
