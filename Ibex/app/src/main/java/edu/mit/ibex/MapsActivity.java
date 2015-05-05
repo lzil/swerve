@@ -23,7 +23,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -44,6 +43,7 @@ public class MapsActivity extends FragmentActivity {
      * Initialize the setting up of the map
      */
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("Maps", "Maps opened");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
