@@ -4,12 +4,14 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -60,7 +62,6 @@ public class StatusActivity extends ActionBarActivity {
     Set<String> userList; //List of ALL users in database. Used for checking if friend is valid
     LatLng center;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,13 +96,17 @@ public class StatusActivity extends ActionBarActivity {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 Map<String, String> msgPack = (Map<String, String>) snapshot.getValue();
+                Intent msgIntent = new Intent(StatusActivity.this, LogInActivity.class);
+                PendingIntent pIntent = PendingIntent.getActivity(StatusActivity.this, 0, msgIntent, 0);
                 Notification notif = new Notification.Builder(StatusActivity.this)
                         .setContentTitle("New message from " + msgPack.get("name"))
+                        .setContentIntent(pIntent)
                         .setContentText(msgPack.get("message"))
                         .setSmallIcon(R.mipmap.ic_action_mail)
                         .build();
                 NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 notificationManager.notify(0, notif);
+                Log.d("posting something", "done!");
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
