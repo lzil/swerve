@@ -252,8 +252,8 @@ public class StatusActivity extends ActionBarActivity {
      */
     private void clickFriend(final String selectedFriend, final String selectedFriendStatus) {
         Log.d("clickFriend", selectedFriend + " clicked!");
-        AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.cust_dialog_title_color);
-
+        //AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.dialog_title_style);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
         View clickLayout = getLayoutInflater().inflate(R.layout.layout_friend_click, null);
         alert.setView(clickLayout);
         alert.setMessage(selectedFriend);
