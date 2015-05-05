@@ -95,6 +95,9 @@ public class StatusActivity extends ActionBarActivity {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 Map<String, String> msgPack = (Map<String, String>) snapshot.getValue();
+//                if (msgPack.get("seen").equals("true")) {
+//                    return;
+//                }
                 Intent msgIntent = new Intent(StatusActivity.this, LogInActivity.class);
                 PendingIntent pIntent = PendingIntent.getActivity(StatusActivity.this, 0, msgIntent, 0);
                 Notification notif = new Notification.Builder(StatusActivity.this)
@@ -105,6 +108,8 @@ public class StatusActivity extends ActionBarActivity {
                         .build();
                 NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 notificationManager.notify(0, notif);
+                myFire.child("messages").child(snapshot.getKey()).child("seen").setValue("true");
+                Log.d("key", snapshot.getKey());
                 Log.d("posting something", "done!");
             }
             @Override
@@ -588,9 +593,10 @@ public class StatusActivity extends ActionBarActivity {
                                 "Don't worry, I talk to myself too.",
                                 Toast.LENGTH_LONG).show();
                     }else {
-                        HashMap<String, String> putMessage = new HashMap<String, String>();
+                        HashMap<String, String> putMessage = new HashMap<>();
                         putMessage.put("name", curUser);
                         putMessage.put("message", msg);
+                        putMessage.put("seen", "false");
                         baseFire.child(toUser).child("messages").push().setValue(putMessage);
                         Toast.makeText(getApplicationContext(),
                                 toUser+" messaged!",
