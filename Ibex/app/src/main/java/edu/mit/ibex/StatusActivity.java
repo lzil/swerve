@@ -256,7 +256,7 @@ public class StatusActivity extends ActionBarActivity {
 
         View clickLayout = getLayoutInflater().inflate(R.layout.layout_friend_click, null);
         alert.setView(clickLayout);
-        alert.setMessage("Add a Friend");
+        alert.setMessage(selectedFriend);
         TextView friendStatus = (TextView)clickLayout.findViewById(R.id.friendStatus);
         friendStatus.setText(selectedFriendStatus);
 
@@ -386,8 +386,10 @@ public class StatusActivity extends ActionBarActivity {
         alert.show();
     }
 
-    public void deleteFriend(String user) {
-
+    public void deleteFriend(View v) {
+        Toast.makeText(getApplicationContext(),
+                "Not yet implemented! " + curUser,
+                Toast.LENGTH_LONG).show();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
