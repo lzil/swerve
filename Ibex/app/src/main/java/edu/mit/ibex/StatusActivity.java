@@ -98,12 +98,15 @@ public class StatusActivity extends ActionBarActivity {
                 Map<String, String> msgPack = (Map<String, String>) snapshot.getValue();
                 if (msgPack.get("seen").equals("false")) {
                     Intent intent = new Intent(StatusActivity.this, Notifications.class);
+                    intent.putExtra("user", curUser);
+                    intent.putExtra("messageKey", snapshot.getKey());
 //                    Intent msgIntent = new Intent(StatusActivity.this, LogInActivity.class);
 //                    PendingIntent pIntent = PendingIntent.getActivity(StatusActivity.this, 0, msgIntent, 0);
-                    PendingIntent pIntent = PendingIntent.getActivity(StatusActivity.this, 0, intent, 0);
+                    PendingIntent pendIntent = PendingIntent.getActivity(StatusActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT  );
+
                     Notification notif = new Notification.Builder(StatusActivity.this)
                             .setContentTitle("New message from " + msgPack.get("name"))
-                            .setContentIntent(pIntent)
+                            .setContentIntent(pendIntent)
                             .setContentText(msgPack.get("message"))
                             .setSmallIcon(R.mipmap.ic_action_mail)
                             .build();

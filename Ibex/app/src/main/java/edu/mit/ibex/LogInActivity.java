@@ -40,6 +40,7 @@ public class LogInActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         Log.d("Login", "Login opened");
         Firebase.setAndroidContext(this);
         baseFire = new Firebase("https://hangmonkey.firebaseio.com/");
