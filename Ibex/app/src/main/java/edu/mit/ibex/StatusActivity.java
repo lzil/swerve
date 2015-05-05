@@ -495,6 +495,7 @@ public class StatusActivity extends ActionBarActivity {
                     Log.d("Data4Name", dataForFriend.toString());
                     Object lat = dataForFriend.get("lat");
                     Object lon = dataForFriend.get("long");
+                    String friendStatus = (String) dataForFriend.get("status");
                     boolean available = (boolean) dataForFriend.get("available");
                     if(friend.equals(name)){
                         center = new LatLng((double)lat,(double)lon);
@@ -510,6 +511,8 @@ public class StatusActivity extends ActionBarActivity {
                 Log.d("All f info", allFriendsInfo.toString());
                 i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
                 i.putExtra("center",center);
+                i.putExtra("friend",friend);
+                i.putExtra("status",friendStatus);
                 startActivity(i);
 
             }
