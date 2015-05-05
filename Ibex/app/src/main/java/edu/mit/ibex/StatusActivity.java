@@ -315,13 +315,12 @@ public class StatusActivity extends ActionBarActivity {
      */
     public void addFriend(View v) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        final EditText friendInput = new EditText(StatusActivity.this);
-        //only allows user to input max 24 chars (limit of curUser length)
-        friendInput.setFilters(new InputFilter[]{
-                new InputFilter.LengthFilter(24)});
         alert.setMessage("Add a Friend");
-        alert.setView(friendInput);
+
+        View addFriendLayout = getLayoutInflater().inflate(R.layout.layout_add_friend, null);
+        alert.setView(addFriendLayout);
+        final EditText friendInput = (EditText) addFriendLayout.findViewById(R.id.friendInput);
+
 
         alert.setPositiveButton("Add Friend", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
