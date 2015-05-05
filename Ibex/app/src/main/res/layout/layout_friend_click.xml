@@ -22,10 +22,5 @@
             android:text="Delete Friend"
             android:id="@+id/deleteFriend" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Message Friend!"
-            android:id="@+id/messageFriend" />
     </LinearLayout>
 </LinearLayout>
