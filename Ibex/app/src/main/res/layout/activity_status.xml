@@ -16,7 +16,7 @@
 
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:id="@+id/friendsButton"
             android:src="@drawable/friends"
             android:cropToPadding="true"
@@ -27,7 +27,7 @@
 
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:id="@+id/mapsButton"
             android:src="@drawable/maps"
             android:onClick="mapsClick"
@@ -131,16 +131,5 @@
         android:layout_toEndOf="@+id/textView"
         android:checked="false"
         android:onClick="availableClick" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="new message"
-        android:id="@+id/messageButton"
-        android:layout_gravity="center_horizontal|bottom"
-        android:onClick="message"
-        android:layout_alignTop="@+id/available"
-        android:layout_alignRight="@+id/postButton"
-        android:layout_alignEnd="@+id/postButton" />
 
 </RelativeLayout>

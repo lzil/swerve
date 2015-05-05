@@ -256,18 +256,24 @@ public class StatusActivity extends ActionBarActivity {
     We can make it so when a friend is clicked we open maps tab up to their location
      */
     private void clickFriend(final String selectedFriend, final String selectedFriendStatus) {
-        Log.d("clickFriend", selectedFriend+" clicked!");
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
+        Log.d("clickFriend", selectedFriend + " clicked!");
+        //AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.dialog_title_style);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
         View clickLayout = getLayoutInflater().inflate(R.layout.layout_friend_click, null);
         alert.setView(clickLayout);
-        alert.setMessage("Add a Friend");
+        alert.setMessage(selectedFriend);
         TextView friendStatus = (TextView)clickLayout.findViewById(R.id.friendStatus);
         friendStatus.setText(selectedFriendStatus);
 
-        alert.setPositiveButton("Find "+selectedFriend, new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("Find " + selectedFriend, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 startMap(selectedFriend);
+            }
+        });
+        alert.setNeutralButton("Message", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                messageFriend(selectedFriend);
             }
         });
         alert.setNegativeButton("Cancel", null);
@@ -385,6 +391,12 @@ public class StatusActivity extends ActionBarActivity {
         alert.show();
     }
 
+    public void deleteFriend(View v) {
+        Toast.makeText(getApplicationContext(),
+                "Not yet implemented! " + curUser,
+                Toast.LENGTH_LONG).show();
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void setAvailable(View v){
         if(!available.isChecked()){
@@ -415,7 +427,6 @@ public class StatusActivity extends ActionBarActivity {
                         ami.add(amigo);
                     }
                 }
-                Log.d("HHHHH", ami.toString());
 
                 List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
                 HashMap<String, Object> friends = (HashMap<String, Object>) data.get(curUser);
@@ -563,29 +574,25 @@ public class StatusActivity extends ActionBarActivity {
         }
     }
 
-    pubic void deleteFriend()
+
+    pubic void deleteFriend(){
+
+    }
 
     //Sends a message to a specified user
-    public void message(View v) {
+    public void messageFriend(String user) {
+        toUser = user;
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         View messageLayout = getLayoutInflater().inflate(R.layout.layout_message, null);
         alert.setView(messageLayout);
         alert.setTitle("Send Message");
-        final EditText messageUser = (EditText) messageLayout.findViewById(R.id.messageTo);
         final EditText messageContent = (EditText) messageLayout.findViewById(R.id.messageContent);
 
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                String toUser = messageUser.getText().toString();
                 String msg = messageContent.getText().toString();
-                if(toUser.equals("")) {
-                    Log.d("Sign Up", "User or pass is empty");
-                    Toast.makeText(getApplicationContext(),
-                            "Who are we sending this message to?",
-                            Toast.LENGTH_LONG).show();
-                } else if(msg.equals("")){
-                    Log.d("Sign Up", "User or pass is empty");
+                if(msg.equals("")){
                     Toast.makeText(getApplicationContext(),
                             "What are we sending to "+toUser+"?",
                             Toast.LENGTH_LONG).show();
@@ -609,10 +616,6 @@ public class StatusActivity extends ActionBarActivity {
                                 toUser+" messaged!",
                                 Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            toUser+" doesn't use Swerve",
-                            Toast.LENGTH_LONG).show();
                 }
             }
         });
