@@ -113,6 +113,7 @@ public class StatusActivity extends ActionBarActivity {
                             .setContentTitle("New message from " + msgPack.get("name"))
                             .setContentIntent(pendIntent)
                             .setContentText(msgPack.get("message"))
+                            .setAutoCancel(true)
                             .setSmallIcon(R.mipmap.ic_action_mail)
                             .build();
                     NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
