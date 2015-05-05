@@ -63,6 +63,7 @@ public class LogInActivity extends ActionBarActivity {
             Intent intent = new Intent(this, StatusActivity.class);
 
             intent.putExtra("curUser", keys.get("curUser").toString());
+            intent.putExtra("curAvailable", true);
             Log.d("login", "Log in success");
             startActivity(intent);
         }
@@ -147,6 +148,7 @@ public class LogInActivity extends ActionBarActivity {
         if (psw2.equals(psw)) {
             Intent intent = new Intent(this, StatusActivity.class);
             intent.putExtra("curUser", usr);
+            intent.putExtra("curAvailable", true);
             Log.d("login", "Log in success");
 
             SharedPreferences.Editor ed = sp.edit();
@@ -193,9 +195,9 @@ public class LogInActivity extends ActionBarActivity {
                             Toast.LENGTH_LONG).show();
                 } else {
                     myFire = baseFire.child(usr);
-                    myFire.child("status").setValue("");
+                    myFire.child("status").setValue("Hi everyone! I'm new to Swerve!");
                     myFire.child("pass").setValue(psw);
-                    myFire.child("available").setValue("false");
+                    myFire.child("available").setValue(false);
                     myFire.child("long").setValue(studLong);
                     myFire.child("lat").setValue(studLat);
                     goToStatus(usr);
@@ -215,6 +217,7 @@ public class LogInActivity extends ActionBarActivity {
     public void goToStatus(String usr){
         Intent intent = new Intent(this, StatusActivity.class);
         intent.putExtra("curUser", usr);
+        intent.putExtra("curAvailable", true);
         startActivity(intent);
     }
 }

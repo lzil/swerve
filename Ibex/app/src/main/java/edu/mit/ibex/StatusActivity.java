@@ -47,7 +47,8 @@ public class StatusActivity extends ActionBarActivity {
     ImageButton mapsButton, friendsButton;
     EditText editStatus;
     Switch available;
-    String curUser, toUser;
+    String curUser, toUser, targetFriend;
+    boolean curAvailable;
     Firebase baseFire, myFire;
     HashMap<String, Object> data;
     TextView myStatus;
@@ -67,6 +68,7 @@ public class StatusActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         curUser = intent.getExtras().getString("curUser");
+        curAvailable = intent.getExtras().getBoolean("curAvailable");
 
         setContentView(R.layout.activity_status);
         Firebase.setAndroidContext(this);
@@ -78,6 +80,9 @@ public class StatusActivity extends ActionBarActivity {
         friendsButton = (ImageButton) findViewById(R.id.friendsButton);
         editStatus = (EditText) findViewById(R.id.editStatus);
         available = (Switch) findViewById(R.id.available);
+        if (curAvailable){
+            available.setChecked(true);
+        }
 
         friendsInfo = new ArrayList<String>();
         theListView = (ListView) findViewById(R.id.listView);
@@ -257,6 +262,7 @@ public class StatusActivity extends ActionBarActivity {
      */
     private void clickFriend(final String selectedFriend, final String selectedFriendStatus) {
         Log.d("clickFriend", selectedFriend + " clicked!");
+        targetFriend = selectedFriend;
         //AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.dialog_title_style);
         AlertDialog.Builder alert = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
         View clickLayout = getLayoutInflater().inflate(R.layout.layout_friend_click, null);
@@ -327,12 +333,12 @@ public class StatusActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 final String friendName = friendInput.getText().toString();
                 myFire.child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        List friends = new ArrayList();
-                        HashMap<String,Object> friendList = (HashMap<String,Object> )snapshot.getValue();
-                        System.out.println("friendsList");
-                        System.out.println(friendList);
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                List friends = new ArrayList();
+                                HashMap<String,Object> friendList = (HashMap<String,Object> )snapshot.getValue();
+                                System.out.println("friendsList");
+                                System.out.println(friendList);
 
 
                         if (friendList != null) {
@@ -392,9 +398,47 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void deleteFriend(View v) {
+        myFire.child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                List friends = new ArrayList();
+                HashMap<String, Object> friendList = (HashMap<String, Object>) snapshot.getValue();
+                System.out.println("friendsList");
+                System.out.println(friendList);
+                String timeMarker = null;
+
+                if (friendList != null) {
+                    Log.d("deleteFriend", "friendList not null");
+                    for (Object timestamp : friendList.keySet()) {
+                        HashMap name = (HashMap) friendList.get(timestamp);
+                        String friendName = name.get(name.keySet().toArray()[0]).toString();
+                        if (friendName.equals(targetFriend)) {
+                            timeMarker = timestamp.toString();
+                        }
+                    }
+                }
+                if (timeMarker != null) {
+                    Log.d("deleteFriend", "calling delete");
+                    delete(timeMarker);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+
+    public void delete(String timestamp){
+        Log.d("delete", targetFriend+" deleted");
+        myFire.child("friends").child(timestamp).removeValue();
         Toast.makeText(getApplicationContext(),
-                "Not yet implemented! " + curUser,
+                targetFriend + " deleted",
                 Toast.LENGTH_LONG).show();
+
+        Intent newIntent = new Intent(this, LogInActivity.class);
+        Log.d("delete", "Back to Log In");
+        startActivity(newIntent);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -574,10 +618,6 @@ public class StatusActivity extends ActionBarActivity {
         }
     }
 
-
-    public void deleteFriend(){
-
-    }
 
     //Sends a message to a specified user
     public void messageFriend(String user) {
