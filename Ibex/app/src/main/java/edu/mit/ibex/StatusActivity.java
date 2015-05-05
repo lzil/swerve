@@ -386,6 +386,10 @@ public class StatusActivity extends ActionBarActivity {
         alert.show();
     }
 
+    public void deleteFriend(String user) {
+
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void setAvailable(View v){
         if(!available.isChecked()){
@@ -416,7 +420,6 @@ public class StatusActivity extends ActionBarActivity {
                         ami.add(amigo);
                     }
                 }
-                Log.d("HHHHH", ami.toString());
 
                 List<ArrayList<String>> allFriendsInfo = new ArrayList<ArrayList<String>>();
                 HashMap<String, Object> friends = (HashMap<String, Object>) data.get(curUser);
