@@ -185,7 +185,7 @@ public class MapsActivity extends FragmentActivity {
     }
 
     public void addSpecialFriendToMap(String friend, String status, LatLng location) {
-        MarkerOptions friendMarkerOptions = new MarkerOptions().position(location).title(friend).snippet(status).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        MarkerOptions friendMarkerOptions = new MarkerOptions().position(location).title(friend).snippet(status).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
         Marker friendMarker= mMap.addMarker(friendMarkerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Center, 15));
         friendMarker.showInfoWindow();

@@ -561,6 +561,7 @@ public class StatusActivity extends ActionBarActivity {
                 i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
                 i.putExtra("center",center);
                 i.putExtra("friend",friend);
+                //Log.d("SSSSSS",friendStatus);
                 i.putExtra("status",friendStatus);
                 startActivity(i);
 
