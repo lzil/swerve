@@ -156,8 +156,8 @@ public class LogInActivity extends ActionBarActivity {
             //ed.putString("curPsw", psw2);
             ed.commit();
             Log.d("sharepref", "added shared pref user"+usr+" psw"+psw2);
-
             startActivity(intent);
+            finish();
         }
         else {
             logText.setVisibility(View.VISIBLE);

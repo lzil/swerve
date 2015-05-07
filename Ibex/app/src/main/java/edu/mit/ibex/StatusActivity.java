@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -203,7 +204,6 @@ public class StatusActivity extends ActionBarActivity {
                     showFriendInfo(curUser, data);
                 }
             }
-
             @Override
             public void onCancelled(FirebaseError error) {
             }
@@ -465,6 +465,7 @@ public class StatusActivity extends ActionBarActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, HashMap<String, String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
+                if(fd!=null){
                 Collection<HashMap<String, String>> friendsNames = fd.values();
                 for (HashMap<String, String> amiDic : friendsNames) {
                     String amigo = amiDic.get("name");
@@ -485,18 +486,17 @@ public class StatusActivity extends ActionBarActivity {
                     Object lat = dataForFriend.get("lat");
                     Object lon = dataForFriend.get("long");
                     boolean available = (boolean) dataForFriend.get("available");
-                    if (lat != null && lon != null && available == true) {
+                    if (lat != null && lon != null && available) {
                         friendInfo.add(name);
                         friendInfo.add(lat.toString());
                         friendInfo.add(lon.toString());
                         friendInfo.add((String) dataForFriend.get("status"));
                     }
                     allFriendsInfo.add((ArrayList<String>) friendInfo);
-                }
-                Log.d("All f info", allFriendsInfo.toString());
-                i.putExtra("friends", (java.io.Serializable) allFriendsInfo);
-                startActivity(i);
 
+                Log.d("All f info", allFriendsInfo.toString());
+                i.putExtra("friends", (java.io.Serializable) allFriendsInfo);}}
+                startActivity(i);
             }
 
             @Override
@@ -600,6 +600,18 @@ public class StatusActivity extends ActionBarActivity {
                 Toast.LENGTH_LONG).show();
         // Getting LocationManager object from System Service LOCATION_SERVICE
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationListener locationlistener = new LocationListener(){
+            public void onLocationChanged(Location location){
+                UpdateNewLocation(location);
+            }
+            public void onStatusChanged(String provider, int status, Bundle extras){}
+            public void onProviderEnabled(String provider){}
+            public void onProviderDisabled(String provider){}
+        };
+
+        //Register the lister with the location manager to receive location updates
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationlistener);
+
 
         // Creating a criteria object to retrieve provider
         Criteria criteria = new Criteria();
@@ -621,6 +633,17 @@ public class StatusActivity extends ActionBarActivity {
             myFire.child("lat").setValue(latitude);
             myFire.child("long").setValue(longitude);
         }
+    }
+    public void UpdateNewLocation(Location location){
+        if(curAvailable){
+        double latitude = location.getLatitude();
+        // Getting longitude of the current location
+        double longitude = location.getLongitude();
+        //String latString = Double.toString(latitude);
+        //String longString = Double.toString(longitude);
+        myFire.child("lat").setValue(latitude);
+        myFire.child("long").setValue(longitude);}
+
     }
 
 
@@ -652,7 +675,7 @@ public class StatusActivity extends ActionBarActivity {
                                 "Don't worry, I talk to myself too.",
                                 Toast.LENGTH_LONG).show();
                     }else {
-                        HashMap<String, String> putMessage = new HashMap<>();
+                        HashMap<String, String> putMessage = new HashMap<String,String>();
                         putMessage.put("name", curUser);
                         putMessage.put("message", msg);
                         putMessage.put("seen", "false");

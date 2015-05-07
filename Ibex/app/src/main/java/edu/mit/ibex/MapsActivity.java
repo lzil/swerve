@@ -46,15 +46,14 @@ public class MapsActivity extends FragmentActivity {
         Log.d("Maps", "Maps opened");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             return;
         }
-
         username = extras.getString("curUser");
         don = (ArrayList<ArrayList<String>>) extras.getSerializable("friends");
-        Log.d("FRiends",don.toString());
+        if(don!=null){
+        Log.d("FRiends",don.toString());}
         Log.d("user",username);
         System.out.println(username);
         Center = (LatLng) extras.get("center");
@@ -143,6 +142,7 @@ public class MapsActivity extends FragmentActivity {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Center, 15));
         mMap.setMyLocationEnabled(true);
         myFirebase = new Firebase("https://hangmonkey.firebaseio.com/");
+        if(don!=null){
         for (ArrayList<String> friend:don){
             if(friend.size()==4){
             String name = friend.get(0);
@@ -159,7 +159,7 @@ public class MapsActivity extends FragmentActivity {
             }
             }
 
-        }
+        }}
         myFirebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -200,6 +200,7 @@ public class MapsActivity extends FragmentActivity {
     public void friendsClick(View v) {
         Intent i = new Intent(this, StatusActivity.class);
         startActivity(i);
+        finish();
     }
 
 }
