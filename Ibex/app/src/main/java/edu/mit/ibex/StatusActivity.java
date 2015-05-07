@@ -747,7 +747,9 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
     }
 
     protected void stopLocationUpdates(){
+        if(mGoogleApiClient.isConnected()){
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,this);
+        }
     }
     @Override
     public void onConnectionFailed(ConnectionResult result) {
@@ -845,7 +847,8 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
         Log.d("status","LocationUpdatesStarted");
         mRequestingLocationUpdates=true;
         createLocationRequest();
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest,this);
+        if(mGoogleApiClient.isConnected()){
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest,this);}
     }
 
     @Override
