@@ -2,11 +2,13 @@ package edu.mit.ibex;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
@@ -29,12 +31,23 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+
+import org.xmlpull.v1.sax2.Driver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +57,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class StatusActivity extends ActionBarActivity {
+public class StatusActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
     ImageButton mapsButton, friendsButton;
     EditText editStatus;
     Switch available;
@@ -64,9 +77,34 @@ public class StatusActivity extends ActionBarActivity {
     Set<String> userList; //List of ALL users in database. Used for checking if friend is valid
     LatLng center;
 
+    // Google Api Client
+    private GoogleApiClient mGoogleApiClient;
+    //Request code to use when launching the resolutiona activity
+    private static final int REQUEST_RESOLVE_ERROR=1001;
+    // Unique tag for the error dialog fragment
+    private static final String DIALOG_ERROR = "dialog_error";
+    //Bool to track whether the app is already resolving an error
+    private boolean mResolvingError= false;
+    
+    private Location mCurrentLocation;
+
+    //Keeping track of whether errors are being resolved
+
+    private static final String STATE_RESOLVING_ERROR = "resolving_error";
+    
+    private static final String REQUESTING_LOCATION_UPDATES = "requesting_location_updates";
+    private static final String LOCATION_KEY = "location_key";
+    
+    private LocationRequest mLocationRequest;
+    
+    private boolean mRequestingLocationUpdates;
+    
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        updateValuesFromBudnle(savedInstanceState);
 
         Intent intent = getIntent();
         curUser = intent.getExtras().getString("curUser");
@@ -78,6 +116,7 @@ public class StatusActivity extends ActionBarActivity {
         myFire = baseFire.child(curUser);
         myStatus = (TextView) findViewById(R.id.MyStatus);
         myStatus.setText(curUser+":");
+        buildGoogleApiClient();
         mapsButton = (ImageButton) findViewById(R.id.mapsButton);
         friendsButton = (ImageButton) findViewById(R.id.friendsButton);
         editStatus = (EditText) findViewById(R.id.editStatus);
@@ -85,6 +124,11 @@ public class StatusActivity extends ActionBarActivity {
         if (curAvailable){
             available.setChecked(true);
         }
+
+        //Set up Google API Client
+        mResolvingError = savedInstanceState != null
+                && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
+        //End of setting up Google API Client
 
         friendsInfo = new ArrayList<String>();
         theListView = (ListView) findViewById(R.id.listView);
@@ -139,6 +183,24 @@ public class StatusActivity extends ActionBarActivity {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+    }
+
+    private void updateValuesFromBudnle(Bundle savedInstanceState) {
+        if(savedInstanceState!=null){
+            //Update the value of mRequestingLocationUpdates from the Bundle
+            if(savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES)){
+                mRequestingLocationUpdates=savedInstanceState.getBoolean(REQUESTING_LOCATION_UPDATES);
+            }
+            //Update the value of mRequestingLocationUpdates from the Bundle
+            if(savedInstanceState.keySet().contains(LOCATION_KEY)){
+                mCurrentLocation=savedInstanceState.getParcelable(LOCATION_KEY);
+            }
+        }
+    }
+
+    //Build google Api Client
+    protected synchronized void buildGoogleApiClient(){
+        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
     }
 
 
@@ -598,31 +660,8 @@ public class StatusActivity extends ActionBarActivity {
         Toast.makeText(getApplicationContext(),
                 "Status posted!",
                 Toast.LENGTH_LONG).show();
-        // Getting LocationManager object from System Service LOCATION_SERVICE
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        LocationListener locationlistener = new LocationListener(){
-            public void onLocationChanged(Location location){
-                UpdateNewLocation(location);
-            }
-            public void onStatusChanged(String provider, int status, Bundle extras){}
-            public void onProviderEnabled(String provider){}
-            public void onProviderDisabled(String provider){}
-        };
-
-        //Register the lister with the location manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationlistener);
-
-
-        // Creating a criteria object to retrieve provider
-        Criteria criteria = new Criteria();
-
-        // Getting the name of the best provider
-        String provider = locationManager.getBestProvider(criteria, true);
-
         // Getting Current Location
-        Location location = locationManager.getLastKnownLocation(provider);
-
-
+        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
             // Getting latitude of the current location
             double latitude = location.getLatitude();
@@ -634,7 +673,16 @@ public class StatusActivity extends ActionBarActivity {
             myFire.child("long").setValue(longitude);
         }
     }
+    protected void createLocationRequest(){
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(15000);
+        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+    // Update the location of the current user on the Firebase database
     public void UpdateNewLocation(Location location){
+        mCurrentLocation=location;
+        Log.d("Location Updated",location.toString());
         if(curAvailable){
         double latitude = location.getLatitude();
         // Getting longitude of the current location
@@ -689,6 +737,153 @@ public class StatusActivity extends ActionBarActivity {
         });
         alert.setNegativeButton("Cancel", null);
         alert.show();
+    }
+
+    // Additional Google Location API Methods
+    @Override
+    protected void onPause(){
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    protected void stopLocationUpdates(){
+        if(mGoogleApiClient.isConnected()){
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,this);
+        }
+    }
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        if (mResolvingError) {
+            // Already attempting to resolve an error.
+            return;
+        } else if (result.hasResolution()) {
+            try {
+                mResolvingError = true;
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                // There was an error with the resolution intent. Try again.
+                mGoogleApiClient.connect();
+            }
+        } else {
+            // Show dialog using GooglePlayServicesUtil.getErrorDialog()
+            showErrorDialog(result.getErrorCode());
+            mResolvingError = true;
+        }
+    }
+
+    // The rest of this code is all about building the error dialog
+
+    /* Creates a dialog for an error message */
+    private void showErrorDialog(int errorCode) {
+        // Create a fragment for the error dialog
+        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+        // Pass the error that should be displayed
+        Bundle args = new Bundle();
+        args.putInt(DIALOG_ERROR, errorCode);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getSupportFragmentManager(), "errordialog");
+    }
+
+    /* Called from ErrorDialogFragment when the dialog is dismissed. */
+    public void onDialogDismissed() {
+        mResolvingError = false;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mCurrentLocation = location;
+        UpdateNewLocation(mCurrentLocation);
+    }
+
+    /* A fragment to display an error dialog */
+    public static class ErrorDialogFragment extends DialogFragment {
+        public ErrorDialogFragment() { }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Get the error code and retrieve the appropriate dialog
+            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
+            return GooglePlayServicesUtil.getErrorDialog(errorCode,
+                    this.getActivity(), REQUEST_RESOLVE_ERROR);
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            ((StatusActivity)getActivity()).onDialogDismissed();
+        }
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        if(!mResolvingError){
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop(){
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+       
+        Location currentLoc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(currentLoc==null){
+            //Blank
+        }
+        else{
+            UpdateNewLocation(currentLoc);
+            mCurrentLocation=currentLoc;
+            Log.d("Location obtained from Google Maps",currentLoc.toString());
+        }
+        startLocationUpdates();
+
+    }
+
+    private void startLocationUpdates() {
+        Log.d("status","LocationUpdatesStarted");
+        mRequestingLocationUpdates=true;
+        createLocationRequest();
+        if(mGoogleApiClient.isConnected()){
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest,this);}
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
+        outState.putBoolean(REQUESTING_LOCATION_UPDATES,mRequestingLocationUpdates);
+        outState.putParcelable(LOCATION_KEY, mCurrentLocation);
+        super.onSaveInstanceState(outState);
+    }
+   
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_RESOLVE_ERROR) {
+            mResolvingError = false;
+            if (resultCode == RESULT_OK) {
+                // Make sure the app is not already connected or attempting to connect
+                if (!mGoogleApiClient.isConnecting() &&
+                        !mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.connect();
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(mGoogleApiClient.isConnected()&& !mRequestingLocationUpdates){
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 }
 
