@@ -10,14 +10,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
-import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,9 +28,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -42,12 +36,9 @@ import com.firebase.client.ValueEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-
-import org.xmlpull.v1.sax2.Driver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -226,6 +217,9 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
                 SharedPreferences sp = getSharedPreferences("Login", 0);
                 sp.edit().clear().commit();
                 Log.d("sharepref", "deleted shared pref");
+                Intent newIntent = new Intent(this, LogInActivity.class);
+                Log.d("delete", "Back to Log In");
+                startActivity(newIntent);
                 super.finish();
                 return true;
             default:
@@ -350,8 +344,6 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
         alert.show();
     }
 
-    //TODO: Onclick methods for DeleteFriend and MessageFriend
-
     /*
     Helper function to add a friend to the Friends List
      */
@@ -435,7 +427,7 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
 
                                     myFire.child("friends").push().setValue(putName);
 
-                                    Log.d("Add Friend", friendName+"added");
+                                    Log.d("Add Friend", friendName+" added");
 
                                     Toast.makeText(getApplicationContext(),
                                             friendName+" added!",
@@ -500,8 +492,9 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
                 Toast.LENGTH_LONG).show();
 
         Intent newIntent = new Intent(this, LogInActivity.class);
-        Log.d("delete", "Back to Log In");
+        Log.d("delete", "Back to home");
         startActivity(newIntent);
+        finish();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -523,7 +516,7 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
         if (curUser != null) {
             i.putExtra("curUser", curUser);
         }
-        myFire.child("friends").addValueEventListener(new ValueEventListener() {
+        myFire.child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, HashMap<String, String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
@@ -586,12 +579,16 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
             Take a snapshot of current data and displays these friends on the map
              */
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, HashMap<String,String>> fd = (HashMap<String, HashMap<String,String>>) dataSnapshot.getValue();
-                Collection<HashMap<String, String>> friendsNames = fd.values();
-                for (HashMap<String, String> amiDic : friendsNames) {
-                    String amigo = amiDic.get("name");
-                    if (!ami.contains(amigo)) {
-                        ami.add(amigo);
+                Log.d("start map", dataSnapshot.toString());
+                if (dataSnapshot.getValue()!=null){
+                    HashMap<String, HashMap<String, String>> fd = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
+                    Log.d("start map", dataSnapshot.getValue().toString());
+                    Collection<HashMap<String, String>> friendsNames = fd.values();
+                    for (HashMap<String, String> amiDic : friendsNames) {
+                        String amigo = amiDic.get("name");
+                        if (!ami.contains(amigo)) {
+                            ami.add(amigo);
+                        }
                     }
                 }
                 Log.d("HHHHH", ami.toString());

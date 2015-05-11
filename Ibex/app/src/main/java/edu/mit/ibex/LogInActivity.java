@@ -66,6 +66,7 @@ public class LogInActivity extends ActionBarActivity {
             intent.putExtra("curAvailable", true);
             Log.d("login", "Log in success");
             startActivity(intent);
+            finish();
         }
         /*
         for(Map.Entry<String,?> entry : keys.entrySet()){
@@ -88,7 +89,6 @@ public class LogInActivity extends ActionBarActivity {
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,7 +162,7 @@ public class LogInActivity extends ActionBarActivity {
         else {
             logText.setVisibility(View.VISIBLE);
             logText.setTextColor(Color.RED);
-            logText.setText("Wrong curUser and password. Please try again.");
+            logText.setText("Wrong username and password. Please try again.");
         }
     }
 
@@ -219,5 +219,6 @@ public class LogInActivity extends ActionBarActivity {
         intent.putExtra("curUser", usr);
         intent.putExtra("curAvailable", true);
         startActivity(intent);
+        finish();
     }
 }

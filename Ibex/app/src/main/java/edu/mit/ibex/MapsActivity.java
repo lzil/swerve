@@ -98,8 +98,8 @@ public class MapsActivity extends FragmentActivity {
 
     public  boolean onKeyDown(int keyCode, KeyEvent event){
         if((keyCode==KeyEvent.KEYCODE_BACK)){
+            Log.d("Message:","Activity Done YAY");
             finish();
-           Log.d("Message:","Activity Done YAY");
         }
         return super.onKeyDown(keyCode, event);
     }
