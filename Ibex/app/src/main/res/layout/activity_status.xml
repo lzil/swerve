@@ -49,6 +49,7 @@
         android:maxLength="40"
         android:layout_toLeftOf="@+id/postButton"
         android:layout_toStartOf="@+id/postButton"
+        android:singleLine="true"
         android:nestedScrollingEnabled="false" />
 
     <Button

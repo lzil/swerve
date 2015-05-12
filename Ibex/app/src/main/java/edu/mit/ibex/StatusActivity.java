@@ -371,25 +371,25 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
         Log.d("clickFriend", selectedFriend + " clicked!");
         targetFriend = selectedFriend;
         //AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.dialog_title_style);
-        AlertDialog.Builder alert = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         View clickLayout = getLayoutInflater().inflate(R.layout.layout_friend_click, null);
         alert.setView(clickLayout);
-        alert.setMessage(selectedFriend);
+        alert.setTitle(selectedFriend);
         TextView friendStatus = (TextView)clickLayout.findViewById(R.id.friendStatus);
         friendStatus.setText(selectedFriendStatus);
 
-        alert.setPositiveButton("Find " + selectedFriend, new DialogInterface.OnClickListener() {
+        alert.setNeutralButton("Map", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 startMap(selectedFriend);
             }
         });
-        alert.setNeutralButton("Message", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton("Message", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 messageFriend(selectedFriend);
             }
         });
-        alert.setNegativeButton("Cancel", null);
+        alert.setPositiveButton("Cancel", null);
         alert.show();
     }
 
@@ -428,7 +428,7 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
      */
     public void addFriend(View v) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage("Add a Friend");
+        alert.setTitle("Add a Friend");
 
         View addFriendLayout = getLayoutInflater().inflate(R.layout.layout_add_friend, null);
         alert.setView(addFriendLayout);
@@ -747,7 +747,7 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
 
         View messageLayout = getLayoutInflater().inflate(R.layout.layout_message, null);
         alert.setView(messageLayout);
-        alert.setTitle("Send Message");
+        alert.setTitle("Message to " + toUser);
         final EditText messageContent = (EditText) messageLayout.findViewById(R.id.messageContent);
 
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
