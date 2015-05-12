@@ -4,10 +4,10 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/messageContent"
         android:singleLine="true"
-        android:layout_gravity="center_horizontal"
-        android:hint="Message" />
+        android:hint="Message"
+        android:layout_marginLeft="20dp"/>
 </LinearLayout>

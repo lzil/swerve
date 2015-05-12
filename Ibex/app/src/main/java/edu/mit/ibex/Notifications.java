@@ -38,9 +38,7 @@ public class Notifications extends ActionBarActivity{
                 Toast.LENGTH_LONG).show();
 
         Log.d("Notifications", "Message successfully read");
-        Intent newIntent = new Intent(this, LogInActivity.class);
-        Log.d("Notifications", "Back to Log In");
-        startActivity(newIntent);
+        finish();
     }
 
 }

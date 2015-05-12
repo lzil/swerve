@@ -95,7 +95,7 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateValuesFromBudnle(savedInstanceState);
+        updateValuesFromBundle(savedInstanceState);
 
         Intent intent = getIntent();
         curUser = intent.getExtras().getString("curUser");
@@ -174,9 +174,60 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+
+        myFire.child("requests").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+                Map<String, String> msgPack = (Map<String, String>) snapshot.getValue();
+                if (msgPack.get("status").equals("neutral")) {
+                    Intent intent1 = new Intent(StatusActivity.this, Friending.class)
+                            .setAction("foo")
+                            .putExtra("toUser", msgPack.get("name"))
+                            .putExtra("accept", "true")
+                            .putExtra("curUser", curUser)
+                            .putExtra("requestKey", snapshot.getKey());
+                    Intent intent2 = new Intent(StatusActivity.this, Friending.class)
+                            .setAction("foo2")
+                            .putExtra("toUser", msgPack.get("name"))
+                            .putExtra("accept", "false")
+                            .putExtra("curUser", curUser)
+                            .putExtra("requestKey", snapshot.getKey());
+//                    Intent msgIntent = new Intent(StatusActivity.this, LogInActivity.class);
+//                    PendingIntent pIntent = PendingIntent.getActivity(StatusActivity.this, 0, msgIntent, 0);
+                    //PendingIntent addIntent = PendingIntent.getActivity(StatusActivity.this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+                    //PendingIntent denyIntent = PendingIntent.getActivity(StatusActivity.this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    Notification notif = new Notification.Builder(StatusActivity.this)
+                            .setContentTitle(msgPack.get("name") + " has sent you a friend request!")
+                            .addAction(R.mipmap.ic_action_mail, "Accept Request", PendingIntent.getActivity(StatusActivity.this, 0, intent1, PendingIntent.FLAG_ONE_SHOT))
+                            .addAction(R.mipmap.ic_action_mail, "Deny Request", PendingIntent.getActivity(StatusActivity.this, 0, intent2, PendingIntent.FLAG_ONE_SHOT))
+                            .setAutoCancel(true)
+                            .setSmallIcon(R.mipmap.ic_action_mail)
+                            .build();
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    notificationManager.notify(0, notif);
+//                    myFire.child("messages").child(snapshot.getKey()).child("seen").setValue("true");
+                    Log.d("key", snapshot.getKey());
+                    Log.d("posting something", "done!");
+                }
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
-    private void updateValuesFromBudnle(Bundle savedInstanceState) {
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
         if(savedInstanceState!=null){
             //Update the value of mRequestingLocationUpdates from the Bundle
             if(savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES)){
@@ -322,25 +373,25 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
         Log.d("clickFriend", selectedFriend + " clicked!");
         targetFriend = selectedFriend;
         //AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.dialog_title_style);
-        AlertDialog.Builder alert = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         View clickLayout = getLayoutInflater().inflate(R.layout.layout_friend_click, null);
         alert.setView(clickLayout);
-        alert.setMessage(selectedFriend);
+        alert.setTitle(selectedFriend);
         TextView friendStatus = (TextView)clickLayout.findViewById(R.id.friendStatus);
         friendStatus.setText(selectedFriendStatus);
 
-        alert.setPositiveButton("Find " + selectedFriend, new DialogInterface.OnClickListener() {
+        alert.setNeutralButton("Map", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 startMap(selectedFriend);
             }
         });
-        alert.setNeutralButton("Message", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton("Message", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 messageFriend(selectedFriend);
             }
         });
-        alert.setNegativeButton("Cancel", null);
+        alert.setPositiveButton("Cancel", null);
         alert.show();
     }
 
@@ -377,7 +428,7 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
      */
     public void addFriend(View v) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage("Add a Friend");
+        alert.setTitle("Add a Friend");
 
         View addFriendLayout = getLayoutInflater().inflate(R.layout.layout_add_friend, null);
         alert.setView(addFriendLayout);
@@ -423,14 +474,16 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
                                     //Add friend
                                     friendsInfo = new ArrayList<String>();
                                     HashMap<String, String> putName = new HashMap<String, String>();
-                                    putName.put("name", friendName);
+                                    putName.put("name", curUser);
+                                    putName.put("status", "neutral");
 
-                                    myFire.child("friends").push().setValue(putName);
+                                    //myFire.child("friends").push().setValue(putName);
+                                    baseFire.child(friendName).child("requests").push().setValue(putName);
 
                                     Log.d("Add Friend", friendName+" added");
 
                                     Toast.makeText(getApplicationContext(),
-                                            friendName+" added!",
+                                            "Friend request sent to " + friendName + "!",
                                             Toast.LENGTH_LONG).show();
                                 }
                             }else{
@@ -699,7 +752,7 @@ public class StatusActivity extends ActionBarActivity implements GoogleApiClient
 
         View messageLayout = getLayoutInflater().inflate(R.layout.layout_message, null);
         alert.setView(messageLayout);
-        alert.setTitle("Send Message");
+        alert.setTitle("Message to " + toUser);
         final EditText messageContent = (EditText) messageLayout.findViewById(R.id.messageContent);
 
         alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
