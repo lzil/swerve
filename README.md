@@ -6,6 +6,6 @@ The purpose of our mobile Android application, Swerve, is to make it easy for st
 
 You can download the app - it's the swerve.apk file.  
 
-Built for 6.S198: Making Mobile Apps in Spring 2015.  
+Built for 6.S198: Making Mobile Apps, taken in Spring 2015.  
 
 Team Ibex: Hassan Kane, Manting Lao, Kevin Ng, Liang Zhou
